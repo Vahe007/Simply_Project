@@ -1,9 +1,9 @@
 import { responseDataCreator } from '../../helpers/common.js'
-import { getAllUsersDb, createUserDb } from './db.js'
+import { getAllUsersDB, createUserDB , getUserByIdDB, updateUserDB, deleteUserDB } from './db.js'
 
 export const getAllUsers = async (req, res, next) => {
   try {
-    const users = await getAllUsersDb()
+    const users = await getAllUsersDB()
     res.json(responseDataCreator(users))
   } catch (error) {
     next(error)
@@ -11,14 +11,41 @@ export const getAllUsers = async (req, res, next) => {
 }
 
 export const getUserById = async (req, res) => {
-  res.send('user')
+  try {
+    const {id} = req.params;
+    const user = await getUserByIdDB(+id);
+    res.json(responseDataCreator(user));
+  } catch(error) {
+    next(error);
+  }
 }
 
 export const createUser = async (req, res, next) => {
   try {
-    const user = await createUserDb(req.body)
-    res.json(responseDataCreator(user))
+    const user = await createUserDB(req.body);
+    console.log(user)
+    res.json(responseDataCreator(user));
   } catch (error) {
-    next(error)
+    next(error);
+  }
+}
+
+export const updateUser = async (req, res, next) => {
+  const {id} = req.params;
+  try {
+    const user = await updateUserDB(req.body, +id);
+    res.json(responseDataCreator(user));
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const deleteUser = async (req, res, next) => {
+  try {
+    const {id} = req.params;
+    const user = await deleteUserDB(+id);
+    res.json(responseDataCreator(user));
+  } catch (error) {
+    next(error);
   }
 }
