@@ -47,7 +47,7 @@ model Item {
   images            Image[]
   recoveries        Recovery[]
   exhibitions       Exhibition[]
-  description       String?      @default("") @db.Text
+  // description       String?      @default("") @db.Text
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @updatedAt
 }
