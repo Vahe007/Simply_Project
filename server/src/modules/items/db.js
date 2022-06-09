@@ -94,6 +94,3 @@ export const getItemByIdDB = async (id) => {
   }
 }
 
-// export const filteredItem = async () => {
-
-// }
