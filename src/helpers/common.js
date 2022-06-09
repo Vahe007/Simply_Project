@@ -20,3 +20,8 @@ export const responseDataCreator = (data) => ({
   data,
   count: data.length,
 })
+
+export const getPagination = ({page = 1, limit = 10}) => ({
+  skip: (+page - 1) * +limit,
+  take: +limit
+})

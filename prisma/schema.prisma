@@ -7,34 +7,87 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Company {
-  id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(250)
-  address   String?  @db.Text
-  type      String   @default("any")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  users User[]
+model User {
+  id       Int     @id @default(autoincrement())
+  name     String
+  surname  String
+  email    String  @unique
+  password String
+  phone    String?
+  role     Role    @relation(fields: [roleId], references: [id])
+  roleId   Int
 }
-
 
 model Role {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(255)
-  User User[]
-}
-
-model User {
   id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(255)
-  username  String   @db.VarChar(255)
-  email     String   @db.VarChar(255)
-  password  String   @db.VarChar(255)
-  role      Role?    @relation(fields: [roleId], references: [id])
-  roleId    Int?
+  users     User[]
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  company   Company? @relation(fields: [companyId], references: [id])
-  companyId Int?
+  updatedAt DateTime @updatedAt
+  //user admin guest
+}
+
+model Item {
+  id                Int          @id @default(autoincrement())
+  fundNumber        String       @db.VarChar(255)
+  itemName          String       @db.VarChar(255)
+  materialId        Int
+  material          Material     @relation(fields: [materialId], references: [id])
+  placeOfOrigin     String       @db.VarChar(255)
+  creationPeriod    String       @db.VarChar(255)
+  acquisitionPeriod DateTime
+  contributor       String       @db.VarChar(255)
+  width             Int?
+  height            Int?
+  length            Int?
+  diameter          Int?
+  weight            Int?
+  statusId          Int
+  status            Status       @relation(fields: [statusId], references: [id])
+  images            Image[]
+  recoveries        Recovery[]
+  exhibitions       Exhibition[]
+  // description       String?      @default("") @db.Text
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+}
+
+model Image {
+  id     Int    @id @default(autoincrement())
+  name   String @db.VarChar(255)
+  path   String @db.VarChar(255)
+  itemId Int
+  item   Item   @relation(fields: [itemId], references: [id])
+}
+
+model Status {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(255)
+  item Item[]
+}
+
+model Material {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(255)
+  item Item[]
+}
+
+model Recovery {
+  id        Int      @id @default(autoincrement())
+  startDate DateTime
+  endDate   DateTime
+  history   String   @db.Text
+  item      Item     @relation(fields: [itemId], references: [id])
+  itemId    Int
+}
+
+model Exhibition {
+  id        Int      @id @default(autoincrement())
+  startDate DateTime
+  endDate   DateTime
+  place     String   @db.VarChar(255)
+  headline  String   @db.VarChar(255)
+  marks     String?  @db.VarChar(255)
+  item      Item     @relation(fields: [itemId], references: [id])
+  itemId    Int
 }
