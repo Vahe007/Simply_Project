@@ -1,21 +1,31 @@
 import { prisma } from '../../services/Prisma.js'
+import { getPagination } from '../../helpers/common.js';
 
 const { user } = prisma
 
-export const getAllUsersDB = async () => {
+
+export const getAllUsersDB = async (query) => {
+  const {page = 1, limit = 4 } = query;
   try {
-    const users = await user.findMany();
+    const users = await user.findMany({
+      skip: (pa),
+      take: +limit
+    });
+
     return {
       data: users,
-      error: null,
+      error: null
     }
-  } catch (error) {
+  } catch(error) {
     return {
       data: null,
-      error,
+      error
     }
   }
 }
+
+
+
 
 export const getUserByIdDB = async (id) => {
   try {
@@ -49,6 +59,8 @@ export const createUserDB = async (sendedData) => {
     return {
       data: null,
       error,
+
+
     }
   }
 }
@@ -93,3 +105,5 @@ export const deleteUserDB = async(id) => {
     }
   }
 }
+
+
