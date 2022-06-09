@@ -3,6 +3,7 @@ import { getPagination } from '../../helpers/common.js';
 
 const { user } = prisma
 
+
 export const getAllUsersDB = async (query) => {
   const {page = 1, limit = 4 } = query;
   try {
@@ -10,6 +11,7 @@ export const getAllUsersDB = async (query) => {
       skip: (pa),
       take: +limit
     });
+
     return {
       data: users,
       error: null
@@ -21,6 +23,8 @@ export const getAllUsersDB = async (query) => {
     }
   }
 }
+
+
 
 
 export const getUserByIdDB = async (id) => {
@@ -55,6 +59,8 @@ export const createUserDB = async (sendedData) => {
     return {
       data: null,
       error,
+
+
     }
   }
 }
