@@ -57,3 +57,25 @@ export const getStatusByIdDB = async (id) => {
     }
   }
 }
+
+// update
+export const updateStatusDB = async (data, id) => {
+  try {
+    const updatedStatus = await status.update({
+      where: {
+        id: +id,
+      },
+      data,
+    })
+
+    return {
+      data: updatedStatus,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    }
+  }
+}
