@@ -1,5 +1,4 @@
 import Joi from 'joi'
-import { joiPassword } from 'joi-password'
 
 export default {
   // CRUD ordering
