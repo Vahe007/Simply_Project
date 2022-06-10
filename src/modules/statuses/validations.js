@@ -26,4 +26,11 @@ export default {
       name: Joi.string(),
     }),
   },
+
+  // delete
+  deleteStatusValidation: {
+    params: Joi.object({
+      id: Joi.number().integer(),
+    }),
+  },
 }
