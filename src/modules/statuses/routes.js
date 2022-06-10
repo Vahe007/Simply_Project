@@ -22,4 +22,4 @@ router.put('/:id', validate(updateStatusValidation), updateStatus)
 // delete
 router.delete('/:id', validate(deleteStatusValidation), deleteStatus)
 
-export { router as statusRouter }
+export { router as statusRoutes }

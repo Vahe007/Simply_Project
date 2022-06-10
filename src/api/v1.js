@@ -5,11 +5,9 @@ import { usersRoutes } from '../modules/users/routes.js'
 
 const router = Router()
 
-
 // router.use('/user', itemsRoutes)
 
-router.use('/items', itemsRoutes);
-router.use('/users', usersRoutes);
-
+router.use('/items', itemsRoutes)
+router.use('/users', usersRoutes)
 
 export { router as v1 }
