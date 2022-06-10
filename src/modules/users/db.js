@@ -12,7 +12,7 @@ export const getAllUsersDB = async (query) => {
       take: +limit
     });
 
-    return {
+      return {
       data: users,
       error: null
     }
