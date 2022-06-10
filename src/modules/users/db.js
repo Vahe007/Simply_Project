@@ -16,7 +16,7 @@ export const getAllUsersDB = async (query) => {
       data: users,
       error: null
     }
-  } catch(error) {
+  } catch (error) {
     return {
       data: null,
       error
