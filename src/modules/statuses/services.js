@@ -26,3 +26,14 @@ export const createStatus = async (req, res, next) => {
     next(error)
   }
 }
+
+// read
+export const getStatusById = async (req, res, next) => {
+  try {
+    const status = await getStatusByIdDB(req.params.id)
+
+    res.json(responseDataCreator(status))
+  } catch (error) {
+    next(error)
+  }
+}
