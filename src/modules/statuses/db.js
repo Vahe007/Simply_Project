@@ -79,3 +79,23 @@ export const updateStatusDB = async (data, id) => {
     }
   }
 }
+
+// delete
+export const deleteStatusDB = async (id) => {
+  try {
+    const deletedStatus = await status.delete({
+      where: {
+        id: +id,
+      },
+    })
+    return {
+      data: deletedStatus,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    }
+  }
+}
