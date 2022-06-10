@@ -18,7 +18,7 @@ export const getAllStatusesDB = async () => {
   }
 }
 
-// CRUD ordering below
+// CRUD ordering
 // create
 export const createStatusDB = async (sentData) => {
   try {
