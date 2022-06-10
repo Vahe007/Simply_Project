@@ -19,6 +19,7 @@ export const getAllStatusesDB = async () => {
 }
 
 // CRUD ordering below
+// create
 export const createStatusDB = async (sentData) => {
   try {
     const newStatus = await status.create({
@@ -26,6 +27,27 @@ export const createStatusDB = async (sentData) => {
     })
     return {
       data: newStatus,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    }
+  }
+}
+
+// read
+export const getStatusByIdDB = async (id) => {
+  try {
+    const data = await status.findUnique({
+      where: {
+        id: +id,
+      },
+    })
+
+    return {
+      data,
       error: null,
     }
   } catch (error) {
