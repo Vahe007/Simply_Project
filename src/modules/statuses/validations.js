@@ -12,10 +12,18 @@ export default {
       name: Joi.string().required(),
     }),
   },
+
   // read
   getStatusByIdValidation: {
     params: Joi.object({
       id: Joi.number().integer(),
+    }),
+  },
+
+  // update
+  updateStatusValidation: {
+    body: Joi.object({
+      name: Joi.string(),
     }),
   },
 }
