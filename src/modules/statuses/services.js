@@ -37,3 +37,14 @@ export const getStatusById = async (req, res, next) => {
     next(error)
   }
 }
+
+// update
+export const updateStatus = async (req, res, next) => {
+  try {
+    const updatedStatus = await updateStatusDB(req.body, req.params.id)
+
+    res.json(responseDataCreator(updateStatus))
+  } catch (error) {
+    next(error)
+  }
+}
