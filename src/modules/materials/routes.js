@@ -1,19 +1,19 @@
 import { Router } from "express";
 import { validate } from "../../helpers/common.js";
-import { getAllMaterialsDB, createMaterialDB, deleteMaterialDB, getMaterialByIdDB, updateMaterialDB } from "./db.js";
+import { getAllMaterials, createMaterial, deleteMaterial, getMaterialById, updateMaterial } from "./services.js";
 import validations from './validations.js';
 
 const router = Router();
-const { getMaterialByIdValidation }  = validations;
-
-// , createMaterialValidation, updateMaterialValidation, deleteMaterialValidation 
-
-router.get('/', getAllMaterialsDB);
-router.get('/:id', validate(getMaterialByIdValidation), getMaterialByIdDB);
-// router.post('/', validate(createMaterialValidation), createMaterialDB);
-// router.put('/:id', validate(updateMaterialValidation), updateMaterialDB);
-router.delete('/:id', deleteMaterialDB);
+const { getMaterialByIdValidation, createMaterialValidation, updateMaterialValidation, deleteMaterialValidation }  = validations;
 
 
-export { router as materialsRoutes }
+
+router.get('/', getAllMaterials);
+router.get('/:id', validate(getMaterialByIdValidation), getMaterialById);
+router.post('/', validate(createMaterialValidation), createMaterial);
+router.put('/:id', validate(updateMaterialValidation), updateMaterial);
+router.delete('/:id', validate(deleteMaterialValidation), deleteMaterial);
+
+
+export { router as materialsRoutes };
 

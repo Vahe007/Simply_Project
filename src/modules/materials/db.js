@@ -36,7 +36,7 @@ export const createMaterialDB = async (sentData) => {
 
 export const deleteMaterialDB = async (id) => {
     try {
-      const deletedMaterial = await item.delete({
+      const deletedMaterial = await material.delete({
         where: {
           id: +id,
         },

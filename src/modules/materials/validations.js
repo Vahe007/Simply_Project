@@ -6,7 +6,22 @@ export default {
             id: Joi.number().integer()
         }),
     },
-    // createMaterialValidation: , 
-    // updateMaterialValidation: , 
-    // deleteMaterialValidation: 
+    createMaterialValidation: {
+        body: Joi.object({
+            name: Joi.string().required()
+        })
+    }, 
+    updateMaterialValidation: {
+        params: Joi.object({
+            id: Joi.number().integer().required(),
+        }),
+        body: Joi.object({
+            name: Joi.string().required()
+        })
+    }, 
+    deleteMaterialValidation: {
+        params: Joi.object({
+            id: Joi.number().integer()
+        })
+    } 
 }

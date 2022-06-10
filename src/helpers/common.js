@@ -16,6 +16,15 @@ export const validate = (schema) => {
   }
 }
 
+// schema = {
+//   params: Joi.object({
+//       id: Joi.number().integer().required(),
+//   }),
+//   body: Joi.object({
+//       name: Joi.string().required()
+//   })
+// }
+
 export const responseDataCreator = (data) => ({
   data,
   count: data.length,
