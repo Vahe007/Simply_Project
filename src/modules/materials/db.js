@@ -23,7 +23,7 @@ export const createMaterialDB = async (sentData) => {
         data: sentData,
       })
       return {
-        data: 'user created',
+        data: 'material created',
         error: null,
       }
     } catch (error) {
