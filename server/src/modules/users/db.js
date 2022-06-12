@@ -1,27 +1,26 @@
 import { prisma } from '../../services/Prisma.js'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
+import { generateAccessToken } from '../../helpers/common.js'
 const { user } = prisma
+import { getPagination } from '../../helpers/common.js';
 
-const generateAccessToken = (id, roles) => {
-  const payload = {
-    id,
-    roles,
-  }
-  return jwt.sign(payload, process.env.TOKEN_SECRET)
-}
-
-export const getAllUsersDB = async () => {
+export const getAllUsersDB = async (query) => {
+  const {page = 1, limit = 4 } = query;
   try {
-    const users = await user.findMany();
+    const users = await user.findMany({
+      skip: (page),
+      take: +limit
+    });
+
     return {
       data: users,
-      error: null,
+      error: null
     }
-  } catch (error) {
+  } catch(error) {
     return {
       data: null,
-      error,
+      error
     }
   }
 }
@@ -105,11 +104,12 @@ export const deleteUserDB = async(id) => {
   }
 }
 
-export const registrationDB = async (username, password) =>{
+export const registrationDB = async (userData) => {
+  const { email, password, name, surname } = userData
   try {
     const candidate = await user.findUnique({
       where: {
-        username,
+        email,
       },
     })
     if (candidate) {
@@ -119,20 +119,22 @@ export const registrationDB = async (username, password) =>{
       }
     }
     const hashedPassword = bcrypt.hashSync(password, 7)
-    const userRole = await role.findUnique({
-      where: {
-        name: 'USER',
-      },
-    })
+
     const createdUser = await user.create({
       data: {
-        username,
-        roleId: [userRole.id],
-        password: hashedPassword
+        email,
+        name,
+        surname,
+        roleId: 1,
+        password: hashedPassword,
       },
+      include:{
+        role:true,
+      }
     })
-    const {password: createdUserPass, role, ...userInfo} = createdUser
-    const token = generateAccessToken(userInfo.id, role)
+    const { password: createdUserPass, ...userInfo } = createdUser
+
+    const token = generateAccessToken(userInfo.id, userInfo.role.name)
     return {
       data: { ...userInfo, token },
       error: null,
@@ -145,18 +147,33 @@ export const registrationDB = async (username, password) =>{
   }
 }
 
-export const login = async (username, password) =>{
-  try{
-    const user = await User.findOne(username)
-    if (!user) {
-      return res.status(400).json({message: `User ${username} not found`})
+export const loginDB = async (userData) =>{
+  const { email, password } = userData
+  try {
+    const candidate = await user.findUnique({
+      where: {
+        email,
+      },
+      include: {
+        role:true,
+      }
+    })
+    if (!candidate) {
+      return {
+        data: null,
+        error: { message: 'No user fount with such email' },
+      }
     }
-    const valaidPassword = bcrypt.compareSync(password, user.password)
+
+    const valaidPassword = bcrypt.compareSync(password, candidate.password)
     if (!valaidPassword) {
-      return res.status(400).json({message: 'Password incorrect'})
+      return {
+        data: null,
+        error: { message: 'Password incorrect' },
+      }
     }
-    const {password: createdUserPass, roles, ...userInfo} = user._doc
-    const token = generateAccessToken(userInfo._id, roles)
+    const { password: createdUserPass, role, ...userInfo } = candidate
+    const token = generateAccessToken(userInfo.id, role)
     return {
       data: { ...userInfo, token },
       error: null,

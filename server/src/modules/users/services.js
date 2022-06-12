@@ -52,20 +52,18 @@ export const deleteUser = async (req, res, next) => {
 }
 export const registration = async (req, res, next) => {
   try {
-    const {username, password} = req.body
-    const user = await registrationDB(username, password);
-    res.status(200).json(responseDataCreator(user));
-  } catch (err) {
-    next(error);
+    const user = await registrationDB(req.body)
+    res.status(200).json(responseDataCreator(user))
+  } catch (error) {
+    next(error)
   }
 }
 
 export const login = async (req, res, next) => {
   try {
-    const {username, password} = req.body
-    const user = await loginDB(username, password);
-    res.status(200).json(responseDataCreator(user));
-  } catch (err) {
-    next(error);
+    const user = await loginDB(req.body)
+    res.status(200).json(responseDataCreator(user))
+  } catch (error) {
+    next(error)
   }
 }
