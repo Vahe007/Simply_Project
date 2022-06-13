@@ -1,4 +1,5 @@
 import { badRequestErrorCreator } from './errors.js'
+import jwt from "jsonwebtoken";
 
 export const validate = (schema) => {
   if (typeof schema !== 'object' || schema === null) throw new Error('Schema is not an object')
@@ -34,3 +35,11 @@ export const getPagination = ({page = 1, limit = 10}) => ({
   skip: (+page - 1) * +limit,
   take: +limit
 })
+
+export const generateAccessToken = (id, roles) => {
+  const payload = {
+    id,
+    roles,
+  }
+  return jwt.sign(payload, process.env.TOKEN_SECRET)
+}
