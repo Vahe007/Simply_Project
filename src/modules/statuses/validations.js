@@ -21,6 +21,9 @@ export default {
 
   // update
   updateStatusValidation: {
+    params: Joi.object({
+      id: Joi.number().integer(),
+    }),
     body: Joi.object({
       name: Joi.string(),
     }),
