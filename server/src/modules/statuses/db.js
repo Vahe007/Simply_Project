@@ -1,5 +1,4 @@
 import { prisma } from '../../services/Prisma.js'
-import { itemsRoutes } from '../items/routes.js'
 
 const { status } = prisma
 

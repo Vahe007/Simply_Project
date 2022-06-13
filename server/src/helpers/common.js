@@ -17,23 +17,14 @@ export const validate = (schema) => {
   }
 }
 
-// schema = {
-//   params: Joi.object({
-//       id: Joi.number().integer().required(),
-//   }),
-//   body: Joi.object({
-//       name: Joi.string().required()
-//   })
-// }
-
 export const responseDataCreator = (data) => ({
   data,
   count: data.length,
 })
 
-export const getPagination = ({page = 1, limit = 10}) => ({
+export const getPagination = ({ page = 1, limit = 10}) => ({
   skip: (+page - 1) * +limit,
-  take: +limit
+  take: +limit,
 })
 
 export const generateAccessToken = (id, roles) => {
