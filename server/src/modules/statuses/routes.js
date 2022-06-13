@@ -1,8 +1,7 @@
 import { Router } from 'express'
-import { validate } from '../../helpers/common'
-
-import { getAllStatuses, createStatus, getStatusById, updateStatus, deleteStatus } from './services'
-
+import { validate } from '../../helpers/common.js'
+import { getAllStatuses, createStatus, getStatusById, updateStatus, deleteStatus } from './services.js'
+import validations from './validations.js'
 const {
   createStatusValidation,
   getStatusByIdValidation,

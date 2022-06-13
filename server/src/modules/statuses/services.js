@@ -45,7 +45,7 @@ export const updateStatus = async (req, res, next) => {
   try {
     const updatedStatus = await updateStatusDB(req.body, req.params.id)
 
-    res.json(responseDataCreator(updateStatus))
+    res.json(responseDataCreator(updatedStatus))
   } catch (error) {
     next(error)
   }
@@ -56,7 +56,7 @@ export const deleteStatus = async (req, res, next) => {
   try {
     const deletedStatus = await deleteStatusDB(req.params.id)
 
-    res.json(responseDataCreator(deleteStatus))
+    res.json(responseDataCreator(deletedStatus))
   } catch (error) {
     next(error)
   }
