@@ -27,8 +27,6 @@ export const createItemDB = async (sentData) => {
       error: null,
     }
   } catch (error) {
-    console.log(error);
-
     return {
       data: null,
       error,
