@@ -33,7 +33,7 @@ export const getMaterialById = async (req, res, next) => {
 
 export const updateMaterial = async (req, res, next) => {
     try {
-        const { id } = params;
+        const { id } = req.params;
         const material = await updateMaterialDB(req.body, +id);
         res.json(responseDataCreator(material));
     } catch (error) {
