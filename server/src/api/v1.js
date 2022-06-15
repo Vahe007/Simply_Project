@@ -9,7 +9,7 @@ import { materialsRoutes } from '../modules/materials/routes.js'
 
 router.use('/items', itemsRoutes)
 router.use('/users', usersRoutes)
-router.use('/status', statusRoutes)
+router.use('/statuses', statusRoutes)
 router.use('/materials', materialsRoutes)
 
 export { router as v1 }
