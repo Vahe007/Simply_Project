@@ -6,10 +6,12 @@ import { statusRoutes } from '../modules/statuses/routes.js'
 
 import { usersRoutes } from '../modules/users/routes.js'
 import { materialsRoutes } from '../modules/materials/routes.js'
+import { imagesRoutes } from '../modules/images/routes.js'
 
 router.use('/items', itemsRoutes)
 router.use('/users', usersRoutes)
 router.use('/status', statusRoutes)
 router.use('/materials', materialsRoutes)
+router.use('/images', imagesRoutes)
 
 export { router as v1 }
