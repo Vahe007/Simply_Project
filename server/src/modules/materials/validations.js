@@ -21,7 +21,7 @@ export default {
     }, 
     deleteMaterialValidation: {
         params: Joi.object({
-            id: Joi.number().integer()
+            id: Joi.number().integer().required()
         })
     } 
 }
