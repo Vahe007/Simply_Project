@@ -1,12 +1,12 @@
 import { prisma } from '../../services/Prisma.js'
 
-const { item } = prisma
+const { exhibit } = prisma
 
-export const getAllItemsDB = async () => {
+export const getAllExhibitsDB = async () => {
   try {
-    const allItems = await item.findMany()
+    const allExhibits = await exhibit.findMany()
     return {
-      data: allItems,
+      data: allExhibits,
       error: null,
     }
   } catch (error) {
@@ -17,9 +17,9 @@ export const getAllItemsDB = async () => {
   }
 }
 
-export const createItemDB = async (sentData) => {
+export const createExhibitDB = async (sentData) => {
   try {
-    await item.create({
+    await exhibit.create({
       data: sentData,
     })
     return {
@@ -27,6 +27,7 @@ export const createItemDB = async (sentData) => {
       error: null,
     }
   } catch (error) {
+    console.log(error);
     return {
       data: null,
       error,
@@ -34,28 +35,29 @@ export const createItemDB = async (sentData) => {
   }
 }
 
-export const deleteItemDB = async (id) => {
+export const deleteExhibitDB = async (id) => {
   try {
-    const deletedItem = await item.delete({
+    const deletedExhibit = await exhibit.delete({
       where: {
         id: +id,
       },
     })
     return {
-      data: deletedItem,
+      data: deletedExhibit,
       error: null,
     }
   } catch (error) {
-    return {
+      console.log(error);
+      return {
       data: null,
       error,
     }
   }
 }
 
-export const updateItemDB = async (data, id) => {
+export const updateExhibitDB = async (data, id) => {
   try {
-    const updatedItem = await item.update({
+    const updatedExhibit = await exhibit.update({
       where: {
         id: +id,
       },
@@ -63,7 +65,7 @@ export const updateItemDB = async (data, id) => {
     })
 
     return {
-      data: updatedItem,
+      data: updatedExhibit,
       error: null,
     }
   } catch (error) {
@@ -74,9 +76,9 @@ export const updateItemDB = async (data, id) => {
   }
 }
 
-export const getItemByIdDB = async (id) => {
+export const getExhibitByIdDB = async (id) => {
   try {
-    const data = await item.findUnique({
+    const data = await exhibit.findUnique({
       where: {
         id: +id,
       },

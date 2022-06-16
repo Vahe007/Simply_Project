@@ -1,12 +1,12 @@
 import { responseDataCreator } from '../../helpers/common.js'
-import { getAllUsersDB, createUserDB , getUserByIdDB, updateUserDB, deleteUserDB, loginDB, registrationDB } from './db.js'
+import { getAllUsersDB, createUserDB , getUserByIdDB, updateUserDB, deleteUserDB } from './db.js'
 
 export const getAllUsers = async (req, res, next) => {
   try {
     const users = await getAllUsersDB(req.query);
-
     res.json(responseDataCreator(users))
   } catch (error) {
+    console.log(error)
     next(error)
   }
 }
@@ -24,7 +24,6 @@ export const getUserById = async (req, res) => {
 export const createUser = async (req, res, next) => {
   try {
     const user = await createUserDB(req.body);
-    console.log(user)
     res.json(responseDataCreator(user));
   } catch (error) {
     next(error);
@@ -37,6 +36,7 @@ export const updateUser = async (req, res, next) => {
     const user = await updateUserDB(req.body, +id);
     res.json(responseDataCreator(user));
   } catch (error) {
+    console.log('hii')
     next(error);
   }
 }
@@ -50,20 +50,5 @@ export const deleteUser = async (req, res, next) => {
     next(error);
   }
 }
-export const registration = async (req, res, next) => {
-  try {
-    const user = await registrationDB(req.body)
-    res.status(200).json(responseDataCreator(user))
-  } catch (error) {
-    next(error)
-  }
-}
 
-export const login = async (req, res, next) => {
-  try {
-    const user = await loginDB(req.body)
-    res.status(200).json(responseDataCreator(user))
-  } catch (error) {
-    next(error)
-  }
-}
+
