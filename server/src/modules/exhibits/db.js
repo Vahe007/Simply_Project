@@ -18,6 +18,7 @@ export const getAllExhibitsDB = async () => {
 }
 
 export const createExhibitDB = async (sentData) => {
+  console.log(sentData);
   try {
     await exhibit.create({
       data: sentData,

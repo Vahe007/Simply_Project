@@ -13,7 +13,7 @@ export default {
     body: Joi.object({
       fundNumber: Joi.string().required(),
       exhibitName: Joi.string().required(),
-      material: Joi.any(), //not sure
+      material: Joi.any(),
       placeOfOrigin: Joi.string().required(),
       creationPeriod: Joi.string().required(),
       acquisitionPeriod: Joi.date().required(),
@@ -22,12 +22,14 @@ export default {
       length: Joi.number().integer(),
       diameter: Joi.number().integer(),
       weight: Joi.number().integer(),
-      status: Joi.any(), //not sure
+      status: Joi.any(),
       description: Joi.string().min(3).max(200),
-      contributors: Joi.any(), //not sure
-      creator: Joi.any(), //not sure
-      updater: Joi.any(), //not sure
-      category: Joi.any() //not sure
+      contributors: Joi.any(),
+      creator: Joi.any(),
+      updater: Joi.any(),
+      category: Joi.any(),
+      // creatorId: Joi.number().integer(),
+      // updaterId: Joi.number().integer(),
     })
   },
   updateExhibitValidation: {

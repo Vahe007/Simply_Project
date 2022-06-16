@@ -16,7 +16,7 @@ model User {
   phoneNumber     String?   @db.VarChar(255)
   isLoggedIn      Boolean   @default(false)
   isActive        Boolean   @default(true)
-  lastLogin       DateTime
+  lastLogin       DateTime?
   role            Role      @default(GUEST)
   exhibitsCreated Exhibit[] @relation("creator")
   exhibitsUpdated Exhibit[] @relation("updater")
@@ -32,7 +32,7 @@ model Exhibit {
   material          Material                 @relation(fields: [materialId], references: [id])
   placeOfOrigin     String                   @db.VarChar(255)
   creationPeriod    String                   @db.VarChar(255)
-  acquisitionPeriod DateTime
+  acquisitionPeriod DateTime?
   isActive          Boolean                  @default(true)
   contributors      ContributorsOfExhibits[]
   width             Int?
@@ -45,10 +45,10 @@ model Exhibit {
   images            Image[]
   recoveries        Recovery[]
   exhibitions       Exhibition[]
-  updaterId         Int
-  creator           User                     @relation(fields: [creatorId], references: [id], name: "creator", onDelete: Cascade)
-  updater           User                     @relation(fields: [updaterId], references: [id], name: "updater", onDelete: Cascade)
+  updaterId         Int?
   creatorId         Int
+  creator           User                     @relation("creator", fields: [creatorId], references: [id], onDelete: Cascade)
+  updater           User?                    @relation("updater", fields: [updaterId], references: [id], onDelete: Cascade)
   categoryId        Int
   category          Category                 @relation(fields: [categoryId], references: [id])
   description       String?                  @db.Text
