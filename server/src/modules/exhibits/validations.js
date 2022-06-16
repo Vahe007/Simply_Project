@@ -1,36 +1,39 @@
 import Joi from 'joi'
 
 export default {
-  getItemByIdValidation: {
+  getExhibitByIdValidation: {
     params: Joi.object({
-      id: Joi.number().integer(),
-    }),
+      id: Joi.number().integer()
+    })
   },
-  createItemValidation: {
+  createExhibitValidation: {
     params: Joi.object({
-      id: Joi.number().integer(),
+      id: Joi.number().integer()
     }),
     body: Joi.object({
       fundNumber: Joi.string().required(),
-      itemName: Joi.string().required(),
-      material: Joi.any(),
+      exhibitName: Joi.string().required(),
+      material: Joi.any(), //not sure
       placeOfOrigin: Joi.string().required(),
       creationPeriod: Joi.string().required(),
       acquisitionPeriod: Joi.date().required(),
-      contributor: Joi.string().required(),
       width: Joi.number().integer(),
       height: Joi.number().integer(),
       length: Joi.number().integer(),
       diameter: Joi.number().integer(),
       weight: Joi.number().integer(),
-      status: Joi.any(),
+      status: Joi.any(), //not sure
       description: Joi.string().min(3).max(200),
-    }),
+      contributors: Joi.any(), //not sure
+      creator: Joi.any(), //not sure
+      updater: Joi.any(), //not sure
+      category: Joi.any() //not sure
+    })
   },
-  updateItemValidation: {
+  updateExhibitValidation: {
     body: Joi.object({
       fundNumber: Joi.string(),
-      itemName: Joi.string(),
+      exhibitName: Joi.string(),
       material: Joi.any(),
       placeOfOrigin: Joi.string(),
       creationPeriod: Joi.string(),
@@ -39,15 +42,15 @@ export default {
       width: Joi.number().integer(),
       height: Joi.number().integer(),
       length: Joi.number().integer(),
+      diameter: Joi.number().integer(),
       weight: Joi.number().integer(),
       status: Joi.any(),
-      diameter: Joi.number().integer(),
-      description: Joi.string().min(3).max(200),
-    }),
+      description: Joi.string().min(3).max(200)
+    })
   },
-  deleteItemValidation: {
+  deleteExhibitValidation: {
     params: Joi.object({
-      id: Joi.number().integer(),
-    }),
-  },
+      id: Joi.number().integer()
+    })
+  }
 }

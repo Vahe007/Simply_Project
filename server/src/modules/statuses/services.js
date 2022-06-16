@@ -22,7 +22,6 @@ export const getAllStatuses = async (req, res, next) => {
 export const createStatus = async (req, res, next) => {
   try {
     const newStatus = await createStatusDB(req.body)
-
     res.json(responseDataCreator(newStatus))
   } catch (error) {
     next(error)
