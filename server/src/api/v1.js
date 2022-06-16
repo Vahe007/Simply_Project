@@ -8,6 +8,7 @@ const router = Router()
 
 router.use('/exhibits', exhibitsRoutes)
 router.use('/users', usersRoutes)
+router.use('/statuses', statusRoutes)
 router.use('/materials', materialsRoutes)
 
 

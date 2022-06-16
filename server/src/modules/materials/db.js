@@ -77,13 +77,13 @@ export const deleteMaterialDB = async (id) => {
 
 export const getMaterialByIdDB = async (id) => {
     try {
-      const material = await material.findUnique({
+      const foundMaterial = await material.findUnique({
         where: {
           id,
         },
       })
       return {
-        data: material,
+        data: foundMaterial,
         error: null,
       }
     } catch (error) {
