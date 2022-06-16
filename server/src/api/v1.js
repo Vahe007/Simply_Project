@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { exhibitsRoutes } from '../modules/exhibits/routes.js'
 import { usersRoutes } from '../modules/users/routes.js'
 import { materialsRoutes } from '../modules/materials/routes.js'
+import { statusRoutes } from '../modules/statuses/routes.js'
 
 
 const router = Router()

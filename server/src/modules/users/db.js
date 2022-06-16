@@ -1,4 +1,5 @@
 import { prisma } from '../../services/Prisma.js'
+import {generateAccessToken} from "../../helpers/common.js"
 
 const { user } = prisma
 
@@ -129,3 +130,87 @@ export const deleteUserDB = async(id) => {
 }
 
 
+export const registrationDB = async (userData) => {
+  const { email, password, name, surname, lastLogin, isActive } = userData
+  try {
+    const candidate = await user.findUnique({
+      where: {
+        email,
+      },
+    })
+    console.log("okokokokk");
+    if (candidate) {
+      return {
+        data: null,
+        error: { message: 'User with such username is already registered' },
+      }
+    }
+    const hashedPassword = bcrypt.hashSync(password, 7)
+
+    const createdUser = await user.create({
+      data: {
+        email,
+        name,
+        surname,
+        roleId: 1,
+        password: hashedPassword
+      },
+      include:{
+        role:true,
+      }
+    })
+    const { password: createdUserPass, ...userInfo } = createdUser
+
+    const token = generateAccessToken(userInfo.id, userInfo.role.name)
+    return {
+      data: { ...userInfo, token },
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    }
+  }
+}
+
+
+export const loginDB = async (userData) =>{
+  const { email, password } = userData
+  try {
+    const candidate = await user.findUnique({
+      where: {
+        email,
+      },
+      include: {
+        role:true,
+      }
+    })
+    if (!candidate) {
+      return {
+        data: null,
+        error: { message: 'No user fount with such email' },
+      }
+    }
+
+    const valaidPassword = bcrypt.compareSync(password, candidate.password)
+    if (!valaidPassword) {
+      return {
+        data: null,
+        error: { message: 'Password incorrect' },
+      }
+    }
+    const { password: createdUserPass, role, ...userInfo } = candidate
+    const token = generateAccessToken(userInfo.id, role)
+    return {
+      data: { ...userInfo, token },
+      error: null,
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      data: null,
+      error,
+    }
+  }
+}
