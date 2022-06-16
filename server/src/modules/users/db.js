@@ -79,6 +79,7 @@ export const createUserDB = async (sendedData) => {
       error: null,
     }
   } catch (error) {
+    console.log(error);
     return {
       data: null,
       error,
