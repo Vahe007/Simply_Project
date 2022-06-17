@@ -2,7 +2,6 @@ import express from 'express'
 import logger from 'morgan'
 import fs from 'fs'
 import path from 'path'
-import cors from "cors"
 
 const app = express()
 app.use(cors())
