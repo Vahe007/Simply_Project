@@ -30,8 +30,8 @@ export const getPagination = ({ page = 1, limit = 10 }) => ({
 
 export const generateAccessToken = (id, roles) => {
   const payload = {
-    id,
-    roles,
+    id: +id,
+    roles: roles
   }
   return jwt.sign(payload, process.env.TOKEN_SECRET)
 }

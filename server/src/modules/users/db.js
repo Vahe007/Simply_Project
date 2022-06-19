@@ -1,20 +1,46 @@
 import { prisma } from '../../services/Prisma.js'
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcryptjs'
-import { generateAccessToken } from '../../helpers/common.js'
+import {generateAccessToken} from "../../helpers/common.js"
+
 const { user } = prisma
-import { getPagination } from '../../helpers/common.js';
+
 
 export const getAllUsersDB = async (query) => {
-  const {page = 1, limit = 4 } = query;
+  const sortHandler = {
+    'name [A-Z]': {
+      name: 'asc'
+    } ,
+    'name [Z-A]': {
+      name: 'desc'
+    },
+    'created date (new to old)': {
+      createdAt: 'desc'
+    } ,
+    'created date (old to new)': {
+      createdAt: 'asc'
+    },
+    'updated date (new to old)': {
+      updatedAt: 'desc'
+    },
+    'updated date (old to new)': {
+      updatedAt: 'asc'
+    }
+  }
+  const {page = 1, limit = 10, sortBy = "name"} = query;
   try {
+    const count = await user.count()
     const users = await user.findMany({
-      skip: (page),
-      take: +limit
+      skip: (+page - 1) * +limit,
+      take: +limit,
+      orderBy: sortHandler[sortBy],
+      include: {
+        exhibitsCreated: true,
+        exhibitsUpdated: true
+      }
     });
 
     return {
-      data: users,
+      users,
+      count,
       error: null
     }
   } catch(error) {
@@ -24,8 +50,6 @@ export const getAllUsersDB = async (query) => {
     }
   }
 }
-
-
 
 export const getUserByIdDB = async (id) => {
   try {
@@ -56,6 +80,7 @@ export const createUserDB = async (sendedData) => {
       error: null,
     }
   } catch (error) {
+    console.log(error);
     return {
       data: null,
       error,
@@ -104,14 +129,16 @@ export const deleteUserDB = async(id) => {
   }
 }
 
+
 export const registrationDB = async (userData) => {
-  const { email, password, name, surname } = userData
+  const { email, password, name, surname, lastLogin, isActive } = userData
   try {
     const candidate = await user.findUnique({
       where: {
         email,
       },
     })
+    console.log("okokokokk");
     if (candidate) {
       return {
         data: null,
@@ -126,7 +153,7 @@ export const registrationDB = async (userData) => {
         name,
         surname,
         roleId: 1,
-        password: hashedPassword,
+        password: hashedPassword
       },
       include:{
         role:true,
@@ -146,6 +173,7 @@ export const registrationDB = async (userData) => {
     }
   }
 }
+
 
 export const loginDB = async (userData) =>{
   const { email, password } = userData
@@ -179,6 +207,7 @@ export const loginDB = async (userData) =>{
       error: null,
     }
   } catch (error) {
+    console.log(error);
     return {
       data: null,
       error,

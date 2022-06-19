@@ -8,6 +8,7 @@ const __filename = fileURLToPath(import.meta.url)
 export const __dirname = dirname(__filename)
 
 const app = express()
+app.use(cors())
 
 const env = process.env.NODE_ENV || 'development'
 

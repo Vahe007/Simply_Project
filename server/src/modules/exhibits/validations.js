@@ -1,23 +1,22 @@
 import Joi from 'joi'
 
 export default {
-  getItemByIdValidation: {
+  getExhibitByIdValidation: {
     params: Joi.object({
-      id: Joi.number().integer(),
-    }),
+      id: Joi.number().integer()
+    })
   },
-  createItemValidation: {
+  createExhibitValidation: {
     params: Joi.object({
-      id: Joi.number().integer(),
+      id: Joi.number().integer()
     }),
     body: Joi.object({
       fundNumber: Joi.string().required(),
-      itemName: Joi.string().required(),
+      exhibitName: Joi.string().required(),
       material: Joi.any(),
       placeOfOrigin: Joi.string().required(),
       creationPeriod: Joi.string().required(),
       acquisitionPeriod: Joi.date().required(),
-      contributor: Joi.string().required(),
       width: Joi.number().integer(),
       height: Joi.number().integer(),
       length: Joi.number().integer(),
@@ -25,12 +24,18 @@ export default {
       weight: Joi.number().integer(),
       status: Joi.any(),
       description: Joi.string().min(3).max(200),
-    }),
+      contributors: Joi.any(),
+      creator: Joi.any(),
+      updater: Joi.any(),
+      category: Joi.any(),
+      // creatorId: Joi.number().integer(),
+      // updaterId: Joi.number().integer(),
+    })
   },
-  updateItemValidation: {
+  updateExhibitValidation: {
     body: Joi.object({
       fundNumber: Joi.string(),
-      itemName: Joi.string(),
+      exhibitName: Joi.string(),
       material: Joi.any(),
       placeOfOrigin: Joi.string(),
       creationPeriod: Joi.string(),
@@ -39,15 +44,15 @@ export default {
       width: Joi.number().integer(),
       height: Joi.number().integer(),
       length: Joi.number().integer(),
+      diameter: Joi.number().integer(),
       weight: Joi.number().integer(),
       status: Joi.any(),
-      diameter: Joi.number().integer(),
-      description: Joi.string().min(3).max(200),
-    }),
+      description: Joi.string().min(3).max(200)
+    })
   },
-  deleteItemValidation: {
+  deleteExhibitValidation: {
     params: Joi.object({
-      id: Joi.number().integer(),
-    }),
-  },
+      id: Joi.number().integer()
+    })
+  }
 }

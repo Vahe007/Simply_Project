@@ -1,12 +1,12 @@
 import { responseDataCreator } from '../../helpers/common.js'
-import { getAllUsersDB, createUserDB , getUserByIdDB, updateUserDB, deleteUserDB, loginDB, registrationDB } from './db.js'
+import { getAllUsersDB, createUserDB , getUserByIdDB, updateUserDB, deleteUserDB, registrationDB, loginDB } from './db.js'
 
 export const getAllUsers = async (req, res, next) => {
   try {
     const users = await getAllUsersDB(req.query);
-
     res.json(responseDataCreator(users))
   } catch (error) {
+    console.log(error)
     next(error)
   }
 }
@@ -24,7 +24,6 @@ export const getUserById = async (req, res) => {
 export const createUser = async (req, res, next) => {
   try {
     const user = await createUserDB(req.body);
-    console.log(user)
     res.json(responseDataCreator(user));
   } catch (error) {
     next(error);
@@ -50,6 +49,8 @@ export const deleteUser = async (req, res, next) => {
     next(error);
   }
 }
+
+
 export const registration = async (req, res, next) => {
   try {
     const user = await registrationDB(req.body)
