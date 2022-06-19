@@ -1,8 +1,11 @@
 import express from 'express'
 import logger from 'morgan'
 import fs from 'fs'
-import path from 'path'
-import cors from "cors"
+import path, { dirname } from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+export const __dirname = dirname(__filename)
 
 const app = express()
 app.use(cors())
