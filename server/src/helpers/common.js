@@ -20,8 +20,7 @@ export const validate = (schema) => {
 }
 
 export const responseDataCreator = (data) => ({
-  data,
-  count: data.length,
+  ...data,
 })
 
 export const getPagination = ({ page = 1, limit = 10 }) => ({

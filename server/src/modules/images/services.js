@@ -6,7 +6,7 @@ export const uploadFile = async (req, res, next) => {
   const { exhibitId } = req.params
   try {
     const file = await uploadFileDB({
-      itemId: exhibitId,
+      itemId: +exhibitId,
       name: createdFilename,
       path: `${exhibitId}/${createdFilename}`,
     })
