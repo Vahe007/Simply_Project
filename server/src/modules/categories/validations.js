@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import {JOI_VALIDATION_MESSAGES} from '../../helpers/constants.js'
 
 export default {
     createCategorySchema: {
@@ -8,9 +9,9 @@ export default {
                     categoryName: Joi.string()
                         .required()
                         .messages({
-                            'string.base': `"categoryName" should be a type of 'text'`,
-                            'string.empty': `"categoryName" cannot be an empty`,
-                            'any.required': `"categoryName" is a required field`
+                            'string.base': 'categoryName' + JOI_VALIDATION_MESSAGES.BASE_TYPE,
+                            'string.empty': 'categoryName' + JOI_VALIDATION_MESSAGES.NOT_EMPTY,
+                            'any.required': 'categoryName' + JOI_VALIDATION_MESSAGES.REQUIRED
                         })
                 }),
         })

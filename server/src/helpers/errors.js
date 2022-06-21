@@ -1,21 +1,23 @@
-export const notFoundErrorCreator = () => {
-  const error = new Error('Not Found')
-  error.status = 404
+import {ERROR_MESSAGES} from '../helpers/constants.js'
 
-  return error
+export const notFoundErrorCreator = () => {
+    const error = new Error(ERROR_MESSAGES.NOT_FOUND)
+    error.status = 404
+
+    return error
 }
 
 export const internalServerErrorCreator = () => {
-  const error = new Error('Internal server error')
-  error.status = 500
+    const error = new Error(ERROR_MESSAGES.INTERNAL_SERVER_ERROR)
+    error.status = 500
 
-  return error
+    return error
 }
 
 export const badRequestErrorCreator = (details) => {
-  const error = new Error('Bad Request')
-  error.status = 400
-  error.details = details
+    const error = new Error(ERROR_MESSAGES.BAD_REQUEST)
+    error.status = 400
+    error.details = details
 
-  return error
+    return error
 }
