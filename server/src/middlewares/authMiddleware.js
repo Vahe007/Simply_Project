@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import {MIDDLEWARE_MESSAGES} from '../helpers/constants.js'
 
-module.exports = function (req, res, next) {
+export const authMiddleware = (req, res, next) => {
     if (req.method === 'OPTIONS') {
         next()
     }

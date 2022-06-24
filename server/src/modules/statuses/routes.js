@@ -1,20 +1,22 @@
-import { Router } from 'express'
-import { validate } from '../../helpers/common.js'
-import { getAllStatuses, createStatus, getStatusById, updateStatus, deleteStatus } from './services.js'
+import {Router} from 'express'
+import {validate} from '../../helpers/common.js'
+import {createStatus, deleteStatus, getActiveStatuses, getAllStatuses, updateStatus} from './services.js'
 import validations from './validations.js'
+
 const {
-  createStatusValidation,
-  getStatusByIdValidation,
-  updateStatusValidation,
-  deleteStatusValidation,
+    createStatusValidation,
+    updateStatusValidation,
+    deleteStatusValidation,
 } = validations
 
 const router = Router()
 
 router.get('/', getAllStatuses)
+router.get('/active', getActiveStatuses)
 router.post('/', validate(createStatusValidation), createStatus)
-router.get('/:id', validate(getStatusByIdValidation), getStatusById)
-router.put('/:id', validate(updateStatusValidation), updateStatus)
-router.delete('/:id', validate(deleteStatusValidation), deleteStatus)
+router.put('/:statusId', validate(updateStatusValidation), updateStatus)
 
-export { router as statusRoutes }
+//Only for developers
+router.delete('/:statusId', validate(deleteStatusValidation), deleteStatus)
+
+export {router as statusRoutes}
