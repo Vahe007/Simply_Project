@@ -25,11 +25,6 @@ export const responseDataCreator = (data) => ({
     ...data,
 })
 
-export const getPagination = ({page = 1, limit = 10}) => ({
-    skip: (+page - 1) * +limit,
-    take: +limit,
-})
-
 export const generateAccessToken = (id, roles) => {
     const payload = {
         id: +id,

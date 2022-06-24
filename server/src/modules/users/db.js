@@ -7,63 +7,80 @@ const {user} = prisma
 
 
 export const getAllUsersDB = async (query) => {
-    const sortHandler = {
-        'A-Z': {
-            name: 'asc'
-        },
-        'Z-A': {
-            name: 'desc'
-        },
-        'created-new': {
-            createdAt: 'desc'
-        },
-        'created-old': {
-            createdAt: 'asc'
-        },
-        'updated-new': {
-            updatedAt: 'desc'
-        },
-        'updated-old': {
-            updatedAt: 'asc'
-        }
+    const {page, limit , sortBy, contains = ""} = query;
+  
+    const handleSortBy = {
+      "name [A-Z]": {
+        "name": "asc"
+      },
+  
+      "name [Z-A]":{
+        "name": "desc"
+      },
+  
+      "created date (new to old)":{
+        "createdAt": "desc"
+      },
+  
+      "created date (old to new)": {
+        "createdAt": "asc"
+  
+      },
+  
+      "updated date (new to old)": {
+        "updatedAt": "desc"
+  
+      },
+  
+      "updated date (new to old)": {
+        "updatedAt": "asc"
+  
+      },
     }
-    const {page = 1, limit = 10, sortBy = {name: 'asc'}} = query;
+  
     try {
-        const count = await user.count()
-        const users = await user.findMany({
-            skip: (+page - 1) * +limit,
-            take: +limit,
-            orderBy: sortHandler[sortBy],
-            select: {
-                id: true,
-                name: true,
-                surname: true,
-                email: true,
-                phoneNumber: true,
-                isActive: true,
-                lastLogin: true,
-                role: true,
-                _count: {
-                    select: {
-                        exhibitsCreated: true,
-                        exhibitsUpdated: true
-                    },
-                },
-            }
-        });
-
-        return {
-            users,
-            count,
-            error: null
+      const numberOfActiveUsers = await user.count({
+        where: {
+          isActive: true,
+        },
+      })
+  
+      const usersPerPage = await user.findMany({
+        where: {
+          isActive: true,
+          OR: 
+            ['name', 'surname', 'email', 'phoneNumber'].map(el => {
+              return {
+                [el]: {
+                  contains
+                }
+              }
+            })
+        },
+  
+        skip: (+page - 1) * +limit || undefined,
+        take: +limit || undefined,
+        orderBy: handleSortBy[sortBy] || undefined,
+  
+        include: {
+          exhibitsCreated: true,
+          exhibitsUpdated: true,
         }
-    } catch (error) {
-        return {
-            data: null,
-            error
-        }
+      });
+  
+      return {
+        usersPerPage,
+        count: numberOfActiveUsers,
+        error: null
+      }
+    } catch(error) {
+      console.log(error);
+      return {
+        data: null,
+        error
+      }
     }
-}
+  }
 
 export const getUserByIdDB = async (id) => {
     console.log(id)
