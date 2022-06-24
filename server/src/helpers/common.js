@@ -55,3 +55,8 @@ const storage = multer.diskStorage({
 })
 
 export const upload = multer({storage})
+
+export const areItemsUniqueByFieldname = (array, fieldName) => {
+    const uniqueValues = new Set(array.map(item => item[fieldName]))
+    return uniqueValues.size === array.length
+}

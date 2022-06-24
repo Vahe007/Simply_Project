@@ -1,4 +1,5 @@
 import {prisma} from "../../services/Prisma.js";
+import {ERROR_MESSAGES} from "../../helpers/constants.js";
 
 const {category} = prisma;
 
@@ -54,6 +55,17 @@ export const createCategoryDB = async (sentData) => {
 }
 
 export const deleteCategorylDB = async (id) => {
+    const categoryToBeDeleted = await category.findUnique({
+        where: {
+            id: +id
+        }
+    })
+    if (!categoryToBeDeleted) {
+        return {
+            data: null,
+            error: {message: ERROR_MESSAGES.NOT_FOUND_RECORD}
+        }
+    }
     try {
         const deletedCategory = await category.delete({
             where: {
@@ -73,10 +85,21 @@ export const deleteCategorylDB = async (id) => {
 }
 
 export const updateCategoryDB = async (data, id) => {
+    const categoryToBeUpdated = await category.findUnique({
+        where: {
+            id: +id
+        }
+    })
+    if (!categoryToBeUpdated) {
+        return {
+            data: null,
+            error: {message: ERROR_MESSAGES.NOT_FOUND_RECORD}
+        }
+    }
     try {
         const updatedCategory = await category.update({
             where: {
-                id
+                id: +id
             },
             data
         });

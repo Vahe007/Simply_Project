@@ -20,7 +20,7 @@ export default {
         params: Joi.object({
             categoryId: Joi.number().integer().required()
         }),
-        body: Joi.object({}).keys({
+        body: Joi.object().keys({
             categoryName: Joi.string(),
             isActive: Joi.boolean()
         }).required().length(1)

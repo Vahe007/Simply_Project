@@ -1,6 +1,7 @@
-import { prisma } from "../../services/Prisma.js";
+import {prisma} from "../../services/Prisma.js";
+import {ERROR_MESSAGES} from "../../helpers/constants.js";
 
-const { material } = prisma;
+const {material} = prisma;
 
 export const getAllMaterialsDB = async () => {
     try {
@@ -17,79 +18,101 @@ export const getAllMaterialsDB = async () => {
     }
 }
 
+export const getActiveMaterialsDB = async () => {
+    try {
+        const activeMaterials = await material.findMany({
+            where: {
+                isActive: true
+            }
+        })
+        return {
+            data: activeMaterials,
+            error: null,
+        }
+    } catch (error) {
+        return {
+            data: null,
+            error,
+        }
+    }
+}
+
 export const createMaterialDB = async (sentData) => {
     try {
-      await material.create({
-        data: sentData,
-      })
-      return {
-        data: 'material created',
-        error: null,
-      }
+        const createdMaterials = await material.createMany({
+            data: sentData,
+        })
+        return {
+            data: createdMaterials,
+            error: null,
+        }
     } catch (error) {
-      return {
-        data: null,
-        error,
-      }
+        return {
+            data: null,
+            error,
+        }
     }
 }
 
 export const deleteMaterialDB = async (id) => {
-    try {
-      const deletedMaterial = await material.delete({
+    const materialToBeDeleted = await material.findUnique({
         where: {
-          id: +id,
-        },
-      })
-      return {
-        data: deletedMaterial,
-        error: null,
-      }
-    } catch (error) {
-      return {
-        data: null,
-        error,
-      }
+            id: +id
+        }
+    })
+    if (!materialToBeDeleted) {
+        return {
+            data: null,
+            error: {message: ERROR_MESSAGES.NOT_FOUND_RECORD}
+        }
     }
-  }
-
-  export const updateMaterialDB = async(data, id) => {
     try {
-      const newData = await material.update({
-        where: {
-          id
-        },
-        data
-      });
-  
-      return {
-        data: newData,
-        error: null
-      }
-  
-    } catch(error) {
-      return {
-        data: null,
-        error
-      }
+        const deletedMaterial = await material.delete({
+            where: {
+                id: +id,
+            },
+        })
+        return {
+            data: deletedMaterial,
+            error: null,
+        }
+    } catch (error) {
+        return {
+            data: null,
+            error,
+        }
     }
 }
 
-export const getMaterialByIdDB = async (id) => {
-    try {
-      const foundMaterial = await material.findUnique({
+export const updateMaterialDB = async (data, id) => {
+    const materialToBeUpdated = await material.findUnique({
         where: {
-          id,
-        },
-      })
-      return {
-        data: foundMaterial,
-        error: null,
-      }
+            id: +id
+        }
+    })
+    if (!materialToBeUpdated) {
+        return {
+            data: null,
+            error: {message: ERROR_MESSAGES.NOT_FOUND_RECORD}
+        }
+    }
+    try {
+        const updatedMaterial = await material.update({
+            where: {
+                id: +id
+            },
+            data
+        });
+
+        return {
+            data: updatedMaterial,
+            error: null
+        }
+
     } catch (error) {
-      return {
-        data: null,
-        error,
-      }
+        return {
+            data: null,
+            error
+        }
     }
 }
