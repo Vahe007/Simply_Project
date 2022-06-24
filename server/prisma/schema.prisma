@@ -9,8 +9,8 @@ datasource db {
 
 model User {
   id              Int       @id @default(autoincrement())
-  name            String    @db.VarChar(255)
-  surname         String    @db.VarChar(255)
+  firstName       String    @db.VarChar(255)
+  lastName        String    @db.VarChar(255)
   email           String    @unique
   password        String    @db.VarChar(255)
   phoneNumber     String?   @db.VarChar(255)

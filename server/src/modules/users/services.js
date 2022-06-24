@@ -1,10 +1,10 @@
 import {responseDataCreator} from '../../helpers/common.js'
-import {getAllUsersDB, createUserDB, getUserByIdDB, updateUserDB, deleteUserDB, registrationDB, loginDB} from './db.js'
+import {getAllUsersDB, createUserDB, getUserByIdDB, updateUserDB, deleteUserDB, loginDB} from './db.js'
 
-export const getAllUsers = async (req, res, next) => {
+export const getAllUsers = async ({query}, res, next) => {
     try {
-        const users = await getAllUsersDB(req.query);
-        res.json(responseDataCreator(users))
+        const users = await getAllUsersDB(query);
+        res.status(200).json(responseDataCreator(users))
     } catch (error) {
         console.log(error)
         next(error)
@@ -14,8 +14,8 @@ export const getAllUsers = async (req, res, next) => {
 export const getUserById = async (req, res, next) => {
     try {
         const {id} = req.params;
-        const user = await getUserByIdDB(id);
-        res.json(responseDataCreator(user));
+        const user = await getUserByIdDB(+id);
+        res.status(200).json(responseDataCreator(user));
     } catch (error) {
         next(error);
     }
@@ -24,7 +24,7 @@ export const getUserById = async (req, res, next) => {
 export const createUser = async (req, res, next) => {
     try {
         const user = await createUserDB(req.body);
-        res.json(responseDataCreator(user));
+        res.status(200).json(responseDataCreator(user));
     } catch (error) {
         next(error);
     }
@@ -32,9 +32,10 @@ export const createUser = async (req, res, next) => {
 
 export const updateUser = async (req, res, next) => {
     const {id} = req.params;
+    
     try {
         const user = await updateUserDB(req.body, id);
-        res.json(responseDataCreator(user));
+        res.status(200).json(responseDataCreator(user));
     } catch (error) {
         next(error);
     }
@@ -43,26 +44,16 @@ export const updateUser = async (req, res, next) => {
 export const deleteUser = async (req, res, next) => {
     try {
         const {id} = req.params;
-        const user = await deleteUserDB(+id);
-        res.json(responseDataCreator(user));
+        const response = await deleteUserDB(+id);
+        res.status(200).json(responseDataCreator(response));
     } catch (error) {
         next(error);
     }
 }
 
-
-export const registration = async (req, res, next) => {
+export const login = async ({body}, res, next) => {
     try {
-        const user = await registrationDB(req.body)
-        res.status(200).json(responseDataCreator(user))
-    } catch (error) {
-        next(error)
-    }
-}
-
-export const login = async (req, res, next) => {
-    try {
-        const user = await loginDB(req.body)
+        const user = await loginDB(body)
         res.status(200).json(responseDataCreator(user))
     } catch (error) {
         next(error)

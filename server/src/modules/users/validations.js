@@ -6,20 +6,17 @@ export default {
     getUserByIdSchema: {
         params: Joi.object({
             id: Joi.number().integer().required(),
-        }),
+        })
     },
 
     createUserSchema: {
         body: Joi.object({
-            name: Joi.string().min(2).required(),
-            surname: Joi.string().min(2).required(),
+            firstName: Joi.string().min(2).required(),
+            lastName: Joi.string().min(2).required(),
             email: Joi.string().email().required(),
             password: joiPassword
                 .string()
-                .minOfSpecialCharacters(1)
-                .minOfLowercase(1)
-                .minOfUppercase(1)
-                .minOfNumeric(1)
+                .min(4)
                 .required(),
             phoneNumber: Joi.string()
                 .regex(/^\d{9}$/)
@@ -27,7 +24,11 @@ export default {
                     {'string.pattern.base': JOI_VALIDATION_MESSAGES.PHONE_NUMBER_PATTERN}
                 ),
             role: Joi.string()
-                .valid('ADMIN', 'EMPLOYEE')
+                .valid('ADMIN', 'EMPLOYEE', 'GUEST'),
+
+            isActive: Joi.boolean(),
+            lastLogin: Joi.date()
+
         })
     },
 
@@ -37,50 +38,53 @@ export default {
         }),
 
         body: Joi.object({
-            name: Joi.string().min(3),
-            surname: Joi.string().min(2),
-            email: Joi.string().email(),
-            phoneNumber: Joi.string().regex(/^\d{9}$/),
+            firstName: Joi.string().min(2).required(),
+            lastName: Joi.string().min(2).required(),
+            email: Joi.string().email().required(),
+            password: joiPassword
+                .string()
+                .min(4)
+                .required(),
+            phoneNumber: Joi.string()
+            .regex(/^\d{9}$/)
+            .messages(
+                {'string.pattern.base': JOI_VALIDATION_MESSAGES.PHONE_NUMBER_PATTERN}
+            ),
             isActive: Joi.boolean(),
             lastLogin: Joi.date(),
             role: Joi.string()
-                .valid('ADMIN', 'EMPLOYEE')
+                .valid('ADMIN', 'EMPLOYEE', 'GUEST')
         })
     },
 
     registerUserSchema: {
         body: Joi.object({
-            name: Joi.string().min(3).required(),
-            surname: Joi.string().min(2).required(),
+            firstName: Joi.string().min(2).required(),
+            lastName: Joi.string().min(2).required(),
             email: Joi.string().email().required(),
             password: joiPassword
                 .string()
-                .min(8)
-                .max(20)
-                .minOfSpecialCharacters(1)
-                .minOfLowercase(1)
-                .minOfUppercase(1)
-                .minOfNumeric(1)
+                .min(4)
                 .required(),
             phoneNumber: Joi.string()
                 .regex(/^\d{9}$/)
                 .messages(
                     {'string.pattern.base': JOI_VALIDATION_MESSAGES.PHONE_NUMBER_PATTERN}
                 ),
+            lastLogin: Joi.date(),
+            isActive: Joi.boolean(),
+            role: Joi.string()
+                .valid('ADMIN', 'EMPLOYEE', 'GUEST')
         }),
     },
+    
     loginUserSchema: {
         body: Joi.object({
             email: Joi.string().email().required(),
             password: joiPassword
-                .string()
-                .min(8)
-                .max(20)
-                .minOfSpecialCharacters(1)
-                .minOfLowercase(1)
-                .minOfUppercase(1)
-                .minOfNumeric(1)
-                .required(),
+            .string()
+            .min(4)
+            .required(),
         }),
     },
 }

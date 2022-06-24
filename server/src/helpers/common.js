@@ -16,6 +16,7 @@ export const validate = (schema) => {
             schema.body && (await schema.body.validateAsync(body))
             return next()
         } catch (error) {
+            console.log('hii');
             next(badRequestErrorCreator(error.details))
         }
     }
@@ -55,3 +56,13 @@ export const areItemsUniqueByFieldname = (array, fieldName) => {
     const uniqueValues = new Set(array.map(item => item[fieldName]))
     return uniqueValues.size === array.length
 }
+
+//exclude Property from array of objects for prisma data
+export function exclude(obj, options) {
+      const objClone = {...obj};
+        for(const value of options) {
+            delete objClone[options];            
+        }
+        return objClone;
+  }
+  

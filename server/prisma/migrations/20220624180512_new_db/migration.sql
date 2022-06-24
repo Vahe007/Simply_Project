@@ -1,12 +1,11 @@
 -- CreateTable
 CREATE TABLE `User` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(255) NOT NULL,
-    `surname` VARCHAR(255) NOT NULL,
+    `firstName` VARCHAR(255) NOT NULL,
+    `lastName` VARCHAR(255) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
     `phoneNumber` VARCHAR(255) NULL,
-    `isLoggedIn` BOOLEAN NOT NULL DEFAULT false,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `lastLogin` DATETIME(3) NULL,
     `role` ENUM('EMPLOYEE', 'ADMIN', 'GUEST') NOT NULL DEFAULT 'GUEST',
@@ -26,7 +25,6 @@ CREATE TABLE `Exhibit` (
     `placeOfOrigin` VARCHAR(255) NOT NULL,
     `creationPeriod` VARCHAR(255) NOT NULL,
     `acquisitionPeriod` DATETIME(3) NULL,
-    `isActive` BOOLEAN NOT NULL DEFAULT true,
     `width` INTEGER NULL,
     `height` INTEGER NULL,
     `length` INTEGER NULL,
@@ -37,6 +35,7 @@ CREATE TABLE `Exhibit` (
     `creatorId` INTEGER NOT NULL,
     `categoryId` INTEGER NOT NULL,
     `description` TEXT NULL,
+    `isActive` BOOLEAN NOT NULL DEFAULT true,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -60,6 +59,7 @@ CREATE TABLE `Image` (
 CREATE TABLE `Status` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `statusName` VARCHAR(255) NOT NULL,
+    `isActive` BOOLEAN NOT NULL DEFAULT true,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -71,6 +71,7 @@ CREATE TABLE `Status` (
 CREATE TABLE `Material` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `materialName` VARCHAR(255) NOT NULL,
+    `isActive` BOOLEAN NOT NULL DEFAULT true,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -85,6 +86,7 @@ CREATE TABLE `Recovery` (
     `endDate` DATETIME(3) NOT NULL,
     `history` TEXT NOT NULL,
     `exhibitId` INTEGER NOT NULL,
+    `isActive` BOOLEAN NOT NULL DEFAULT true,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -97,6 +99,9 @@ CREATE TABLE `Contributor` (
     `contributorName` VARCHAR(191) NOT NULL,
     `contributorSurname` VARCHAR(191) NOT NULL,
     `contributorPhoneNumber` VARCHAR(191) NOT NULL,
+    `isActive` BOOLEAN NOT NULL DEFAULT true,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -106,6 +111,9 @@ CREATE TABLE `ContributorsOfExhibits` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `contributorId` INTEGER NOT NULL,
     `exhibitId` INTEGER NOT NULL,
+    `isActive` BOOLEAN NOT NULL DEFAULT true,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -119,6 +127,7 @@ CREATE TABLE `Exhibition` (
     `headline` VARCHAR(255) NOT NULL,
     `marks` VARCHAR(255) NULL,
     `itemId` INTEGER NOT NULL,
+    `isActive` BOOLEAN NOT NULL DEFAULT true,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -128,8 +137,12 @@ CREATE TABLE `Exhibition` (
 -- CreateTable
 CREATE TABLE `Category` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `categoryName` VARCHAR(191) NOT NULL,
+    `categoryName` VARCHAR(255) NOT NULL,
+    `isActive` BOOLEAN NOT NULL DEFAULT true,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `Category_categoryName_key`(`categoryName`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
