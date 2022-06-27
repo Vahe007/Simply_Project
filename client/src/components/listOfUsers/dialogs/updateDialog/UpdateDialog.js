@@ -2,12 +2,12 @@ import { useState } from "react";
 import React from "react";
 import MainDialog from "../helpers/MainDialog";
 import Content from "./Content";
-import { useUsersContext } from "../../../features/users/UsersContextProvider";
+import { useUsersContext } from "../../../../features/users/UsersContextProvider";
 import { useDispatch } from "react-redux";
-import { getUsersPerPage, updateUser } from "../../../features/users/usersSlice";
+import { getUsersPerPage, updateUser } from "../../../../features/users/usersSlice";
 import AlertMessage, { useAlertsContext } from "../../alerts/AlertMessage";
 import { Form, Formik } from "formik";
-import { editUserSchema } from "../../../features/users/validations";
+import { editUserSchema } from "../../../../features/users/validations";
 const UpdateDialog = ({user}) => {
     const {page, limit, count, sortBy, searchInputValue, setPage, addUserData, setAddUserData, editUserData, setEditUserData} = useUsersContext();
     const {showAlertMessage, setAlertMessage} = useAlertsContext();
@@ -15,8 +15,8 @@ const UpdateDialog = ({user}) => {
     const dispatch = useDispatch()
     const initialInputValues = {
         id: user.id,
-        name: user.name,
-        surname: user.surname,
+        firstName: user.firstName,
+        lastName: user.lastName,
         password: user.password,
         email: user.email,
         phoneNumber: user.phoneNumber,

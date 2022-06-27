@@ -1,11 +1,12 @@
 import {v4 as uuid} from 'uuid'
+import { classes } from './styles';
 
 const ListTitles = () => {
-    const titles = ['name' ,'surname' ,'email', 'phone number' ,'role' ,'created At' ,'updated At', 'Exhibits Added' , ,'Edit' , 'Delete'];
+    const titles = ['First name' ,'Last name' ,'Email', 'Phone number' ,'Role' ,'created At' ,'updated At', 'Exhibits Added'];
 
     return (
-        <li>
-           { titles.map(title => <span key={uuid()}>{title}</span>) }
+        <li className={classes.li}>
+           { titles.map(title => <span className={classes.liSpan} key={uuid()}>{title}</span>) }
         </li>
     )
 }

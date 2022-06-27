@@ -5,8 +5,8 @@ import Select from '@mui/material/Select';
 import { useMemo } from 'react';
 import {v4 as uuid} from 'uuid';
 import { useDispatch } from 'react-redux';
-import { getUsersPerPage } from '../../features/users/usersSlice';
-import { useUsersContext } from '../../features/users/UsersContextProvider';
+import { getUsersPerPage } from '../../../features/users/usersSlice';
+import { useUsersContext } from '../../../features/users/UsersContextProvider';
 
 function SortBySelection () {
     const {usersPerPage, page, limit, setSortBy, searchInputValue} = useUsersContext();

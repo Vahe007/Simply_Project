@@ -9,13 +9,12 @@ function Content() {
             <Grid container spacing={4}>
                 <Grid item xs={12}>
                     <TextField
-                        name="name"
-                        label="name"  
-                        
+                        name="firstName"
+                        label="first Name"   
                     />
                     <TextField 
-                        name="surname"
-                        label="surname"
+                        name="lastName"
+                        label="last Name"
                     />
                     <TextField 
                         name="email"
@@ -33,7 +32,7 @@ function Content() {
                     <Select 
                         name="role"
                         label="Role"
-                        options={["employee", "guest"]}
+                        options={["EMPLOYEE", "GUEST"]}
                     />
                     <Button>
                         Submit

@@ -1,6 +1,6 @@
 import AddUserDialog from './dialogs/addDialog/AddUserDialog';
 import ButtonMUI from './ButtonMUI';
-import { useUsersContext } from '../features/users/UsersContextProvider';
+import { useUsersContext } from '../../features/users/UsersContextProvider';
 
 function AddUser() {
     const {page, limit, count, sortBy, searchInputValue, setPage, addUserData, setAddUserData} = useUsersContext();

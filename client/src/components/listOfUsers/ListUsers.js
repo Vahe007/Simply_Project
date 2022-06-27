@@ -5,9 +5,10 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux/es/exports';
 import DeleteDialog from './dialogs/deleteDialog/DeleteDialog';
 import UpdateDialog from './dialogs/updateDialog/UpdateDialog';
-import { deleteUser, getUsersPerPage, updateUser } from '../features/users/usersSlice';
-import { useUsersContext } from '../features/users/UsersContextProvider';
+import { deleteUser, getUsersPerPage, updateUser } from '../../features/users/usersSlice';
+import { useUsersContext } from '../../features/users/UsersContextProvider';
 import AlertMessage, { useAlertsContext } from './alerts/AlertMessage';
+import { classes } from './styles';
 
 const ListUsers = () => {
     const {usersPerPage, count, page, limit, sortBy, searchInputValue, editUserData, setEditUserData } = useUsersContext();
@@ -16,7 +17,7 @@ const ListUsers = () => {
     const x = (page - 1) * limit + z;
     const y = count < page * limit ? count : page * limit
     const [deleteUserId, setDeleteUserId] = useState(null);
-    const {showAlertMessage, setAlertMessage} = useAlertsContext();
+    const {showAlertMessage, setAlertMessage} = useAlertsContext();;
 
     const onEditClick = (user) => {
         setEditUserData(user)
@@ -52,26 +53,38 @@ const ListUsers = () => {
         setEditUserData(null)
     }
 
-    const onDeleteClick = ({id, name, surname, email}) => {
-        setDeleteUserId({id, name, surname, email})
+    const onDeleteClick = ({id, firstName, lastName, email}) => {
+        setDeleteUserId({id, firstName, lastName, email})
     }   
 
-    const onDeleteConfirm = ({id, name, surname, email}) => {
-        dispatch(deleteUser(id));
-
+    
+    const onSwitchChange = (evt, user) => {
+      dispatch(updateUser({
+        id: user.id,
+        newData: {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            password: user.password,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            role: user.role,
+            isActive: evt.target.checked
+        }
+    }))
         const message = `User with 
-        id: ${id} 
-        name: ${name} 
-        surname: ${surname}
-        email: ${email}
-        is deleted`
+        id: ${user.id} 
+        name: ${user.firstName} 
+        surname: ${user.lastName}
+        email: ${user.email}
+        is ${user.isActive ? "deactivated" : "activated"}`
 
         setAlertMessage(
             <>
-             <AlertMessage 
-                severity="success" 
-                title= {message}
-                onClose={() => setAlertMessage(null)}/>
+                <AlertMessage 
+                    severity="success" 
+                    title= {message}
+                    onClose={() => setAlertMessage(null)}
+                />
             </>
           )
 
@@ -83,22 +96,21 @@ const ListUsers = () => {
         setTimeout(() => {
             dispatch(getUsersPerPage({page, sortBy, limit, contains: searchInputValue}))
         }, 0)
-
-        onDeleteClose();
     }
     
     const onDeleteClose = () => {
         setDeleteUserId(null)
     }
 
+
     return (
         <>
-            <ul className="users-list">
+            <ul className={classes.ul}>
                 <ListTitles />
                 {
                     usersPerPage.map(user => {
-                        return <li key={uuid()}>
-                                    <ListUser user={user} onEditClick={onEditClick} onDeleteClick={onDeleteClick}/>
+                        return <li className={classes.li} key={uuid()}>
+                                    <ListUser user={user} onEditClick={onEditClick} onDeleteClick={onDeleteClick} onSwitchChange = {onSwitchChange}/>
                                </li>
                     })
                 }
@@ -108,7 +120,6 @@ const ListUsers = () => {
             {deleteUserId && 
               <DeleteDialog
                 onClose={onDeleteClose}
-                onConfirm={() => onDeleteConfirm(deleteUserId)}
                 usersPerPage={usersPerPage}
               />}
 

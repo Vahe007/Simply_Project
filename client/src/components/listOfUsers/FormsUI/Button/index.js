@@ -21,6 +21,7 @@ const ButtonWrapper = (props) => {
     return (
         <Button
             {...configButton}
+            {...otherProps}
         >
             {children}
         </Button>

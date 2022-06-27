@@ -1,9 +1,9 @@
-import { editUserSchema } from "../../../features/users/validations";
+import { editUserSchema } from "../../../../features/users/validations";
 import MainDialog from "../helpers/MainDialog";
 import { Formik, Form  } from "formik";
 import { useDispatch } from "react-redux";
-import { createUser, getUsersPerPage } from "../../../features/users/usersSlice";
-import { useUsersContext } from "../../../features/users/UsersContextProvider";
+import { createUser, getUsersPerPage } from "../../../../features/users/usersSlice";
+import { useUsersContext } from "../../../../features/users/UsersContextProvider";
 import AlertMessage, { useAlertsContext } from "../../alerts/AlertMessage";
 import Content from "./Content";
 
@@ -13,8 +13,8 @@ const AddUserDialog = () => {
     const { setAlertMessage } = useAlertsContext(null);
 
     const initialInputValues = {
-        name: '',
-        surname: '',
+        firstName: '',
+        lastName: '',
         email: '',
         password: '',
         phoneNumber: '',
@@ -22,7 +22,6 @@ const AddUserDialog = () => {
     }
 
     const onSubmit = (values) => {
-
         dispatch(createUser(values));
         
         setTimeout(() => {

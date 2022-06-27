@@ -4,8 +4,8 @@ import FormControl from '@mui/material/FormControl';
 import {v4 as uuid} from 'uuid';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { getUsersPerPage } from '../../features/users/usersSlice';
-import { useUsersContext } from '../../features/users/UsersContextProvider';
+import { getUsersPerPage } from '../../../features/users/usersSlice';
+import { useUsersContext } from '../../../features/users/UsersContextProvider';
 import { Select } from '@mui/material';
 
 function UsersPerPageSelection() {

@@ -1,4 +1,4 @@
-import { baseUrl } from "../../helpers/common";
+import { baseUrl } from "../../helpers/common.js";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -6,7 +6,6 @@ const initialState = {
     count: 0,
     loading: false,
     error: null,
-    allEmails: []
 }
 export const selectUsers = state => state.users;
 
@@ -23,7 +22,7 @@ export const createUser = createAsyncThunk("addUser", async(data) => {
 
 
 export const getUsersPerPage = createAsyncThunk("users", async({page, sortBy, limit, contains}) => {
-    const response = await fetch(`${baseUrl}users?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${contains}`);
+    const response = await fetch(`${baseUrl}users?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${contains || ""}`);
     return response.json()
 })
 
