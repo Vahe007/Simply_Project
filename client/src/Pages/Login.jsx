@@ -1,115 +1,52 @@
 import React, { useState, useEffect } from "react";
 import Header from "../components/Header.jsx";
-import TextField from "@mui/material/TextField";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Btn from "../components/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { useAuth } from "../components/auth.js";
-import { useNavigate, useParams } from "react-router-dom";
-import store from "../app/store.js";
+import store from "../app/store";
 import Profile from "./Profile.jsx";
 import { loadUser } from "../features/userAccess/userAccessSlice.js";
-import { LocalTaxiTwoTone } from "@mui/icons-material";
-import TextFields from "../components/FormsUI/TextField/index.js";
+import TextField from "../components/FormsUI/TextField/index.js";
 import { Form, Formik } from "formik";
-import { editUserSchema } from "../features/users/validations.js";
+import { editUserLoginSchema } from "../features/userAccess/validations.js";
+import Button from "../components/FormsUI/Button";
+import { getLoading, getUserInfo, getToken } from "../features/userAccess/selectors.js";
+
 function Login({ type }) {
   const [isVisible, setVisibility] = useState(false);
   const [message, setMessage] = useState("");
-  const [token, setToken] = useState("");
-  const [disabled, setDisabled] = useState(false);
-  const [state, setState] = useState({
-    email: {
-      value: "",
-      error: false,
-    },
-    password: {
-      value: "",
-      error: false,
-    },
-  });
+  const token = useSelector(getToken);
+  const [stateToken, setStateToken] = useState(token);
   const dispatch = useDispatch();
   const auth = useAuth();
-
-  const isLoading = useSelector((state) => {
-    return state.userAccess.isLoading;
-  });
-  const stateToken = useSelector((state) => {
-    return state.userAccess.token;
-  });
-
-  const error = localStorage.getItem("error");
-  useEffect(() => {
-    error ? setDisabled(true) : setDisabled(false);
-  }, [error]);
+  const isLoading = useSelector(getLoading);
+  const userInfo = useSelector(getUserInfo);
 
   useEffect(() => {
-    setToken(stateToken);
-  }, [isLoading]);
+    localStorage.removeItem("message");
+  }, [])
+  
+  useEffect(() => {
+    setStateToken(token);
+  }, [token]);
+
+  
 
   const changeVisibility = () => {
     setVisibility((prevState) => {
       return !prevState;
     });
   };
-  const handleChange = (name, value) => {
-    localStorage.removeItem("error");
-    setState((prevState) => {
-      return {
-        ...prevState,
-        [name]: {
-          value: value,
-          error: false,
-        },
-      };
-    });
-    setMessage("");
-  };
 
-  const handleClick = async () => {
-    const keys = Object.keys(state);
-    let flag = true;
-
-    keys.forEach((key) => {
-      if (state[key].value === "") {
-        flag = false;
-        setState((prevState) => {
-          return {
-            ...prevState,
-            [key]: {
-              value: "",
-              error: true,
-            },
-          };
-        });
-      }
-    });
-
-    if (flag) {
-      const body = {
-        email: state.email.value,
-        password: state.password.value,
-      };
-      await dispatch(loadUser({ body, type: "login" }));
-      setMessage(localStorage.getItem("error"));
-      if (store.getState().userAccess.token) {
-        setState(() => {
-          return {
-            email: {
-              value: "",
-              error: false,
-            },
-            password: {
-              value: "",
-              error: false,
-            },
-          };
-        });
-        auth.login({});
-      }
+  const handleLogin = async (values) => {
+    await dispatch(loadUser(values));
+    setMessage(localStorage.getItem("message"));
+    if (store.getState().userAccess.token) {
+      localStorage.removeItem("message");
+      auth.login(userInfo);
     }
   };
 
@@ -117,25 +54,20 @@ function Login({ type }) {
     return <Profile />;
   }
   return (
-    <>
-      <Formik
-        validationSchema={editUserSchema}
+    <div className="login" style={{ overflowY: "hidden" }}>
+      <Header type="login" />
+      <Box
+        sx={{
+          mt: "150px",
+        }}
       >
-        <Form>
-          <TextFields name="email" label="Email" sx={{ width: "320px" }} />
-        </Form>
-      </Formik>
-      <div className="login" style={{ overflowY: "hidden" }}>
-        <Header type="login" />
-        <Box
-          sx={{
-            display: "flex",
-            width: "100%",
-            justifyContent: "space-around",
-          }}
+        <Formik
+          initialValues={{ email: "", password: "" }}
+          validationSchema={editUserLoginSchema}
+          onSubmit={handleLogin}
         >
-          <Box
-            sx={{
+          <Form
+            style={{
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -143,28 +75,18 @@ function Login({ type }) {
             }}
           >
             <Typography
-              sx={{ color: "#232968", fontWeight: 500 }}
+              sx={{ color: "#232968", fontWeight: 600 }}
               variant="h5"
               mb="50px"
             >
               {message || "Login to Your Account"}
             </Typography>
-
+            <TextField name="email" label="Email" sx={{ width: "320px" }} />
             <TextField
-              error={state.email.error}
-              value={state.email.value}
-              required
-              name="email"
-              label="Email"
-              variant="outlined"
-              sx={{ width: "320px" }}
-              onChange={({ target: { name, value } }) => {
-                handleChange(name, value);
-              }}
-            />
-            <TextField
-              error={state.password.error}
-              value={state.password.value}
+              name="password"
+              type={isVisible ? "text" : "password"}
+              label="Password"
+              sx={{ width: "320px", mt: "20px" }}
               InputProps={{
                 endAdornment: isVisible ? (
                   <VisibilityIcon
@@ -178,27 +100,12 @@ function Login({ type }) {
                   />
                 ),
               }}
-              required
-              type={isVisible ? "text" : "password"}
-              label="Password"
-              name="password"
-              variant="outlined"
-              sx={{ width: "320px", mt: "25px" }}
-              onChange={({ target: { name, value } }) => {
-                handleChange(name, value);
-              }}
             />
-            <Btn
-              isLoading={isLoading}
-              disabled={disabled}
-              onClick={handleClick}
-              text="Login"
-              style={{ mt: "25px" }}
-            />
-          </Box>
-        </Box>
-      </div>
-    </>
+            <Button sx={{mt: "15px"}} isLoading={isLoading}>Login</Button>
+          </Form>
+        </Formik>
+      </Box>
+    </div>
   );
 }
 export default Login;

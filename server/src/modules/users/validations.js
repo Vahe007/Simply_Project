@@ -57,27 +57,6 @@ export default {
         })
     },
 
-    registerUserSchema: {
-        body: Joi.object({
-            firstName: Joi.string().min(2).required(),
-            lastName: Joi.string().min(2).required(),
-            email: Joi.string().email().required(),
-            password: joiPassword
-                .string()
-                .min(4)
-                .required(),
-            phoneNumber: Joi.string()
-                .regex(/^\d{9}$/)
-                .messages(
-                    {'string.pattern.base': JOI_VALIDATION_MESSAGES.PHONE_NUMBER_PATTERN}
-                ),
-            lastLogin: Joi.date(),
-            isActive: Joi.boolean(),
-            role: Joi.string()
-                .valid('ADMIN', 'EMPLOYEE', 'GUEST')
-        }),
-    },
-    
     loginUserSchema: {
         body: Joi.object({
             email: Joi.string().email().required(),

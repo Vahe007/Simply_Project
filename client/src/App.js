@@ -1,9 +1,9 @@
-import Login from "./pages/Login.jsx";
-import Signup from "./pages/Signup.jsx";
+import Login from "./Pages/Login.jsx";
+import Signup from "./Pages/Signup.jsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigate } from 'react-router-dom';
 import { AuthProvider } from "./components/auth.js";
-import Profile from "./pages/Profile.jsx";
+import Profile from "./Pages/Profile.jsx";
 import RequireAuth from "./components/RequireAuth"
 
 function App(){

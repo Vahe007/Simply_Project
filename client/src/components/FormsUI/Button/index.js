@@ -1,9 +1,11 @@
 import React from 'react';
 import {Button} from '@mui/material'
 import {useFormikContext} from 'formik'
+import { CircularProgress } from '@mui/material';
+
 
 const ButtonWrapper = (props) => {
-    const {children, ...otherProps} = props;
+    const {children, isLoading, ...otherProps} = props;
 
     const { submitForm } = useFormikContext();
 
@@ -15,9 +17,11 @@ const ButtonWrapper = (props) => {
         onClick: onSubmit,
         variant: "outlined",
         color: "primary",
-        fullWidth: true
+        ...otherProps
     }
-
+    if (isLoading) {
+        return <CircularProgress sx={{mt: "15px"}}/> 
+    }
     return (
         <Button
             {...configButton}

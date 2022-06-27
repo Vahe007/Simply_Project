@@ -216,6 +216,13 @@ export const loginDB = async (userData) => {
                 exhibitsUpdated: true
             },
         })
+
+        if (!candidate) {
+          return {
+            data: null,
+            error: {message: "No user found with such email"}
+          }
+        }
      
         const validPassword = bcrypt.compareSync(password, candidate.password)
 
@@ -232,6 +239,7 @@ export const loginDB = async (userData) => {
             error: null,
         }
     } catch (error) {
+      console.log(error);
         return {
             data: null,
             error,

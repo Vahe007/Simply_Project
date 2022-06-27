@@ -8,18 +8,19 @@ import Select from "@mui/material/Select";
 
 const Profile = () => {
   const auth = useAuth();
-  const [age, setAge] = useState("");
+  const [a, setA] = useState("");
   const handleChange = ({target: {value}}) => {
     auth.logout();
   };
+
   if (auth.user) {
     return (
       <>
         <Header />
         <div>
           <Select
-            value={age}
-            label="Age"
+            value={a}
+            label="A"
             onChange={handleChange}
           >
             <MenuItem value={true}>Logout</MenuItem>
