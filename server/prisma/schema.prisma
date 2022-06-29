@@ -8,70 +8,80 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  name     String
-  surname  String
-
-  email    String  @unique
-
-  password String
-  phone    String?
-  role     Role    @relation(fields: [roleId], references: [id])
-  roleId   Int
+  id              Int       @id @default(autoincrement())
+  name            String    @db.VarChar(255)
+  surname         String    @db.VarChar(255)
+  email           String    @unique
+  password        String    @db.VarChar(255)
+  phoneNumber     String?   @db.VarChar(255)
+  isActive        Boolean   @default(true)
+  lastLogin       DateTime?
+  role            Role      @default(GUEST)
+  exhibitsCreated Exhibit[] @relation("creator")
+  exhibitsUpdated Exhibit[] @relation("updater")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now()) @updatedAt
 }
 
-model Role {
-  id        Int      @id @default(autoincrement())
-  name      String   @db.VarChar(255)
-  users     User[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  //user admin guest
-}
-
-model Item {
-  id                Int          @id @default(autoincrement())
-  fundNumber        String       @db.VarChar(255)
-  itemName          String       @db.VarChar(255)
+model Exhibit {
+  id                Int                      @id @default(autoincrement())
+  fundNumber        String                   @db.VarChar(255)
+  exhibitName       String                   @db.VarChar(255)
   materialId        Int
-  material          Material     @relation(fields: [materialId], references: [id])
-  placeOfOrigin     String       @db.VarChar(255)
-  creationPeriod    String       @db.VarChar(255)
-  acquisitionPeriod DateTime
-  contributor       String       @db.VarChar(255)
+  material          Material                 @relation(fields: [materialId], references: [id])
+  placeOfOrigin     String                   @db.VarChar(255)
+  creationPeriod    String                   @db.VarChar(255)
+  acquisitionPeriod DateTime?
+  contributors      ContributorsOfExhibits[]
   width             Int?
   height            Int?
   length            Int?
   diameter          Int?
   weight            Int?
   statusId          Int
-  status            Status       @relation(fields: [statusId], references: [id])
+  status            Status                   @relation(fields: [statusId], references: [id])
   images            Image[]
   recoveries        Recovery[]
   exhibitions       Exhibition[]
-  // description       String?      @default("") @db.Text
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
+  updaterId         Int?
+  creatorId         Int
+  creator           User                     @relation("creator", fields: [creatorId], references: [id], onDelete: Cascade)
+  updater           User?                    @relation("updater", fields: [updaterId], references: [id], onDelete: Cascade)
+  categoryId        Int
+  category          Category                 @relation(fields: [categoryId], references: [id])
+  description       String?                  @db.Text
+  isActive          Boolean                  @default(true)
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
 }
 
 model Image {
-  id     Int    @id @default(autoincrement())
-  name   String @db.VarChar(255)
-  path   String @db.VarChar(255)
-  itemId Int
-  item   Item   @relation(fields: [itemId], references: [id])
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(255)
+  path      String   @db.VarChar(255)
+  itemId    Int
+  exhibit   Exhibit  @relation(fields: [itemId], references: [id])
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Status {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(255)
-  item Item[]
+  id         Int       @id @default(autoincrement())
+  statusName String    @unique @db.VarChar(255)
+  exhibit    Exhibit[]
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 model Material {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(255)
-  item Item[]
+  id           Int       @id @default(autoincrement())
+  materialName String    @unique @db.VarChar(255)
+  exhibit      Exhibit[]
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model Recovery {
@@ -79,8 +89,33 @@ model Recovery {
   startDate DateTime
   endDate   DateTime
   history   String   @db.Text
-  item      Item     @relation(fields: [itemId], references: [id])
-  itemId    Int
+  exhibit   Exhibit  @relation(fields: [exhibitId], references: [id])
+  exhibitId Int
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Contributor {
+  id                     Int                      @id @default(autoincrement())
+  contributorName        String
+  contributorSurname     String
+  contributorPhoneNumber String
+  exhibits               ContributorsOfExhibits[]
+  isActive               Boolean                  @default(true)
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+}
+
+model ContributorsOfExhibits {
+  id            Int         @id @default(autoincrement())
+  contributorId Int
+  contributor   Contributor @relation(fields: [contributorId], references: [id])
+  exhibitId     Int
+  exhibit       Exhibit     @relation(fields: [exhibitId], references: [id])
+  isActive      Boolean                @default(true)
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
 }
 
 model Exhibition {
@@ -90,6 +125,24 @@ model Exhibition {
   place     String   @db.VarChar(255)
   headline  String   @db.VarChar(255)
   marks     String?  @db.VarChar(255)
-  item      Item     @relation(fields: [itemId], references: [id])
+  exhibit   Exhibit  @relation(fields: [itemId], references: [id])
   itemId    Int
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  EMPLOYEE
+  ADMIN
+  GUEST
+}
+
+model Category {
+  id            Int       @id @default(autoincrement())
+  categoryName  String    @unique @db.VarChar(255)
+  exhibit       Exhibit[]
+  isActive      Boolean                @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
