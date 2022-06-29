@@ -8,12 +8,11 @@ const {user} = prisma
 
 export const getAllUsersDB = async (query) => {
     const {page, limit , sortBy, contains = ""} = query;
-  
     const handleSortBy = {
       "name [A-Z]": {
         "firstName": "asc"
       },
-  
+
       "name [Z-A]":{
         "firstName": "desc"
       },
@@ -24,17 +23,14 @@ export const getAllUsersDB = async (query) => {
   
       "created date (old to new)": {
         "createdAt": "asc"
-  
       },
   
       "updated date (new to old)": {
         "updatedAt": "desc"
-  
       },
   
       "updated date (new to old)": {
         "updatedAt": "asc"
-  
       },
     }
   
@@ -57,6 +53,7 @@ export const getAllUsersDB = async (query) => {
               }
             })
         },
+
   
         skip: (+page - 1) * +limit || undefined,
         take: +limit || undefined,

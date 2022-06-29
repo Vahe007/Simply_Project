@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Header from "../components/Header.jsx";
+import Header from "../components/HeaderWrapper.jsx";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Box from "@mui/material/Box";
@@ -13,6 +13,7 @@ import TextField from "../components/FormsUI/TextField/index.js";
 import { Form, Formik } from "formik";
 import { editUserLoginSchema } from "../features/userAccess/validations.js";
 import Button from "../components/FormsUI/Button";
+import { getExhibitsPerPage } from "../features/exhibits/exhibitsSlice.js";
 import { getLoading, getUserInfo, getToken } from "../features/userAccess/selectors.js";
 
 function Login({ type }) {
@@ -28,6 +29,8 @@ function Login({ type }) {
   useEffect(() => {
     localStorage.removeItem("message");
   }, [])
+
+
   
   useEffect(() => {
     setStateToken(token);

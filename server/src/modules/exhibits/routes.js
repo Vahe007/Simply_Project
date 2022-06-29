@@ -20,11 +20,20 @@ const {
 } = validations;
 const router = Router()
 
-router.get('/', rolesMiddleware(['ADMIN']), getAllExhibits)
+// router.get('/', rolesMiddleware(['ADMIN']), getAllExhibits)
+// router.get('/active', getActiveExhibits)
+// router.get('/:id', validate(getExhibitByIdValidation), getExhibitById)
+// router.post('/', authMiddleware, validate(createExhibitValidation), createExhibit)
+// router.put('/:id', validate(updateExhibitValidation), updateExhibit)
+
+
+
+router.get('/', getAllExhibits)
 router.get('/active', getActiveExhibits)
 router.get('/:id', validate(getExhibitByIdValidation), getExhibitById)
-router.post('/', authMiddleware, validate(createExhibitValidation), createExhibit)
+router.post('/', validate(createExhibitValidation), createExhibit)
 router.put('/:id', validate(updateExhibitValidation), updateExhibit)
+
 
 //Only for developers
 router.delete('/:id', validate(deleteExhibitValidation), deleteExhibit)

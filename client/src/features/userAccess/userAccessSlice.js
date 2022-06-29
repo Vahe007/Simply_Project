@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fetchUser } from "./userAccessAPI";
 import Cookies from 'js-cookie';
 
+
 export const loadUser = createAsyncThunk(
   "userAccess/loadUser",
   async (body) => {
@@ -38,18 +39,14 @@ const getUser = createSlice({
       state.isLoading = true;
     },
     [loadUser.fulfilled]: (state, { payload }) => {
-      if (payload.status === 400) {
-        state.message =
-          "Something went wrong, try again after refreshing the page";
-      }
-      const { token = "", ...userInfo } = payload.data || {};
-      const { message = "" } = payload.error || {};
-      state.message = message;
-      state.userInfo = userInfo;
-      state.token = token;
-      if (token) {
-        Cookies.set('token', `${token}`, { expires: 1})
-      }
+      const {status, error, data} = payload;
+      const { token = "", ...userInfo } = data || {};
+      const { message = "" } = error || {};
+
+      status === 400 && (state.message ="Something went wrong, try again after refreshing the page");
+      [state.message, state.userInfo, state.token] = [message, userInfo, token];
+
+      state.token && Cookies.set('token', `${token}`, { expires: 1})
       localStorage.setItem("message", message);
 
       state.isLoading = false;
@@ -63,6 +60,7 @@ const getUser = createSlice({
       } else {
         state.message = "User successfully created";
       }
+      
       localStorage.setItem("message", state.message);
       state.isLoading = false;
     },

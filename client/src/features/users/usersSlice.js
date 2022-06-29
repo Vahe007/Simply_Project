@@ -6,7 +6,6 @@ const initialState = {
     count: 0,
     loading: false,
     error: null,
-    allEmails: []
 }
 export const selectUsers = state => state.users;
 
@@ -87,8 +86,6 @@ export const usersSlice = createSlice({
           [getUsersPerPage.fulfilled]: (state, action) => {
             state.loading = false;
             state.usersPerPage = action.payload.data.usersPerPage;
-            state.allUsers = action.payload.data.allUsers
-            state.filteredUsers = action.payload.data.users
             state.count = action.payload.data.count
           },
 

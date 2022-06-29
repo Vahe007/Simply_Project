@@ -4,6 +4,7 @@ import loginReducer from "../features/getUser/getUserSlice";
 import signupReducer from "../features/createUser/createUserSlice";
 import userAccessReducer from "../features/userAccess/userAccessSlice";
 import { configureStore } from "@reduxjs/toolkit";
+import exhibitsReducer from "../features/exhibits/exhibitsSlice";
 
 
 const store = configureStore({
@@ -11,6 +12,7 @@ const store = configureStore({
     // login: loginReducer,
     signup: signupReducer,
     userAccess: userAccessReducer,
+    exhibits: exhibitsReducer
   }
 })
 
