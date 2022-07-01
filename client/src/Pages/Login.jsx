@@ -14,9 +14,17 @@ import { Form, Formik } from "formik";
 import { editUserLoginSchema } from "../features/userAccess/validations.js";
 import Button from "../components/FormsUI/Button";
 import { getExhibitsPerPage } from "../features/exhibits/exhibitsSlice.js";
-import { getLoading, getUserInfo, getToken } from "../features/userAccess/selectors.js";
+import { Navigate, useNavigate } from "react-router-dom";
+import {
+  getLoading,
+  getUserInfo,
+  getToken,
+} from "../features/userAccess/selectors.js";
+import { useFormik } from 'formik';
+
 
 function Login({ type }) {
+
   const [isVisible, setVisibility] = useState(false);
   const [message, setMessage] = useState("");
   const token = useSelector(getToken);
@@ -25,18 +33,34 @@ function Login({ type }) {
   const auth = useAuth();
   const isLoading = useSelector(getLoading);
   const userInfo = useSelector(getUserInfo);
+  const navigate = useNavigate();
 
   useEffect(() => {
     localStorage.removeItem("message");
-  }, [])
+  }, []);
 
-
-  
   useEffect(() => {
     setStateToken(token);
   }, [token]);
 
-  
+  const onsubmit = async (values) => {
+    await dispatch(loadUser(values));
+    setMessage(localStorage.getItem("message"));
+    if (store.getState().userAccess.token) {
+      localStorage.removeItem("message");
+      auth.login(userInfo);
+      navigate('/users/profile', {replace: true})
+    }
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    validationSchema: editUserLoginSchema,
+    onSubmit: onsubmit
+  });
 
   const changeVisibility = () => {
     setVisibility((prevState) => {
@@ -44,18 +68,12 @@ function Login({ type }) {
     });
   };
 
-  const handleLogin = async (values) => {
-    await dispatch(loadUser(values));
-    setMessage(localStorage.getItem("message"));
-    if (store.getState().userAccess.token) {
-      localStorage.removeItem("message");
-      auth.login(userInfo);
-    }
-  };
+
 
   if (auth.user) {
     return <Profile />;
   }
+
   return (
     <div className="login" style={{ overflowY: "hidden" }}>
       <Header type="login" />
@@ -64,49 +82,56 @@ function Login({ type }) {
           mt: "150px",
         }}
       >
-        <Formik
-          initialValues={{ email: "", password: "" }}
-          validationSchema={editUserLoginSchema}
-          onSubmit={handleLogin}
+        <form
+          onSubmit={formik.handleSubmit}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            mt: "150px",
+          }}
         >
-          <Form
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              mt: "150px",
-            }}
+          <Typography
+            sx={{ color: "#232968", fontWeight: 600 }}
+            variant="h5"
+            mb="50px"
           >
-            <Typography
-              sx={{ color: "#232968", fontWeight: 600 }}
-              variant="h5"
-              mb="50px"
-            >
-              {message || "Login to Your Account"}
-            </Typography>
-            <TextField name="email" label="Email" sx={{ width: "320px" }} />
-            <TextField
-              name="password"
-              type={isVisible ? "text" : "password"}
-              label="Password"
-              sx={{ width: "320px", mt: "20px" }}
-              InputProps={{
-                endAdornment: isVisible ? (
-                  <VisibilityIcon
-                    onClick={changeVisibility}
-                    sx={{ cursor: "pointer" }}
-                  />
-                ) : (
-                  <VisibilityOffIcon
-                    onClick={changeVisibility}
-                    sx={{ cursor: "pointer" }}
-                  />
-                ),
-              }}
-            />
-            <Button sx={{mt: "15px"}} isLoading={isLoading}>Login</Button>
-          </Form>
-        </Formik>
+            {message || "Login to Your Account"}
+          </Typography>
+          <TextField
+            name="email"
+            label="Email"
+            sx={{ width: "320px" }}
+            onChange={formik.handleChange}
+            value={formik.values.email}
+          />
+          {formik.errors.email && <div style={{width: "320px", color: "red"}}>{formik.errors.email}</div>}
+          <TextField
+            name="password"
+            type={isVisible ? "text" : "password"}
+            label="Password"
+            sx={{ width: "320px", mt: "20px" }}
+            onChange={formik.handleChange}
+            value={formik.values.password}
+            InputProps={{
+              endAdornment: isVisible ? (
+                <VisibilityIcon
+                  onClick={changeVisibility}
+                  sx={{ cursor: "pointer" }}
+                />
+              ) : (
+                <VisibilityOffIcon
+                  onClick={changeVisibility}
+                  sx={{ cursor: "pointer" }}
+                />
+              ),
+            }}
+          />
+          {formik.errors.password && <div style={{width: "320px", color: "red"}}>{formik.errors.password}</div>}
+          <Button type="submit" sx={{ mt: "15px" }} isLoading={isLoading}>
+            Login
+          </Button>
+        </form>
       </Box>
     </div>
   );

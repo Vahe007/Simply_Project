@@ -15,56 +15,89 @@ import Select from "../../../components/SelectMUI";
 import ExhibitsContextProvider from "../../../features/exhibits/ExhibitsContextProvider";
 import { useExhibits } from "../../../features/exhibits/ExhibitsContextProvider";
 import { useQueryParams, NumberParam, StringParam } from "use-query-params";
+import MainSelectMUI from "../../../components/MainSelectMUI";
+import { LIMIT, SORTBY } from "../../../constants";
+import Search from "../../../components/Search"
+import { useSearchParams } from "react-router-dom";
 
-const UsersList = () => {
+
+const ExhibitsList = () => {
   const exhibitsPerPage = useSelector(getExhibitsSelector);
   const count = useSelector(getExhibitsCount);
-  const [query, setQuery] = useQueryParams({
-    sortBy: StringParam,
-    limit: NumberParam,
-    page: NumberParam
-  });
-  const {sortBy, limit, page} = query;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchValue, setSearchValue] = useState('');
 
-  // const {sortBy, setSortBy, limit, setLimit} = useExhibits();
+  const limit = +searchParams.get('limit') || 8;
+  const sortBy = searchParams.get('sortBy');
+  const page = +searchParams.get('page') || 1;
+  const contains = searchParams.get('contains') || 1;
 
+  const params = {};
+  searchParams.forEach((value, key) => {
+    params[key] = value;
+  })
+
+  
   const dispatch = useDispatch();
-  const [pageNumber, setPageNumber] = useState(1);
   const [exhibits, setExhibits] = useState([]);
 
   useEffect(() => {
-    dispatch(getExhibitsPerPage({ page }));
-    setQuery({limit: limit || 4, sortBy: "none", page: page || 1})
+    dispatch(getExhibitsPerPage({ page, sortBy, limit }));
+    setSearchParams({limit, page, sortBy})
   }, []);
 
+
   const handlePagination = (_, page) => {
-    setPageNumber(page);
-    setQuery({page})
-    dispatch(getExhibitsPerPage({ page, sortBy }));
+    setSearchParams({...params, page});
+    dispatch(getExhibitsPerPage({ page, sortBy, limit, contains }));
   };
+
+  const handleSearch = ({target: {value: contains}}) => {
+    setSearchValue(contains);
+    setSearchParams({page, sortBy, limit, contains})
+    dispatch(getExhibitsPerPage({ page, sortBy, limit, contains}))
+  }
 
   const paginationAttributes = {
     onChange: handlePagination,
     color: "primary",
-    // count: Math.ceil(count/limit),
-    count: 5,
+    count: Math.ceil(count/limit),
     sx: {
       display: "flex",
       justifyContent: "center",
     },
   };
 
-  const selectAttributes = {
-    pageNumber,
+  const sortSelectAttributes = {
+    params,
+    page,
+    sortBy,
+    setSearchParams,
+    searchParams,
+    options: SORTBY,
+    name: "Sort By",
+    variant: "standard",
+    label: "sortBy"
   };
+  const limitSelectAttributes = {
+    params,
+    options: LIMIT,
+    name: "Set Limit",
+    variant: "standard",
+    limit,
+    setSearchParams,
+    searchParams,
+    label: "limit"
+  }
 
   return (
     <Container>
+      <Search onChange={handleSearch}/>
       <Stack sx={{ mt: "20px" }} spacing={2}>
-        <Pagination {...paginationAttributes} />
+        <Pagination page={page} {...paginationAttributes} />
       </Stack>
-      <Select {...selectAttributes} />
-
+      <MainSelectMUI {...sortSelectAttributes}/>
+      <MainSelectMUI {...limitSelectAttributes}/>
       <div style={{ display: "flex", flexWrap: "wrap" }}>
         {exhibitsPerPage.map((exhibit) => (
           <ExhibitItem key={uuid()} exhibit={exhibit} />
@@ -74,4 +107,4 @@ const UsersList = () => {
   );
 };
 
-export default UsersList;
+export default ExhibitsList;

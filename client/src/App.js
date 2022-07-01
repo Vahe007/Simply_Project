@@ -17,13 +17,9 @@ function App() {
         <ExhibitsContextProvider>
           <Router>
             <Routes>
-              <Route path="login" element={<Login type="login" />} />
-              <Route path="signup" element={<Signup type="signup" />} />
-              <Route path="*" element={<Navigate to="signup" />} />
-
               <Route path="users">
-                <Route path=":userId" element={<Login />} />
-                <Route path="admin" element={<Login />} />
+                {/* <Route path=":userId" element={<Profile />} />
+                <Route path="admin" element={<Profile />} /> */}
                 <Route
                   path="profile"
                   element={
@@ -33,6 +29,10 @@ function App() {
                   }
                 />
               </Route>
+
+              <Route path="login" element={<Login type="login" />} />
+              <Route path="signup" element={<Signup type="signup" />} />
+              <Route path="*" element={<Navigate to="signup" />} />
             </Routes>
           </Router>
         </ExhibitsContextProvider>

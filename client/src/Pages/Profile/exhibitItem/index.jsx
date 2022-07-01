@@ -22,7 +22,7 @@ const ExhibitItem = ({exhibit}) => {
             {id}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-              {description}
+              {exhibitName}
           </Typography>
           {/* <Typography variant="body2" color="text.secondary">
               {contributors}

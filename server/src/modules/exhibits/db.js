@@ -80,25 +80,29 @@ export const getAllExhibitsDB = async (query) => {
       isActive: true,
     },
   })
-
-  const matchingExhibits = await exhibit.findMany({
+  const filteredCount = await exhibit.count({
     where: {
-      OR: ['fundNumber', 'exhibitName', 'placeOfOrigin', 'creationPeriod', 'description'].map(
-        (item) => {
-          return {
-            [item]: {
-              contains,
-            },
+      isActive: true,
+      OR: ['exhibitName', "description"].map((field) => {
+        return {
+          [field]: {
+            contains
           }
         }
-      ),
-    },
+      })
+    }
   })
-
   try {
     const exhibitsPerPage = await exhibit.findMany({
       where: {
         isActive: true,
+        OR: ['exhibitName', "description"].map((field) => {
+          return {
+            [field]: {
+              contains
+            }
+          }
+        })
       },
       orderBy: sortHandler[sortBy] || undefined,
       skip: (+page - 1) * +limit || undefined,
@@ -107,12 +111,13 @@ export const getAllExhibitsDB = async (query) => {
         contributors: true,
         material: true,
         images: true,
-      },
+      }
     })
     return {
       data: {
-        exhibitsPerPage,
         count,
+        filteredCount,
+        exhibitsPerPage
       },
       error: null,
     }
