@@ -5,9 +5,7 @@ import {ERROR_MESSAGES} from "../../helpers/constants.js";
 export const getAllMaterials = async (req, res, next) => {
     try {
         const materials = await getAllMaterialsDB();
-
         res.json(responseDataCreator(materials));
-
     } catch (error) {
         next(error);
     }

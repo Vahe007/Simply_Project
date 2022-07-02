@@ -6,7 +6,9 @@ import Typography from "@mui/material/Typography";
 import { Button, CardActionArea, CardActions } from "@mui/material";
 
 const ExhibitItem = ({exhibit}) => {
-  const {exhibitName, description, contributors, id } = exhibit;
+  const {exhibitName, description, contributors, id, material } = exhibit;
+  const {materialName} = material;
+
   return (
     
     <Card sx={{ width: 250, margin: "10px" }}>
@@ -24,10 +26,11 @@ const ExhibitItem = ({exhibit}) => {
           <Typography variant="body2" color="text.secondary">
               {exhibitName}
           </Typography>
-          {/* <Typography variant="body2" color="text.secondary">
-              {contributors}
-          </Typography> */}
+          <Typography variant="body2" color="text.secondary">
+            {materialName}
+          </Typography>
         </CardContent>
+
       </CardActionArea>
       
       <CardActions>

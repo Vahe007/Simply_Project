@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   getExhibitsCount,
   getExhibitsSelector,
+  getFilteredCount,
 } from "../../../features/exhibits/selectors";
 import ExhibitItem from "../exhibitItem";
 import { v4 as uuid } from "uuid";
@@ -17,51 +18,59 @@ import { useExhibits } from "../../../features/exhibits/ExhibitsContextProvider"
 import { useQueryParams, NumberParam, StringParam } from "use-query-params";
 import MainSelectMUI from "../../../components/MainSelectMUI";
 import { LIMIT, SORTBY } from "../../../constants";
-import Search from "../../../components/Search"
+import Search from "../../../components/Search";
 import { useSearchParams } from "react-router-dom";
-
+import ArrowBackIosNewSharpIcon from "@mui/icons-material/ArrowBackIosNewSharp";
+import { getMaterials } from "../../../features/materials/materialsSlice";
+import { getAllMaterials } from "../../../features/materials/selectors";
+import MaterialsList from "../../../components/Materials/MaterialsList";
 
 const ExhibitsList = () => {
   const exhibitsPerPage = useSelector(getExhibitsSelector);
   const count = useSelector(getExhibitsCount);
+  const filteredCount = useSelector(getFilteredCount);
+  const materials = useSelector(getAllMaterials);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchValue, setSearchValue] = useState('');
 
-  const limit = +searchParams.get('limit') || 8;
-  const sortBy = searchParams.get('sortBy');
-  const page = +searchParams.get('page') || 1;
-  const contains = searchParams.get('contains') || 1;
+  const limit = +searchParams.get("limit") || 8;
+  const sortBy = searchParams.get("sortBy");
+  const page = +searchParams.get("page") || 1;
+  const contains = searchParams.get("contains") || "";
+  const material = searchParams.get("material") || "";
 
   const params = {};
   searchParams.forEach((value, key) => {
     params[key] = value;
-  })
+  });
 
-  
   const dispatch = useDispatch();
   const [exhibits, setExhibits] = useState([]);
 
   useEffect(() => {
     dispatch(getExhibitsPerPage({ page, sortBy, limit }));
-    setSearchParams({limit, page, sortBy})
+    dispatch(getMaterials({}));
+    setSearchParams({ limit, page, sortBy });
   }, []);
 
 
   const handlePagination = (_, page) => {
-    setSearchParams({...params, page});
-    dispatch(getExhibitsPerPage({ page, sortBy, limit, contains }));
+    setSearchParams({ ...params, page });
+    dispatch(getExhibitsPerPage({ page, sortBy, limit, contains, material }));
+    // dispatch(getExhibitsPerPage({ ...params })); ???????????????????????????
   };
 
-  const handleSearch = ({target: {value: contains}}) => {
-    setSearchValue(contains);
-    setSearchParams({page, sortBy, limit, contains})
-    dispatch(getExhibitsPerPage({ page, sortBy, limit, contains}))
-  }
+  const handleSearch = ({ target: { value: contains } }) => {
+    searchParams.delete('contains')
+    contains ? setSearchParams({ page, sortBy, limit, contains, material }) : setSearchParams(searchParams);
+
+    dispatch(getExhibitsPerPage({ page, sortBy, limit, contains, material }));
+  };
 
   const paginationAttributes = {
+    page,
     onChange: handlePagination,
     color: "primary",
-    count: Math.ceil(count/limit),
+    count: Math.ceil(filteredCount / limit),
     sx: {
       display: "flex",
       justifyContent: "center",
@@ -77,7 +86,7 @@ const ExhibitsList = () => {
     options: SORTBY,
     name: "Sort By",
     variant: "standard",
-    label: "sortBy"
+    label: "sortBy",
   };
   const limitSelectAttributes = {
     params,
@@ -87,17 +96,27 @@ const ExhibitsList = () => {
     limit,
     setSearchParams,
     searchParams,
-    label: "limit"
+    label: "limit",
+  };
+  const materialsSelectAttributes = {
+    params,
+    options: materials,
+    variant: "standard",
+    name: 'Select Material',
+    setSearchParams,
+    searchParams,
+    label: 'material'
   }
 
   return (
     <Container>
-      <Search onChange={handleSearch}/>
+      <Search onChange={handleSearch} />
       <Stack sx={{ mt: "20px" }} spacing={2}>
-        <Pagination page={page} {...paginationAttributes} />
+        <Pagination {...paginationAttributes} />
       </Stack>
-      <MainSelectMUI {...sortSelectAttributes}/>
-      <MainSelectMUI {...limitSelectAttributes}/>
+      <MaterialsList params={params} setSearchParams={setSearchParams} />
+      <MainSelectMUI {...sortSelectAttributes} />
+      <MainSelectMUI {...limitSelectAttributes} />
       <div style={{ display: "flex", flexWrap: "wrap" }}>
         {exhibitsPerPage.map((exhibit) => (
           <ExhibitItem key={uuid()} exhibit={exhibit} />

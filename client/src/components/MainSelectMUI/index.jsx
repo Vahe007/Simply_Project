@@ -33,7 +33,6 @@ const MainSelectMUI = ({
       setSearchParams({...params, [label]: value})
     }
     setVal(value);
-    console.log(value);
     dispatch(getExhibitsPerPage({...params, [label]: value || undefined}));
   };
   return (

@@ -66,23 +66,23 @@ export const getAllExhibitsDB = async (query) => {
     },
     'acquisitionPeriod(old to new)': {
         acquisitionPeriod: 'desc'
-    },
-    // 'creation Date(new to old)': {
-    //     createdAt: 'asc',
-    // },
-    // 'creation Date(old to new)': {
-    //   createdAt: 'desc',
-    // }
+    }
   }
-  const { page = 1, limit = 10, sortBy, contains = '' } = query
+  const { page = 1, limit = 10, sortBy, contains = '', material = '' } = query
   const count = await exhibit.count({
     where: {
       isActive: true,
     },
   })
-  const filteredCount = await exhibit.count({
+
+  const filteredExhibits = {
     where: {
       isActive: true,
+      material: {
+        materialName: {
+          contains: material
+        }
+      },
       OR: ['exhibitName', "description"].map((field) => {
         return {
           [field]: {
@@ -91,19 +91,12 @@ export const getAllExhibitsDB = async (query) => {
         }
       })
     }
-  })
+  }
+  const filteredCount = await exhibit.count(filteredExhibits);
+
   try {
     const exhibitsPerPage = await exhibit.findMany({
-      where: {
-        isActive: true,
-        OR: ['exhibitName', "description"].map((field) => {
-          return {
-            [field]: {
-              contains
-            }
-          }
-        })
-      },
+      ...filteredExhibits,
       orderBy: sortHandler[sortBy] || undefined,
       skip: (+page - 1) * +limit || undefined,
       take: +limit || undefined,

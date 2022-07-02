@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { BASE_URL } from "../../constants";
 
-export const getExhibitsPerPage = createAsyncThunk("exhibits", async({page = 1, sortBy, limit = 8, contains=''}) => {
-    const response = await fetch(`${BASE_URL}exhibits?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${contains}`);
+export const getExhibitsPerPage = createAsyncThunk("exhibits", async({page = 1, sortBy, limit = 8, contains='', material=''}) => {
+    const response = await fetch(`${BASE_URL}exhibits?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${contains}&material=${material}`);
     return response.json()
 })
 export const createExhibit = createAsyncThunk("addExhibit", async(data) => {
@@ -28,8 +28,9 @@ export const deleteExhibit = createAsyncThunk("deleteExhibit", async (id) => {
 
 
 const initialState = {
-    exhibitsPerPage: [],
     count: 0,
+    filteredCount: 0,
+    exhibitsPerPage: [],
     loading: false,
     error: null,
     sortBy: ''
@@ -47,8 +48,10 @@ const exhibits = createSlice({
             state.loading = true;
         },
         [getExhibitsPerPage.fulfilled]: (state, {payload}) => {
+            console.log('exhbFulfiled', payload);
             state.exhibitsPerPage = payload.data.exhibitsPerPage;
             state.count = payload.data.count;
+            state.filteredCount = payload.data.filteredCount;
             state.loading = false;
         },
         [getExhibitsPerPage.rejected]: (state, {payload}) => {
