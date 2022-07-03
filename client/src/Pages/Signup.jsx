@@ -17,6 +17,7 @@ import TextField from "../components/FormsUI/TextField/index.js";
 import Button from "../components/FormsUI/Button";
 import { editUserSignupSchema } from "../features/userAccess/validations";
 import { getLoading, getToken } from "../features/userAccess/selectors.js";
+import { useFormik } from "formik";
 
 const Signup = () => {
   const [isVisible, setVisibility] = useState(false);
@@ -34,13 +35,19 @@ const Signup = () => {
     phoneNumber: "",
   };
 
-  const handleRegistration = async (body, { resetForm }) => {
-    await dispatch(createUser({ body, type: "registration" }));
+  const handleRegistration = async (values, {resetForm}) => {
+    await dispatch(createUser(values));
     setMessage(localStorage.getItem("message"));
     if (localStorage.getItem("message") === "User successfully created") {
       resetForm({ values: "" });
     }
   };
+
+  const formik = useFormik({
+    initialValues: initialState,
+    validationSchema: editUserSignupSchema,
+    onSubmit: handleRegistration,
+  });
 
   const changeVisibility = () => {
     setVisibility((prevState) => {
@@ -59,70 +66,80 @@ const Signup = () => {
           mt: "50px",
         }}
       >
-        <Formik
-          validationSchema={editUserSignupSchema}
-          initialValues={initialState}
-          onSubmit={handleRegistration}
+        <form
+          onSubmit={formik.handleSubmit}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            mt: "150px",
+          }}
         >
-          <Form
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              mt: "150px",
-            }}
+          <Typography
+            sx={{ color: "#232968", fontWeight: 600 }}
+            variant="h5"
+            mb="50px"
           >
-            <Typography
-              sx={{ color: "#232968", fontWeight: 600 }}
-              variant="h5"
-              mb="50px"
-            >
-              {message || "Create Your Account"}
-            </Typography>
-            <TextField
-              label="FirstName"
-              name="firstName"
-              sx={{ width: "320px" }}
-            />
-            <TextField
-              label="LastName"
-              name="lastName"
-              sx={{ width: "320px", mt: "15px" }}
-            />
-            <TextField
-              label="Email"
-              name="email"
-              sx={{ width: "320px", mt: "15px" }}
-            />
-            <TextField
-              label="Password"
-              name="password"
-              type={isVisible ? "text" : "password"}
-              sx={{ width: "320px", mt: "15px" }}
-              InputProps={{
-                endAdornment: isVisible ? (
-                  <VisibilityIcon
-                    onClick={changeVisibility}
-                    sx={{ cursor: "pointer" }}
-                  />
-                ) : (
-                  <VisibilityOffIcon
-                    onClick={changeVisibility}
-                    sx={{ cursor: "pointer" }}
-                  />
-                ),
-              }}
-            />
-            <TextField
-              label="Phone"
-              name="phoneNumber"
-              sx={{ width: "320px", mt: "15px" }}
-            />
-            <Button isLoading={isLoading} sx={{ mt: "25px" }}>
-              Sign Up
-            </Button>
-          </Form>
-        </Formik>
+            {message || "Create Your Account"}
+          </Typography>
+          <TextField
+            onChange={formik.handleChange}
+            value={formik.values.firstName}
+            label="FirstName"
+            name="firstName"
+            sx={{ width: "320px" }}
+          />
+          {formik.errors.firstName && <div style={{width: "320px", color: "red"}}>{formik.errors.firstName}</div>}
+          <TextField
+            onChange={formik.handleChange}
+            value={formik.values.lastName}
+            label="LastName"
+            name="lastName"
+            sx={{ width: "320px", mt: "15px" }}
+          />
+          {formik.errors.lastName && <div style={{width: "320px", color: "red"}}>{formik.errors.lastName}</div>}
+          <TextField
+            onChange={formik.handleChange}
+            value={formik.values.email}
+            label="Email"
+            name="email"
+            sx={{ width: "320px", mt: "15px" }}
+          />
+          {formik.errors.email && <div style={{width: "320px", color: "red"}}>{formik.errors.email}</div>}
+          <TextField
+            onChange={formik.handleChange}
+            value={formik.values.password}
+            label="Password"
+            name="password"
+            type={isVisible ? "text" : "password"}
+            sx={{ width: "320px", mt: "15px" }}
+            InputProps={{
+              endAdornment: isVisible ? (
+                <VisibilityIcon
+                  onClick={changeVisibility}
+                  sx={{ cursor: "pointer" }}
+                />
+              ) : (
+                <VisibilityOffIcon
+                  onClick={changeVisibility}
+                  sx={{ cursor: "pointer" }}
+                />
+              ),
+            }}
+          />
+          {formik.errors.password && <div style={{width: "320px", color: "red"}}>{formik.errors.password}</div>}
+          <TextField
+            onChange={formik.handleChange}
+            value={formik.values.phoneNumber}
+            label="Phone"
+            name="phoneNumber"
+            sx={{ width: "320px", mt: "15px" }}
+          />
+          {formik.errors.phoneNumber && <div style={{width: "320px", color: "red"}}>{formik.errors.phoneNumber}</div>}
+          <Button type="submit" isLoading={isLoading} sx={{ mt: "25px" }}>
+            Sign Up
+          </Button>
+        </form>
       </Box>
     </div>
   );

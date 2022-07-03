@@ -13,7 +13,7 @@ export const loadUser = createAsyncThunk(
 
 export const createUser = createAsyncThunk(
   "userAccess/createUser",
-  async ({ body, type }) => {
+  async (body) => {
     const data = await fetchUser(body, "registration");
     console.log(data, "data");
     return data;

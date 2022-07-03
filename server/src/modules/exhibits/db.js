@@ -68,7 +68,7 @@ export const getAllExhibitsDB = async (query) => {
         acquisitionPeriod: 'desc'
     }
   }
-  const { page = 1, limit = 10, sortBy, contains = '', material = '' } = query
+  const { page = 1, limit = 10, sortBy, contains = '', material = '', category = '' } = query
   const count = await exhibit.count({
     where: {
       isActive: true,
@@ -81,6 +81,11 @@ export const getAllExhibitsDB = async (query) => {
       material: {
         materialName: {
           contains: material
+        }
+      },
+      category: {
+        categoryName: {
+          contains: category
         }
       },
       OR: ['exhibitName', "description"].map((field) => {
@@ -104,6 +109,7 @@ export const getAllExhibitsDB = async (query) => {
         contributors: true,
         material: true,
         images: true,
+        category: true
       }
     })
     return {

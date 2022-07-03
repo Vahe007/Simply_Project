@@ -24,7 +24,6 @@ import { useFormik } from 'formik';
 
 
 function Login({ type }) {
-
   const [isVisible, setVisibility] = useState(false);
   const [message, setMessage] = useState("");
   const token = useSelector(getToken);
@@ -43,7 +42,7 @@ function Login({ type }) {
     setStateToken(token);
   }, [token]);
 
-  const onsubmit = async (values) => {
+  const onSubmit = async (values) => {
     await dispatch(loadUser(values));
     setMessage(localStorage.getItem("message"));
     if (store.getState().userAccess.token) {
@@ -57,9 +56,9 @@ function Login({ type }) {
     initialValues: {
       email: '',
       password: '',
-    },
+    },  
     validationSchema: editUserLoginSchema,
-    onSubmit: onsubmit
+    onSubmit
   });
 
   const changeVisibility = () => {

@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { BASE_URL } from "../../constants";
 
-export const getExhibitsPerPage = createAsyncThunk("exhibits", async({page = 1, sortBy, limit = 8, contains='', material=''}) => {
-    const response = await fetch(`${BASE_URL}exhibits?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${contains}&material=${material}`);
+export const getExhibitsPerPage = createAsyncThunk("exhibits", async({page = 1, sortBy, limit = 8, contains='', material, category}) => {
+    const response = await fetch(`${BASE_URL}exhibits?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${contains}&material=${material}&category=${category}`);
     return response.json()
 })
 export const createExhibit = createAsyncThunk("addExhibit", async(data) => {
@@ -48,7 +48,6 @@ const exhibits = createSlice({
             state.loading = true;
         },
         [getExhibitsPerPage.fulfilled]: (state, {payload}) => {
-            console.log('exhbFulfiled', payload);
             state.exhibitsPerPage = payload.data.exhibitsPerPage;
             state.count = payload.data.count;
             state.filteredCount = payload.data.filteredCount;

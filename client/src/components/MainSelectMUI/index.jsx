@@ -18,7 +18,6 @@ const MainSelectMUI = ({
   label,
   styles,
 }) => {
-  const [val, setVal] = useState("");
     const dispatch = useDispatch();
 
   const handleChange = ({target: {value}}) => {
@@ -32,13 +31,11 @@ const MainSelectMUI = ({
     else  {
       setSearchParams({...params, [label]: value})
     }
-    setVal(value);
-    dispatch(getExhibitsPerPage({...params, [label]: value || undefined}));
   };
   return (
     <FormControl variant={variant} sx={{ m: 1, minWidth: 120 }}>
       <InputLabel id="demo-simple-select-label">{name}</InputLabel>
-      <Select value={val}  onChange={handleChange}>
+      <Select value={params[label] || ''}  onChange={handleChange}>
 
         <MenuItem value=''>
           <em>None</em>

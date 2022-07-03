@@ -6,8 +6,9 @@ import Typography from "@mui/material/Typography";
 import { Button, CardActionArea, CardActions } from "@mui/material";
 
 const ExhibitItem = ({exhibit}) => {
-  const {exhibitName, description, contributors, id, material } = exhibit;
+  const {exhibitName, description, id, material, category } = exhibit;
   const {materialName} = material;
+  const {categoryName} = category;
 
   return (
     
@@ -28,6 +29,9 @@ const ExhibitItem = ({exhibit}) => {
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {materialName}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {categoryName}
           </Typography>
         </CardContent>
 

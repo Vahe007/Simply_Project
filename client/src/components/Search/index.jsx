@@ -12,7 +12,7 @@ const Search = ({onChange}) => {
       noValidate
       autoComplete="off"
     >
-      <TextField onChange={onChange} id="standard-basic" label="Standard" variant="standard" />
+      <TextField onChange={onChange} id="standard-basic" label="Seach by Name" variant="standard" />
     </Box>
   );
 };

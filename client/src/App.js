@@ -30,8 +30,8 @@ function App() {
                 />
               </Route>
 
-              <Route path="login" element={<Login type="login" />} />
               <Route path="signup" element={<Signup type="signup" />} />
+              <Route path="login" element={<Login type="login" />} />
               <Route path="*" element={<Navigate to="signup" />} />
             </Routes>
           </Router>
