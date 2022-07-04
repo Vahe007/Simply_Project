@@ -79,7 +79,7 @@ const Signup = () => {
         surname: state.surname.value,
         email: state.email.value,
         password: state.password.value,
-        phone: state.phone.value || null,
+        phoneNumber: state.phone.value || null,
       };
       await dispatch(loadUser({ body, type: "registration" }));
       setMessage(localStorage.getItem("error"));

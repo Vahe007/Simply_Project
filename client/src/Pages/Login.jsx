@@ -119,7 +119,7 @@ function Login({ type }) {
   return (
     <>
       <Formik
-        validationSchema={editUserSchema}
+      // validationSchema={editUserSchema}
       >
         <Form>
           <TextFields name="email" label="Email" sx={{ width: "320px" }} />
@@ -201,4 +201,5 @@ function Login({ type }) {
     </>
   );
 }
+
 export default Login;
