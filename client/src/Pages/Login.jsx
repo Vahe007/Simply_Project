@@ -15,6 +15,7 @@ import { loadUser } from "../features/userAccess/userAccessSlice.js";
 import { LocalTaxiTwoTone } from "@mui/icons-material";
 import TextFields from "../components/FormsUI/TextField/index.js";
 import { Form, Formik } from "formik";
+import ProfileHeader from "../components/Header/ProfileHeader.js";
 
 function Login({ type }) {
   const [isVisible, setVisibility] = useState(false);
@@ -124,7 +125,7 @@ function Login({ type }) {
         </Form>
       </Formik>
       <div className="login" style={{ overflowY: "hidden" }}>
-        <Header type="login" />
+        <ProfileHeader type="login" />
         <Box
           sx={{
             display: "flex",
