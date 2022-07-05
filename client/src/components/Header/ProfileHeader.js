@@ -8,7 +8,6 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Logo from "../../assets/Logo.svg";
@@ -48,7 +47,7 @@ const ProfileHeader = () => {
             href="/"
             sx={{
               mr: 2,
-              display: { xs: "none", md: "flex" },
+              display: { xs: "none", sm: "none", md: "flex" },
               fontFamily: "Source Serif Pro",
               fontWeight: 600,
               letterSpacing: ".3rem",
@@ -78,10 +77,10 @@ const ProfileHeader = () => {
             href=""
             sx={{
               mr: 2,
-              display: { xs: "flex", md: "none" },
+              display: { xs: "none", sm: "flex", md: "none" },
               flexGrow: 1,
               fontFamily: "Source Serif Pro",
-              fontWeight: 600,
+              fontWeight: 400,
               letterSpacing: ".3rem",
               color: "inherit",
               textDecoration: "none",
@@ -89,6 +88,26 @@ const ProfileHeader = () => {
           >
             HISTORY MUSEUM OF ARMENIA
           </Typography>
+
+          <Typography
+            variant="h5"
+            noWrap
+            component="a"
+            href=""
+            sx={{
+              mr: 2,
+              display: { xs: "flex", sm: "none", md: "none" },
+              flexGrow: 1,
+              fontFamily: "Source Serif Pro",
+              fontWeight: 400,
+              letterSpacing: ".1rem",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            HISTORY MUSEUM OF ARMENIA
+          </Typography>
+
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
