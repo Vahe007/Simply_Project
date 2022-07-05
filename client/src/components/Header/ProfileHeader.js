@@ -11,7 +11,10 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
+import Logo1 from "../../assets/Logo.svg";
+import Logo from "@mui/icons-material/Adb";
+
+import { ReactComponent as Icon } from "../../assets/Logo.svg";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -39,7 +42,20 @@ const ProfileHeader = () => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          {/* <Logo sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} /> */}
+          {/* ---------------------------------------- */}
+          <Box
+            component="img"
+            sx={{
+              height: 80,
+              mr: 2,
+              display: { xs: "none", md: "flex" },
+            }}
+            alt="Logo"
+            src={Logo1}
+          />
+          {/* ---------------------------------------- */}
+
           <Typography
             variant="h6"
             noWrap
@@ -48,14 +64,14 @@ const ProfileHeader = () => {
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
+              fontFamily: "Source Serif Pro",
+              fontWeight: 600,
               letterSpacing: ".3rem",
               color: "inherit",
               textDecoration: "none",
             }}
           >
-            LOGO
+            HISTORY MUSEUM OF ARMENIA
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -94,7 +110,18 @@ const ProfileHeader = () => {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          {/* <Logo sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
+          <Box
+            component="img"
+            sx={{
+              height: 80,
+              mr: 2,
+              display: { xs: "flex", md: "none" },
+            }}
+            alt="Logo"
+            src={Logo1}
+          />
+
           <Typography
             variant="h5"
             noWrap
@@ -104,14 +131,14 @@ const ProfileHeader = () => {
               mr: 2,
               display: { xs: "flex", md: "none" },
               flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
+              fontFamily: "Source Serif Pro",
+              fontWeight: 600,
               letterSpacing: ".3rem",
               color: "inherit",
               textDecoration: "none",
             }}
           >
-            LOGO
+            HISTORY MUSEUM OF ARMENIA
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
