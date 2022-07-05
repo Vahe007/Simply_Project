@@ -11,8 +11,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import Logo1 from "../../assets/Logo.svg";
-import Logo from "@mui/icons-material/Adb";
+import Logo from "../../assets/Logo.svg";
 
 import { ReactComponent as Icon } from "../../assets/Logo.svg";
 
@@ -42,8 +41,6 @@ const ProfileHeader = () => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* <Logo sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} /> */}
-          {/* ---------------------------------------- */}
           <Box
             component="img"
             sx={{
@@ -52,9 +49,8 @@ const ProfileHeader = () => {
               display: { xs: "none", md: "flex" },
             }}
             alt="Logo"
-            src={Logo1}
+            src={Logo}
           />
-          {/* ---------------------------------------- */}
 
           <Typography
             variant="h6"
@@ -110,7 +106,6 @@ const ProfileHeader = () => {
               ))}
             </Menu>
           </Box>
-          {/* <Logo sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
           <Box
             component="img"
             sx={{
@@ -119,7 +114,7 @@ const ProfileHeader = () => {
               display: { xs: "flex", md: "none" },
             }}
             alt="Logo"
-            src={Logo1}
+            src={Logo}
           />
 
           <Typography
