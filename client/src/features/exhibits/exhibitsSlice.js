@@ -1,12 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { BASE_URL } from "../../constants";
 
-
-export const getExhibitsPerPage = createAsyncThunk("exhibits", async({page = 1, sortBy = "", limit = 10, contains = ""}) => {
-    const response = await fetch(`${BASE_URL}exhibits?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${contains}`);
+export const getExhibitsPerPage = createAsyncThunk("exhibits", async({page = 1, sortBy, limit = 4, contains='', material, category}) => {
+    const response = await fetch(`${BASE_URL}exhibits?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${contains}&material=${material}&category=${category}`);
     return response.json()
 })
-
 export const createExhibit = createAsyncThunk("addExhibit", async(data) => {
     const response = await fetch(`${BASE_URL}exhibits`, {
         method: "POST",
@@ -17,16 +15,39 @@ export const createExhibit = createAsyncThunk("addExhibit", async(data) => {
     });
     return response.json();
 })
+export const update_getExhibit = createAsyncThunk("editExhibit", async({page = 1, sortBy, limit = 4, contains='', material, category, id}) => {
+    await fetch(`${BASE_URL}exhibits/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({
+            isActive: false
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    const response = await fetch(`${BASE_URL}exhibits?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${contains}&material=${material}&category=${category}`);
+    return response.json();
+})
+export const deleteExhibit = createAsyncThunk("deleteExhibit", async (id) => {
+    const response = await fetch(`${BASE_URL}exhibits/${id}`, {
+        method: "DELETE",
+        body: id,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    return await response.json();
+})
 
 
 const initialState = {
-    exhibitsPerPage: [],
     count: 0,
+    filteredCount: 0,
+    exhibitsPerPage: [],
     loading: false,
     error: null,
+    sortBy: ''
 }
-
-export const selectExhibits = state => state.exhibits;
 
 const exhibits = createSlice({
     name: "exhibits",
@@ -40,15 +61,30 @@ const exhibits = createSlice({
             state.loading = true;
         },
         [getExhibitsPerPage.fulfilled]: (state, {payload}) => {
-            console.log(payload);
-            state.exhibitsPerPage = payload.data;
-            state.count = payload.count;
+            state.exhibitsPerPage = payload.data.exhibitsPerPage;
+            state.count = payload.data.count;
+            state.filteredCount = payload.data.filteredCount;
             state.loading = false;
-
         },
         [getExhibitsPerPage.rejected]: (state, {payload}) => {
             state.loading = false;
         },
+
+        
+
+        [update_getExhibit.pending]: (state) => {
+            state.loading = true;
+        },
+        [update_getExhibit.fulfilled]: (state, {payload}) => {
+            state.exhibitsPerPage = payload.data.exhibitsPerPage;
+            state.count = payload.data.count;
+            state.filteredCount = payload.data.filteredCount;
+            state.loading = false;
+        },
+        [update_getExhibit.rejected]: (state, {payload}) => {
+            state.loading = false;
+        },
+
 
         [createExhibit.pending]: (state) => {
             state.loading = true;
@@ -63,3 +99,4 @@ const exhibits = createSlice({
 })
 
 export default exhibits.reducer;
+

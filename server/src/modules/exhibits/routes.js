@@ -26,6 +26,7 @@ router.get('/:id', validate(getExhibitByIdValidation), getExhibitById)
 router.post('/', validate(createExhibitValidation), createExhibit)
 router.put('/:id', validate(updateExhibitValidation), updateExhibit)
 
+
 //Only for developers
 router.delete('/:id', validate(deleteExhibitValidation), deleteExhibit)
 export {router as exhibitsRoutes}

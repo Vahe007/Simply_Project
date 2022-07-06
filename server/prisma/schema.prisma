@@ -23,6 +23,7 @@ model User {
   updatedAt       DateTime  @default(now()) @updatedAt
 }
 
+
 model Exhibit {
   id                Int                      @id @default(autoincrement())
   fundNumber        String                   @db.VarChar(255)
