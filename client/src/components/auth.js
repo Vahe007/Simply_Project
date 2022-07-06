@@ -1,14 +1,16 @@
 import React, { createContext, useContext, useEffect } from "react";
 import { useState } from "react";
+import Cookies from 'js-cookie';
 import { useSelector } from "react-redux/es/exports";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const token = document.cookie.split("=")[1];
-
+  const token = Cookies.get("token");
+  
   useEffect(() => {
+    
     setUser(token);
   }, [token])
 
@@ -16,7 +18,7 @@ export const AuthProvider = ({ children }) => {
     setUser(user);
   };
   const logout = () => {
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+    Cookies.remove("token");
     setUser(false);
   };
 
@@ -27,7 +29,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
 
+export const useAuth = () => useContext(AuthContext);

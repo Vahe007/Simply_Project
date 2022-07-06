@@ -14,7 +14,11 @@ const useStyles = makeStyles({
   },
 });
 
+<<<<<<< HEAD
 export default function ExibitCard() {
+=======
+export default function ExibitCard({ props }) {
+>>>>>>> develop
   const classes = useStyles();
 
   return (
@@ -25,6 +29,7 @@ export default function ExibitCard() {
           alt="Exibit"
           height="140"
           image={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8Dui-CG5_VcIxTHxks0tTiME_1rIvYeIfMA&usqp=CAU'}
+<<<<<<< HEAD
           title={'Title'}
         />
         <CardContent>
@@ -33,6 +38,16 @@ export default function ExibitCard() {
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
             {'Material'}
+=======
+          title={props.itemName}
+        />
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="h2">
+            {props.itemName}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            {props.material}
+>>>>>>> develop
           </Typography>
         </CardContent>
       </CardActionArea>

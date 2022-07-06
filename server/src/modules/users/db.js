@@ -1,146 +1,230 @@
 import {prisma} from '../../services/Prisma.js'
 import bcrypt from 'bcryptjs'
-import {generateAccessToken} from "../../helpers/common.js"
+import {exclude, generateAccessToken} from "../../helpers/common.js"
 import {ERROR_MESSAGES} from "../../helpers/constants.js";
 
 const {user} = prisma
 
 
 export const getAllUsersDB = async (query) => {
-    const sortHandler = {
-        'A-Z': {
-            name: 'asc'
-        },
-        'Z-A': {
-            name: 'desc'
-        },
-        'created-new': {
-            createdAt: 'desc'
-        },
-        'created-old': {
-            createdAt: 'asc'
-        },
-        'updated-new': {
-            updatedAt: 'desc'
-        },
-        'updated-old': {
-            updatedAt: 'asc'
-        }
+    const {page, limit , sortBy, contains = ""} = query;
+    const handleSortBy = {
+      "name [A-Z]": {
+        "firstName": "asc"
+      },
+
+      "name [Z-A]":{
+        "firstName": "desc"
+      },
+  
+      "created date (new to old)":{
+        "createdAt": "desc"
+      },
+  
+      "created date (old to new)": {
+        "createdAt": "asc"
+      },
+  
+      "updated date (new to old)": {
+        "updatedAt": "desc"
+      },
+  
+      "updated date (new to old)": {
+        "updatedAt": "asc"
+      },
     }
-    const {page = 1, limit = 10, sortBy = {name: 'asc'}} = query;
+  
     try {
-        const count = await user.count()
-        const users = await user.findMany({
-            skip: (+page - 1) * +limit,
-            take: +limit,
-            orderBy: sortHandler[sortBy],
-            select: {
-                id: true,
-                name: true,
-                surname: true,
-                email: true,
-                phoneNumber: true,
-                isActive: true,
-                lastLogin: true,
-                role: true,
-                _count: {
-                    select: {
-                        exhibitsCreated: true,
-                        exhibitsUpdated: true
-                    },
-                },
-            }
-        });
+      const countAfterSearch = await user.count({
+        where: {
+          OR: 
+            ['firstName', 'lastName', 'email', 'phoneNumber'].map(el => {
+              return {
+                [el]: {
+                  contains: contains
+                }
+              }
+            })
+        }
+      })
 
-        return {
-            users,
-            count,
-            error: null
+      const usersCount = await user.count()
+  
+  
+      const usersPerPage = await user.findMany({
+        where: {
+          OR: 
+            ['firstName', 'lastName', 'email', 'phoneNumber'].map(el => {
+              return {
+                [el]: {
+                  contains: contains
+                }
+              }
+            })
+        },
+
+  
+      
+        skip: (+page - 1) * +limit || undefined,
+        take: +limit || undefined,
+        orderBy: handleSortBy[sortBy] || undefined,
+  
+        include: {
+          exhibitsCreated: true,
+          exhibitsUpdated: true,
         }
-    } catch (error) {
-        return {
-            data: null,
-            error
-        }
+      });
+  
+      return {
+        data: {
+          usersPerPage,
+          count: usersCount,
+          countAfterSearch
+        },
+        error: null
+      }
+    } catch(error) {
+      console.log(error);
+      return {
+        data: null,
+        error
+      }
     }
-}
+  }
 
+  export const getActiveUsersDB = async (query) => {
+    const {page, limit , sortBy, contains = ""} = query;
+    console.log(query);
+    const handleSortBy = {
+      "name [A-Z]": {
+        "firstName": "asc"
+      },
+  
+      "name [Z-A]":{
+        "firstName": "desc"
+      },
+  
+      "created date (new to old)":{
+        "createdAt": "desc"
+      },
+  
+      "created date (old to new)": {
+        "createdAt": "asc"
+  
+      },
+  
+      "updated date (new to old)": {
+        "updatedAt": "desc"
+  
+      },
+  
+      "updated date (new to old)": {
+        "updatedAt": "asc"
+  
+      },
+    }
+  
+    try {
+      const countAfterSearch = await user.count({
+        where: {
+          OR: 
+            ['firstName', 'lastName', 'email', 'phoneNumber'].map(el => {
+              return {
+                [el]: {
+                  contains: contains
+                }
+              }
+            })
+        }
+      })
+
+      const usersCount = await user.count({
+        where: {
+          isActive: true
+        }
+      })
+  
+  
+      const usersPerPage = await user.findMany({
+        where: {
+          isActive: true,
+          OR: 
+            ['firstName', 'lastName', 'email', 'phoneNumber'].map(el => {
+              return {
+                [el]: {
+                  contains: contains
+                }
+              }
+            })
+
+        },
+  
+      
+        skip: (+page - 1) * +limit || undefined,
+        take: +limit || undefined,
+        orderBy: handleSortBy[sortBy] || undefined,
+  
+        include: {
+          exhibitsCreated: true,
+          exhibitsUpdated: true,
+        }
+      });
+  
+      return {
+        data: {
+          usersPerPage,
+          count: usersCount,
+          countAfterSearch
+        },
+        error: null
+      }
+    } catch(error) {
+      console.log(error);
+      return {
+        data: null,
+        error
+      }
+    }
+  }
+  
 export const getUserByIdDB = async (id) => {
-    console.log(id)
     try {
-        const requestedUser = await user.findUnique({
-            where: {
-                id: +id,
-            },
-            select: {
-                id: true,
-                name: true,
-                surname: true,
-                email: true,
-                phoneNumber: true,
-                isActive: true,
-                lastLogin: true,
-                role: true,
-                _count: {
-                    select: {
-                        exhibitsCreated: true,
-                        exhibitsUpdated: true
-                    },
-                },
-            }
-        })
+      const userData = await user.findUnique({
+        where: {
+          id,
+        },
+        include: {
+          exhibitsCreated: true,
+          exhibitsUpdated: true
+        }
+      })
+      
+      const {isActive} = userData;
+
+      if(userData && isActive) {
+        const userPassExcluded = exclude(userData, ['password']);
+
         return {
-            data: requestedUser,
+          data: userPassExcluded,
+          error: null,
+        }
+      } else {
+        return {
+            data: "no such User",
             error: null,
-        }
+          }
+      } 
+     
     } catch (error) {
-        return {
-            data: null,
-            error,
-        }
+      return {
+        data: null,
+        error,
+      }
     }
-}
-
-export const createUserDB = async (sendedData) => {
-    const {email, password, ...restData} = sendedData
-    try {
-        const candidate = await user.findUnique({
-            where: {
-                email,
-            },
-        })
-        if (candidate) {
-            return {
-                data: null,
-                error: {message: ERROR_MESSAGES.SUCH_USER_EXISTS},
-            }
-        }
-        const hashedPassword = bcrypt.hashSync(password, 7)
-        const newUser = await user.create({
-            data: {
-                email,
-                password: hashedPassword,
-                ...restData
-            }
-        })
-        const {password: createdUserPass, ...userInfo} = newUser
-
-        const token = generateAccessToken(userInfo.id, userInfo.role)
-
-        return {
-            data: {...userInfo, token},
-            error: null,
-        }
-    } catch (error) {
-        console.log(error);
-        return {
-            data: null,
-            error,
-        }
-    }
-}
+  }
 
 export const updateUserDB = async (data, id) => {
+
     try {
         if (data.password) {
             data.password = bcrypt.hashSync(data.password, 7)
@@ -148,11 +232,13 @@ export const updateUserDB = async (data, id) => {
 
         const newData = await user.update({
             where: {
-                id: +id
+                id
             },
             data
         });
-        const {password, ...userInfo} = newData
+
+        const {password, ...userInfo} = newData;
+
         return {
             data: userInfo,
             error: null
@@ -166,18 +252,21 @@ export const updateUserDB = async (data, id) => {
     }
 }
 
-export const deleteUserDB = async (id) => {
+export const deleteUserDB = async(id) => {
     try {
-        const deletedUser = await user.delete({
-            where: {
-                id
-            }
+        await user.update({
+        where: {
+            id
+        },
+        data: {
+            isActive: false
+        }
         });
         return {
-            data: deletedUser,
+            message: "user deleted",
             error: null
-        }
-    } catch (error) {
+        }  
+    } catch(error) {
         return {
             data: null,
             error
@@ -185,37 +274,34 @@ export const deleteUserDB = async (id) => {
     }
 }
 
-
-export const registrationDB = async (userData) => {
-    const {email, password, ...restData} = userData
+export const createUserDB = async (userData) => {
+    const {password, ...restData} = userData
+    
     try {
-        const candidate = await user.findUnique({
-            where: {
-                email,
-            },
-        })
-        if (candidate) {
-            return {
-                data: null,
-                error: {message: ERROR_MESSAGES.SUCH_USER_EXISTS},
-            }
-        }
-        const hashedPassword = bcrypt.hashSync(password, 7)
-        const createdUser = await user.create({
+        const hashedPassword = bcrypt.hashSync(password, 7);
+
+        const newUser = await user.create({
             data: {
-                email,
                 password: hashedPassword,
                 ...restData
+            },
+            include: {
+              exhibitsCreated: true,
+              exhibitsUpdated: true
             }
         })
-        const {password: createdUserPass, ...userInfo} = createdUser
+
+        const {password: newUserPass, ...userInfo} = newUser
 
         const token = generateAccessToken(userInfo.id, userInfo.role)
+
         return {
             data: {...userInfo, token},
             error: null,
         }
+
     } catch (error) {
+        console.log(error);
         return {
             data: null,
             error,
@@ -236,13 +322,16 @@ export const loginDB = async (userData) => {
                 exhibitsUpdated: true
             },
         })
+
         if (!candidate) {
-            return {
-                data: null,
-                error: {message: ERROR_MESSAGES.NO_USER_FOUND},
-            }
+          return {
+            data: null,
+            error: {message: "No user found with such email"}
+          }
         }
+     
         const validPassword = bcrypt.compareSync(password, candidate.password)
+
         if (!validPassword) {
             return {
                 data: null,
@@ -256,7 +345,7 @@ export const loginDB = async (userData) => {
             error: null,
         }
     } catch (error) {
-        console.log(error);
+      console.log(error);
         return {
             data: null,
             error,

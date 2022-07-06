@@ -9,7 +9,7 @@ export const fetchUser = async (data, endPoint) => {
         "Content-Type": "application/json",
       },
     });
-    console.log(response, 22222222222);
+    console.log("res", response);
     return response.json();
   } catch (error) {
     console.log(error);
