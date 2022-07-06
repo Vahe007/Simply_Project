@@ -15,8 +15,9 @@ import Logo from "../../assets/Logo.svg";
 const settings = ["Profile", "Logout"];
 
 const ProfileHeader = () => {
-  const name = "sdf";
-  const surname = "oghosyan";
+  // hardcode below, needs to change for DB
+  const name = "Mikayel";
+  const surname = "Bejanyan";
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -113,9 +114,6 @@ const ProfileHeader = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                {/* ------------------ avatar part to do--------------------- */}
-                {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
-                {/* <AvatarGenerator></AvatarGenerator> */}
                 <Avatar name={name} surname={surname} />
               </IconButton>
             </Tooltip>

@@ -1,6 +1,5 @@
 import * as React from "react";
 import MuiAvatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
 
 function stringToColor(string) {
   let hash = 0;
@@ -26,6 +25,11 @@ function stringAvatar(name) {
   return {
     sx: {
       bgcolor: stringToColor(name),
+      p: 0.5,
+      pb: 0.1,
+      "&:hover": {
+        opacity: 0.9,
+      },
     },
     children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
   };
