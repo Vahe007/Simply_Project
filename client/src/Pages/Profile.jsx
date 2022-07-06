@@ -21,8 +21,8 @@ const Profile = () => {
   if (auth.user) {
     return (
       <>
-        <Header />
-        <div>
+        {/* <Header /> */}
+        {/* <div>
           <Select
             value={a}
             label="A"
@@ -31,7 +31,7 @@ const Profile = () => {
             <MenuItem value={true}>Logout</MenuItem>
           </Select>
           PROFILE
-        </div>
+        </div> */}
         <ExhibitsList />
       </>
     );

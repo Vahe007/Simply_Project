@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
   const token = Cookies.get("token");
   
   useEffect(() => {
+    
     setUser(token);
   }, [token])
 

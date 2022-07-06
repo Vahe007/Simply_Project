@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { BASE_URL } from "../../constants";
 
-export const getExhibitsPerPage = createAsyncThunk("exhibits", async({page = 1, sortBy, limit = 8, contains='', material, category}) => {
+export const getExhibitsPerPage = createAsyncThunk("exhibits", async({page = 1, sortBy, limit = 4, contains='', material, category}) => {
     const response = await fetch(`${BASE_URL}exhibits?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${contains}&material=${material}&category=${category}`);
     return response.json()
 })
@@ -15,8 +15,21 @@ export const createExhibit = createAsyncThunk("addExhibit", async(data) => {
     });
     return response.json();
 })
+export const update_getExhibit = createAsyncThunk("editExhibit", async({page = 1, sortBy, limit = 4, contains='', material, category, id}) => {
+    await fetch(`${BASE_URL}exhibits/${id}`, {
+        method: "PUT",
+        body: JSON.stringify({
+            isActive: false
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    const response = await fetch(`${BASE_URL}exhibits?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${contains}&material=${material}&category=${category}`);
+    return response.json();
+})
 export const deleteExhibit = createAsyncThunk("deleteExhibit", async (id) => {
-    const response = await fetch(`${BASE_URL}${id}`, {
+    const response = await fetch(`${BASE_URL}exhibits/${id}`, {
         method: "DELETE",
         body: id,
         headers: {
@@ -56,6 +69,22 @@ const exhibits = createSlice({
         [getExhibitsPerPage.rejected]: (state, {payload}) => {
             state.loading = false;
         },
+
+        
+
+        [update_getExhibit.pending]: (state) => {
+            state.loading = true;
+        },
+        [update_getExhibit.fulfilled]: (state, {payload}) => {
+            state.exhibitsPerPage = payload.data.exhibitsPerPage;
+            state.count = payload.data.count;
+            state.filteredCount = payload.data.filteredCount;
+            state.loading = false;
+        },
+        [update_getExhibit.rejected]: (state, {payload}) => {
+            state.loading = false;
+        },
+
 
         [createExhibit.pending]: (state) => {
             state.loading = true;

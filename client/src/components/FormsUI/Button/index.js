@@ -5,7 +5,7 @@ import { CircularProgress } from '@mui/material';
 
 
 const ButtonWrapper = (props) => {
-    const {children, isLoading, ...otherProps} = props;
+    const {children, isLoading, variant="outlined", ...otherProps} = props;
 
     // const { submitForm } = useFormikContext();
 
@@ -15,8 +15,7 @@ const ButtonWrapper = (props) => {
 
     const configButton = {
         // onClick: onSubmit,
-        variant: "outlined",
-        color: "primary",
+        variant,
         ...otherProps
     }
     if (isLoading) {

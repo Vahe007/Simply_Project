@@ -11,22 +11,40 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import { Container } from "@mui/material";
-import Select from "../../../components/SelectMUI";
-import ExhibitsContextProvider from "../../../features/exhibits/ExhibitsContextProvider";
-import { useExhibits } from "../../../features/exhibits/ExhibitsContextProvider";
 import MainSelectMUI from "../../../components/MainSelectMUI";
 import { LIMIT, SORTBY } from "../../../constants";
 import Search from "../../../components/Search";
 import { useSearchParams } from "react-router-dom";
-import ArrowBackIosNewSharpIcon from "@mui/icons-material/ArrowBackIosNewSharp";
-import { getMaterials, getCategories } from "../../../features/filteringFeatures/filteringFeaturesSlice";
-import { getAllCategories, getAllMaterials } from "../../../features/filteringFeatures/selectors";
+import { styled } from "@mui/material/styles";
+import {
+  getMaterials,
+  getCategories,
+} from "../../../features/filteringFeatures/filteringFeaturesSlice";
+import {
+  getAllCategories,
+  getAllMaterials,
+} from "../../../features/filteringFeatures/selectors";
 import FilteringSelect from "../../../components/FilteringSelect/index.jsx";
-import Box from "@mui/material/Box";
 import { useStyles } from "./styles";
+import Box from "@mui/material/Box";
 
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 
+const debounce = (fn, delay = 400) => {
+  let timeOut;
+  return (...args) => {
+    const fnCall = () => {
+      fn.apply(this, args);
+    };
+    clearTimeout(timeOut);
+    timeOut = setTimeout(fnCall, delay);
+  };
+};
 
 const ExhibitsList = () => {
   const exhibitsPerPage = useSelector(getExhibitsSelector);
@@ -35,24 +53,18 @@ const ExhibitsList = () => {
   const materials = useSelector(getAllMaterials);
   const categories = useSelector(getAllCategories);
   const [searchParams, setSearchParams] = useSearchParams();
+  const [queries, setQueries] = useState(Object.fromEntries([...searchParams]));
+  const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const classes = useStyles();
 
-
-
-  const limit = +searchParams.get("limit") || 8;
+  const limit = +searchParams.get("limit") || 4;
   const sortBy = searchParams.get("sortBy");
   const page = +searchParams.get("page") || 1;
   const contains = searchParams.get("contains") || "";
   const material = searchParams.get("material") || "";
   const category = searchParams.get("category") || "";
-
-  const params = {};
-  searchParams.forEach((value, key) => {
-    params[key] = value;
-  });
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getMaterials());
@@ -61,12 +73,11 @@ const ExhibitsList = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(getExhibitsPerPage({ page, sortBy, limit, material, contains, category }));
-    // dispatch(getExhibitsPerPage({ ...params })); ???????????????????????????
+    dispatch(getExhibitsPerPage(Object.fromEntries([...searchParams])));
   }, [searchParams]);
 
   const handlePagination = (_, page) => {
-    setSearchParams({ ...params, page });
+    setSearchParams({ ...Object.fromEntries([...searchParams]), page });
   };
 
   const handleSearch = ({ target: { value } }) => {
@@ -74,12 +85,16 @@ const ExhibitsList = () => {
     // contains ? setSearchParams({ page, sortBy, limit, contains, material }) : setSearchParams(searchParams);
 
     if (value) {
-      setSearchParams({ page, sortBy, limit, material, contains: value, category });
+      setSearchParams({
+        ...Object.fromEntries([...searchParams]),
+        contains: value,
+      });
     } else {
       searchParams.delete("contains");
       setSearchParams(searchParams);
     }
   };
+  const handleSearchDebounce = debounce(handleSearch, 500);
 
   const paginationAttributes = {
     page,
@@ -93,7 +108,7 @@ const ExhibitsList = () => {
   };
 
   const sortSelectAttributes = {
-    params,
+    queries,
     page,
     sortBy,
     setSearchParams,
@@ -104,7 +119,7 @@ const ExhibitsList = () => {
     label: "sortBy",
   };
   const limitSelectAttributes = {
-    params,
+    queries,
     options: LIMIT,
     name: "Set Limit",
     variant: "standard",
@@ -114,43 +129,74 @@ const ExhibitsList = () => {
     label: "limit",
   };
   const materialsSelectAttributes = {
-    params,
+    limit,
+    queries,
     options: materials,
     variant: "standard",
     name: "Material",
     setSearchParams,
     searchParams,
     label: "material",
+    filteredCount,
   };
   const categoriesSelectAttributes = {
-    params,
+    limit,
+    queries,
     options: categories,
     variant: "standard",
     name: "Categories",
     setSearchParams,
     searchParams,
     label: "category",
-  }
+    filteredCount,
+  };
 
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: theme.palette.common.blue,
+      color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 20,
+    },
+  }));
 
   return (
-    <Container>
-      <Box>
-        <Search onChange={handleSearch} />
-        <Stack sx={{ mt: "20px" }} spacing={2}>
-          <Pagination {...paginationAttributes} />
-        </Stack>
-        <FilteringSelect {...materialsSelectAttributes} />
-        <FilteringSelect {...categoriesSelectAttributes} />
+    <React.Fragment>
+      <Box sx={{ display: "flex", justifyContent: "space-between", boxShadow: "0px 0px 7px 9px rgba(0,0,0,0.71)" }}>
+        <Search onChange={handleSearchDebounce} />
+        <div>
+          <FilteringSelect {...materialsSelectAttributes} />
+          <FilteringSelect {...categoriesSelectAttributes} />
+        </div>
       </Box>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow style={{ backgroundColor: "#1e344a" }}>
+              <TableCell />
+              <StyledTableCell>Image</StyledTableCell>
+              <StyledTableCell align="right">ID</StyledTableCell>
+              <StyledTableCell align="right">ExhibitName</StyledTableCell>
+              <StyledTableCell align="right">Material</StyledTableCell>
+              <StyledTableCell align="right">Category</StyledTableCell>
+              <StyledTableCell align="right">Edit</StyledTableCell>
+              <StyledTableCell align="right">Delete</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody style={{ overflowY: "scroll", height: "max-content" }}>
+            {exhibitsPerPage.map((exhibit) => (
+              <ExhibitItem key={uuid()} searchParams={searchParams} exhibit={exhibit} />
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Stack sx={{ mt: "50px" }} spacing={2}>
+        <Pagination {...paginationAttributes} />
+      </Stack>
       <MainSelectMUI {...sortSelectAttributes} />
       <MainSelectMUI {...limitSelectAttributes} />
-      <div style={{ display: "flex", flexWrap: "wrap" }}>
-        {exhibitsPerPage.map((exhibit) => (
-          <ExhibitItem key={uuid()} exhibit={exhibit} />
-        ))}
-      </div>
-    </Container>
+    </React.Fragment>
   );
 };
 

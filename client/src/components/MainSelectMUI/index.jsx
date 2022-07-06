@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { getExhibitsPerPage } from "../../features/exhibits/exhibitsSlice";
 
 const MainSelectMUI = ({
-  params,
+  queries,
   name,
   variant = "standard",
   options = {},
@@ -23,19 +23,19 @@ const MainSelectMUI = ({
   const handleChange = ({target: {value}}) => {
     // searchParams.delete(label);
     // value ? setSearchParams({...params, [label]: value}) : setSearchParams(searchParams);
-    
+
     if (value === "") {
       searchParams.delete(label);
       setSearchParams(searchParams);
     }
     else  {
-      setSearchParams({...params, [label]: value})
+      setSearchParams({...Object.fromEntries([...searchParams]), [label]: value})
     }
   };
   return (
     <FormControl variant={variant} sx={{ m: 1, minWidth: 120 }}>
       <InputLabel id="demo-simple-select-label">{name}</InputLabel>
-      <Select value={params[label] || ''}  onChange={handleChange}>
+      <Select value={searchParams.get(label) || ''}  onChange={handleChange}>
 
         <MenuItem value=''>
           <em>None</em>

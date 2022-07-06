@@ -12,8 +12,11 @@ import Select from "@mui/material/Select";
 import { getMaterials } from "../../features/filteringFeatures/filteringFeaturesSlice";
 import { getExhibitsPerPage } from "../../features/exhibits/exhibitsSlice";
 
+
 const FilteringSelect = ({
-  params,
+  limit,
+  filteredCount,
+  queries,
   name,
   variant = "standard",
   options = [],
@@ -23,13 +26,13 @@ const FilteringSelect = ({
   styles,
 }) => {
   const handleChange = ({ target: { value } }) => {
-    if (value === "") {
-      searchParams.delete(label);
-      setSearchParams(searchParams);
-    }
-    else  {
-      setSearchParams({ ...params, [label]: value });
-    }
+    // if (value === "") {
+    //   searchParams.delete(label);
+    //   setSearchParams(searchParams);
+    // }
+    // else  {
+      setSearchParams({ ...Object.fromEntries([...searchParams]), [label]: value, page: 1 });
+    // }
   };
   return (
     <FormControl sx={{ m: 1, minWidth: 120 }}>
@@ -37,7 +40,7 @@ const FilteringSelect = ({
       <Select
         labelId="demo-simple-select-helper-label"
         id="demo-simple-select-helper"
-        value={params[label] || ''}
+        value={searchParams.get(label) || ''}
         onChange={handleChange}
       >
         <MenuItem value="">

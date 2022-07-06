@@ -69,15 +69,16 @@ export const getAllExhibitsDB = async (query) => {
     }
   }
   const { page = 1, limit = 10, sortBy, contains = '', material = '', category = '' } = query
-  const count = await exhibit.count({
-    where: {
-      isActive: true,
-    },
-  })
+  // const count = await exhibit.count({
+  //   where: {
+  //     isActive: true,
+  //   },
+  // })
+
+  const count = await exhibit.count();
 
   const filteredExhibits = {
     where: {
-      isActive: true,
       material: {
         materialName: {
           contains: material
