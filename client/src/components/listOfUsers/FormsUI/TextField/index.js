@@ -5,7 +5,6 @@ import { useField } from "formik";
 const TextFieldWrapper = (props) => {
     const { name, ...otherProps } = props;
     const [ field, meta ] = useField(name);
-
     const configTextField = {
         ...field,
         ...otherProps,

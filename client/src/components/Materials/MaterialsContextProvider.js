@@ -4,9 +4,10 @@ const MaterialsContext = createContext({})
 
 function MaterialsContextProvider({children}) {
     const [showDialog, setShowDialog] = useState(false);
-
+    const [showCheckBoxes, setShowCheckBoxes] = useState(false);
+ 
     return (
-        <MaterialsContext.Provider value = {{ showDialog, setShowDialog }}>
+        <MaterialsContext.Provider value = {{ showDialog, setShowDialog, showCheckBoxes, setShowCheckBoxes }}>
             {children}
         </MaterialsContext.Provider>
     )

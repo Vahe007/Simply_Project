@@ -1,15 +1,18 @@
 import AddUserDialog from './dialogs/addDialog/AddUserDialog';
 import ButtonMUI from './ButtonMUI';
 import { useUsersContext } from '../../features/users/UsersContextProvider';
+import { classes } from '../../styles/usersListStyles';
+import { useState } from 'react';
 
 function AddUser() {
-    const {page, limit, count, sortBy, searchInputValue, setPage, addUserData, setAddUserData} = useUsersContext();
+    const [addUserData, setAddUserData] = useState(null)
 
     const ButtonMUIAttributes = {
         color: "primary" ,
         variant: "contained" ,
         text: "Add User" ,
-        onClick: () => onAddClick(1)
+        onClick: () => onAddClick(1),
+        className: classes.addUserButton
     }
 
     const onAddClick = (user) => {
@@ -17,13 +20,16 @@ function AddUser() {
     }  
 
     return (
-        <div>
-            <ButtonMUI {...ButtonMUIAttributes} />  
-                {
-                addUserData && 
-                <AddUserDialog />
-                }    
-        </div>
+            <>
+                <ButtonMUI {...ButtonMUIAttributes} />  
+                    {
+                    addUserData && 
+                    <AddUserDialog 
+                    setAddUserData={setAddUserData}
+                    />
+                    }    
+            </>
+            
     )
 }
 

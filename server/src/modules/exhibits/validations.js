@@ -28,10 +28,15 @@ export default {
             length: Joi.number().integer(),
             diameter: Joi.number().integer(),
             weight: Joi.number().integer(),
-            statusId: Joi.number().integer().required(),
+            statusId: Joi.number().integer(),
             description: Joi.string().min(3).max(200),
             contributors: Joi.any(),
+            material: Joi.any(),
+            status: Joi.any(),
             categoryId: Joi.number().integer(),
+            creator: Joi.any(),
+            updater: Joi.any(),
+            category: Joi.any(),
         })
     },
     updateExhibitValidation: {
@@ -48,7 +53,7 @@ export default {
             length: Joi.number().integer(),
             diameter: Joi.number().integer(),
             weight: Joi.number().integer(),
-            statusId: Joi.number().integer().required(),
+            statusId: Joi.number().integer(),
             categoryId: Joi.number().integer(),
             description: Joi.string().min(3).max(200).required()
         })

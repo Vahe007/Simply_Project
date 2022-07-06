@@ -25,6 +25,7 @@ export const editUserSchema = Yup.object().shape({
       .integer()
       .test('length', 'Must be exactly 9 numbers', val => String(val).length === 8),
 
-    role: Yup.string().required('Required')        
+    // role: Yup.string().required('Required')        
 
 });
+

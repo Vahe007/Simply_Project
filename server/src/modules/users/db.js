@@ -8,7 +8,6 @@ const {user} = prisma
 
 export const getAllUsersDB = async (query) => {
     const {page, limit , sortBy, contains = ""} = query;
-  
     const handleSortBy = {
       "name [A-Z]": {
         "firstName": "asc"
@@ -39,25 +38,35 @@ export const getAllUsersDB = async (query) => {
     }
   
     try {
-      const numberOfActiveUsers = await user.count({
+      const countAfterSearch = await user.count({
         where: {
-          isActive: true,
-        },
-      })
-  
-      const usersPerPage = await user.findMany({
-        where: {
-          isActive: true,
           OR: 
             ['firstName', 'lastName', 'email', 'phoneNumber'].map(el => {
               return {
                 [el]: {
-                  contains
+                  contains: contains
+                }
+              }
+            })
+        }
+      })
+
+      const usersCount = await user.count()
+  
+  
+      const usersPerPage = await user.findMany({
+        where: {
+          OR: 
+            ['firstName', 'lastName', 'email', 'phoneNumber'].map(el => {
+              return {
+                [el]: {
+                  contains: contains
                 }
               }
             })
         },
   
+      
         skip: (+page - 1) * +limit || undefined,
         take: +limit || undefined,
         orderBy: handleSortBy[sortBy] || undefined,
@@ -71,7 +80,103 @@ export const getAllUsersDB = async (query) => {
       return {
         data: {
           usersPerPage,
-          count: numberOfActiveUsers,
+          count: usersCount,
+          countAfterSearch
+        },
+        error: null
+      }
+    } catch(error) {
+      console.log(error);
+      return {
+        data: null,
+        error
+      }
+    }
+  }
+
+  export const getActiveUsersDB = async (query) => {
+    const {page, limit , sortBy, contains = ""} = query;
+    console.log(query);
+    const handleSortBy = {
+      "name [A-Z]": {
+        "firstName": "asc"
+      },
+  
+      "name [Z-A]":{
+        "firstName": "desc"
+      },
+  
+      "created date (new to old)":{
+        "createdAt": "desc"
+      },
+  
+      "created date (old to new)": {
+        "createdAt": "asc"
+  
+      },
+  
+      "updated date (new to old)": {
+        "updatedAt": "desc"
+  
+      },
+  
+      "updated date (new to old)": {
+        "updatedAt": "asc"
+  
+      },
+    }
+  
+    try {
+      const countAfterSearch = await user.count({
+        where: {
+          OR: 
+            ['firstName', 'lastName', 'email', 'phoneNumber'].map(el => {
+              return {
+                [el]: {
+                  contains: contains
+                }
+              }
+            })
+        }
+      })
+
+      const usersCount = await user.count({
+        where: {
+          isActive: true
+        }
+      })
+  
+  
+      const usersPerPage = await user.findMany({
+        where: {
+          isActive: true,
+          OR: 
+            ['firstName', 'lastName', 'email', 'phoneNumber'].map(el => {
+              return {
+                [el]: {
+                  contains: contains
+                }
+              }
+            })
+
+        },
+  
+      
+        skip: (+page - 1) * +limit || undefined,
+        take: +limit || undefined,
+        orderBy: handleSortBy[sortBy] || undefined,
+  
+        include: {
+          exhibitsCreated: true,
+          exhibitsUpdated: true,
+        }
+      });
+  
+      return {
+        data: {
+          usersPerPage,
+          count: usersCount,
+          countAfterSearch
         },
         error: null
       }
@@ -90,11 +195,15 @@ export const getUserByIdDB = async (id) => {
         where: {
           id,
         },
+        include: {
+          exhibitsCreated: true,
+          exhibitsUpdated: true
+        }
       })
       
       const {isActive} = userData;
 
-      if(isActive) {
+      if(userData && isActive) {
         const userPassExcluded = exclude(userData, ['password']);
 
         return {
@@ -116,7 +225,6 @@ export const getUserByIdDB = async (id) => {
     }
   }
 
-
 export const updateUserDB = async (data, id) => {
 
     try {
@@ -126,7 +234,7 @@ export const updateUserDB = async (data, id) => {
 
         const newData = await user.update({
             where: {
-                id: +id
+                id
             },
             data
         });

@@ -6,16 +6,9 @@ import MainDialog from "../helpers/MainDialog";
 import TextField from "../../FormsUI/TextField";
 import Button from "../../FormsUI/Button";
 
-function Content({user}) {
-    
-    const initialInputValues = {
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        password: user.password,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        role: user.role
+function Content({user, helperText}) {
+    const disabled = () => {
+
     }
 
     return (
@@ -35,10 +28,6 @@ function Content({user}) {
                         label="email"
                         
                     />
-                    <TextField
-                        name="password"
-                        label="password"
-                    />
                     <TextField 
                         name="phoneNumber"
                         label="phoneNumber"
@@ -51,6 +40,7 @@ function Content({user}) {
                     <Button>
                         Submit
                     </Button>
+                    <p style={{color: 'red'}}>{helperText}</p>
             </Grid>
             </Grid>      
         }

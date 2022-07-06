@@ -5,7 +5,11 @@ const {material} = prisma;
 
 export const getAllMaterialsDB = async () => {
     try {
-        const allMaterials = await material.findMany()
+        const allMaterials = await material.findMany({
+            include: {
+                exhibit: true
+            }
+        })
         return {
             data: allMaterials,
             error: null,
@@ -37,13 +41,13 @@ export const getActiveMaterialsDB = async () => {
     }
 }
 
-export const createMaterialDB = async (sentData) => {
+export const createMaterialDB = async (data) => {
     try {
-        const createdMaterials = await material.createMany({
-            data: sentData,
+        const newMaterials = await material.createMany({
+            data: data.map(value => ({materialName: value}))
         })
         return {
-            data: createdMaterials,
+            data: newMaterials,
             error: null,
         }
     } catch (error) {
@@ -55,17 +59,6 @@ export const createMaterialDB = async (sentData) => {
 }
 
 export const deleteMaterialDB = async (id) => {
-    const materialToBeDeleted = await material.findUnique({
-        where: {
-            id: +id
-        }
-    })
-    if (!materialToBeDeleted) {
-        return {
-            data: null,
-            error: {message: ERROR_MESSAGES.NOT_FOUND_RECORD}
-        }
-    }
     try {
         const deletedMaterial = await material.delete({
             where: {
@@ -85,21 +78,11 @@ export const deleteMaterialDB = async (id) => {
 }
 
 export const updateMaterialDB = async (data, id) => {
-    const materialToBeUpdated = await material.findUnique({
-        where: {
-            id: +id
-        }
-    })
-    if (!materialToBeUpdated) {
-        return {
-            data: null,
-            error: {message: ERROR_MESSAGES.NOT_FOUND_RECORD}
-        }
-    }
+    console.log(data)
     try {
         const updatedMaterial = await material.update({
             where: {
-                id: +id
+                id
             },
             data
         });
@@ -110,9 +93,12 @@ export const updateMaterialDB = async (data, id) => {
         }
 
     } catch (error) {
+        console.log('eddvervferwwerwef');
         return {
             data: null,
             error
         }
     }
 }
+
+

@@ -1,55 +1,48 @@
 import { Form, Formik } from "formik";
-import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { createMaterial } from "../../features/materials/materialsSlice";
-import AlertMessage, { useAlertsContext } from "../listOfUsers/alerts/AlertMessage";
+import { createMaterial, getMaterials } from "../../features/materials/materialsSlice";
+import { setSnackbar } from "../../features/snackbar/SnackbarSlice";
 import MainDialog from "../listOfUsers/dialogs/helpers/MainDialog";
 import Content from "./Content";
 import { useMaterialsContext } from "./MaterialsContextProvider";
+import { addMaterialSchema } from "./validations";
 
 function AddDialog() {
-    const {setShowDialog, initialValues} = useMaterialsContext();
-    const {setAlertMessage} = useAlertsContext();
+    const {setShowDialog } = useMaterialsContext();
 
     const dispatch = useDispatch();
 
-    const onSubmit = (inputValues) => {
-       const data =  Object.values(inputValues).map(value => ({
-            "materialName": value
-        }))
-
-        dispatch(createMaterial({
-            data,
-        }))
+    const onSubmit = (data) => {
+        const {materialNames} = data;
+        dispatch(createMaterial(materialNames))
 
         setShowDialog(false);
 
-        const quantity = Object.values(inputValues).length;
+        const quantity = materialNames.length
 
         const message = `${quantity} material${quantity === 1 ? '' : 's'} added`
+    
+        dispatch(setSnackbar({
+            snackbarOpen: true,
+            snackbarType: "success",
+            snackbarMessage: message
+        }))
         
-        setAlertMessage(
-            <>
-                <AlertMessage severity="success" title={message} onClose={() => setAlertMessage(null)}/>
-            </>
-          )
-    
         setTimeout(() => {
-          setAlertMessage(null)
-        }, 2000)
-    
+            dispatch(getMaterials())
+        })
     }
 
     return <>
 
     <MainDialog 
         title="Add Material"
-        initialValues={initialValues}
         onClose= {() => setShowDialog(false)}
         content={  <Formik
                         onSubmit={onSubmit}
+                        validationSchema={addMaterialSchema}
                         initialValues={{
-                            "materialName1": ""
+                            materialNames: ['']
                         }}
                     >
                         <Form>

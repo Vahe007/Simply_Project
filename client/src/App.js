@@ -8,35 +8,36 @@ import RequireAuth from "./components/RequireAuth"
 import AdminHome from "./pages/AdminHome.jsx";
 import UsersContextProvider from "./features/users/UsersContextProvider.js";
 import UsersPagination from "./components/UsersPagination.js";
-import Materials from "./components/Materials/Materials.js";
-
+import Materials from "./components/materials/Materials.js";
+import Snackbar from './components/snackBar/Snackbar'
 
 function App(){
   return (
-          <UsersContextProvider>
-      <AuthProvider>
+                            <AuthProvider>
+                            <UsersContextProvider>
+                              <Snackbar />
+                                <Router>
+                                    <Routes >               
+                                      <Route path="login" element={<Login type="login" />} />
+                                      <Route path="signup" element={<Signup type="signup" />} />
+                                      <Route path="*" element={<Navigate to="signup"/>} />
 
-            <Router>
-                <Routes>
-                  <Route path="login" element={<Login type="login" />} />
-                  <Route path="signup" element={<Signup type="signup" />} />
-                  <Route path="*" element={<Navigate to="signup"/>} />
+                                      <Route path="users">
+                                        <Route path=":userId" element={<Login />} />
+                                        <Route path="admin/*" element={<AdminHome />}>
+                                            <Route path="users" element={<UsersPagination />} />
+                                            <Route path="allmaterials" element={<Materials />} />
+                                      </Route>
+                                        <Route path="profile" element={<RequireAuth><Profile /></RequireAuth>} />
+                                      </Route>    
+                                    </Routes>
+                                </Router>
+                                </UsersContextProvider>
+                          </AuthProvider>
 
-                  <Route path="users">
-                    <Route path=":userId" element={<Login />} />
-                    <Route path="admin/*" element={<AdminHome />}>
-                        <Route path="userslist" element={<UsersPagination />} />
-                        <Route path="allmaterials" element={<Materials />} />
-                    </Route>
-                    <Route path="profile" element={<RequireAuth><Profile /></RequireAuth>} />
-                  </Route>
-
-                </Routes>
-              </Router>
-          
-          </AuthProvider>
-          </UsersContextProvider>
   );
+
+        
 
 } 
 

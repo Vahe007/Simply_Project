@@ -16,7 +16,9 @@ import { LocalTaxiTwoTone } from "@mui/icons-material";
 import TextFields from "../components/FormsUI/TextField/index.js";
 import { Form, Formik } from "formik";
 import { editUserSchema } from "../features/users/validations.js";
+import { getExhibitsPerPage, selectExhibits } from "../features/exhibits/exhibitsSlice.js";
 function Login({ type }) {
+
   const [isVisible, setVisibility] = useState(false);
   const [message, setMessage] = useState("");
   const [token, setToken] = useState("");
@@ -31,6 +33,15 @@ function Login({ type }) {
       error: false,
     },
   });
+
+  const z = useSelector(selectExhibits);
+  console.log(z);
+
+  useEffect(() => {
+
+    dispatch(getExhibitsPerPage({}))
+  }, [])
+
   const dispatch = useDispatch();
   const auth = useAuth();
 

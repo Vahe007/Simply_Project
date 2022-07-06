@@ -1,89 +1,70 @@
 import {prisma} from '../../services/Prisma.js'
 
 const {exhibit} = prisma
-
-const exhibitObj = {
-    select: {
-        id: true,
-        fundNumber: true,
-        exhibitName: true,
-        placeOfOrigin: true,
-        creationPeriod: true,
-        acquisitionPeriod: true,
-        width: true,
-        height: true,
-        length: true,
-        diameter: true,
-        weight: true,
-        description: true,
-        isActive: true,
-        createdAt: true,
-        updatedAt: true,
-        material: true,
-        status: true,
-        creator: {
-            select: {
-                id: true,
-                name: true,
-                surname: true,
-                email: true,
-                phoneNumber: true,
-                isActive: true,
-            }
-        },
-        updater: {
-            select: {
-                id: true,
-                name: true,
-                surname: true,
-                email: true,
-                phoneNumber: true,
-                isActive: true,
-            }
-        },
-        category: true,
-    },
-
-}
+  
 export const getAllExhibitsDB = async (query) => {
-    const sortHandler = {
-        'A-Z': {
-            fundNumber: 'asc'
+    const handleSortBy = {
+        "name [A-Z]": {
+          "firstName": "asc"
         },
-        'Z-A': {
-            fundNumber: 'desc'
+    
+        "name [Z-A]":{
+          "firstName": "desc"
         },
-        'created-new': {
-            createdAt: 'desc'
+    
+        "created date (new to old)":{
+          "createdAt": "desc"
         },
-        'created-old': {
-            createdAt: 'asc'
+    
+        "created date (old to new)": {
+          "createdAt": "asc"
+    
         },
-        'updated-new': {
-            updatedAt: 'desc'
+    
+        "updated date (new to old)": {
+          "updatedAt": "desc"
+    
         },
-        'updated-old': {
-            updatedAt: 'asc'
-        }
-    }
-    const {page = 1, limit = 10, isActive = false, sortBy = {fundNumber: 'asc'}, ...rest} = query;
+    
+        "updated date (new to old)": {
+          "updatedAt": "asc"
+    
+        },
+      }
+    const {page = 1, limit = 10, sortBy, contains="" } = query;
 
-    let whereObject = {}
+    const count = await exhibit.count();
 
-    if (isActive) {
-        whereObject.isActive = true
-    }
-    whereObject = {...whereObject, ...rest}
-    const allExhibitsObj = {...exhibitObj}
-    allExhibitsObj.where = whereObject
-    console.log('whereObject', whereObject)
+    console.log(exhibit);
+
     try {
-        const allExhibits = await exhibit.findMany(allExhibitsObj)
+        const allExhibits = await exhibit.findMany({
+            where: {
+              exhibitName: {
+                contains
+              },
+            },
+
+            include: {
+                contributors: true,
+                images: true,
+                recoveries: true,
+                exhibitions: true,
+                category: true
+            },
+      
+            skip: (+page - 1) * +limit || undefined,
+            take: +limit || undefined,
+            orderBy: handleSortBy[sortBy] || undefined,
+      
+          })
         return {
             data: allExhibits,
+            count,
             error: null,
         }
     } catch (error) {
+        console.log(error);
         return {
             data: null,
             error,
@@ -91,11 +72,13 @@ export const getAllExhibitsDB = async (query) => {
     }
 }
 
-export const createExhibitDB = async (userId, sentData) => {
+export const createExhibitDB = async (sentData) => {
+    const {id: userId, ...exhibitData} = sentData;
+
     sentData.creatorId = userId
     try {
         const newExhibit = await exhibit.create({
-            data: sentData,
+            data: exhibitData,
         })
         return {
             data: newExhibit,
@@ -153,9 +136,8 @@ export const updateExhibitDB = async (data, id) => {
 
 export const getExhibitByIdDB = async (id) => {
     try {
-        const exhibitByIdObj = {...exhibitObj, where: {id: +id}}
-        const data = await exhibit.findUnique(exhibitByIdObj)
-
+       const data = await exhibit.findUnique()
+       
         return {
             data,
             error: null,

@@ -8,32 +8,37 @@ import { useDispatch } from 'react-redux';
 import { getUsersPerPage } from '../../../features/users/usersSlice';
 import { useUsersContext } from '../../../features/users/UsersContextProvider';
 
-function SortBySelection () {
-    const {usersPerPage, page, limit, setSortBy, searchInputValue} = useUsersContext();
-    
+function SortBySelection ({searchParams, setSearchParams}) {
+    const {limit} = useUsersContext();
     const options =  useMemo(() =>  ['name [A-Z]', 'name [Z-A]', 'created date (new to old)', 'created date (old to new)', 'updated date (new to old)', 'updated date (old to new)'], []);
-    const dispatch = useDispatch();
-    const handleSortBy = event => {
-        setSortBy(event.target.value)
-        dispatch(getUsersPerPage({page, limit, sortBy: event.target.value, contains: searchInputValue}))
-      }
+
+    const onChange = (e) => {
+        const { value } = e.target;
+        setSearchParams({
+            page: searchParams.get('page'),
+            limit: searchParams.get('limit'),
+            contains: searchParams.get('contains'),
+            sortBy: value
+        })
+    }
+
     return (
         <>
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                <InputLabel id="demo-simple-select-standard-label">Sort by</InputLabel>
-                <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                label="Sort By"
-                onChange={handleSortBy}
-                defaultValue=""
-                >
-                <MenuItem value="">
-                    <em>None</em>
-                </MenuItem>
-                { options.map(option => <MenuItem key={uuid()} value={option} disabled={usersPerPage.length < 2}> {option} </MenuItem>) }
-                </Select>
-            </FormControl> 
+                <FormControl  variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                    <InputLabel id="demo-simple-select-standard-label">Sort by</InputLabel>
+                    <Select
+                    labelId="demo-simple-select-standard-label"
+                    id="demo-simple-select-standard"
+                    label="Sort By"
+                    onChange={onChange}
+                    defaultValue=""
+                    >
+                    <MenuItem value="">
+                        <em>None</em>
+                    </MenuItem>
+                    { options.map(option => <MenuItem key={uuid()} value={option} > {option} </MenuItem>) }
+                    </Select>
+                </FormControl>             
         </>
     )
 }

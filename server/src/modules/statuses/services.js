@@ -1,4 +1,4 @@
-import {areItemsUniqueByFieldname, responseDataCreator} from '../../helpers/common.js'
+import {responseDataCreator} from '../../helpers/common.js'
 import {createStatusDB, deleteStatusDB, getActiveStatusesDB, getAllStatusesDB, updateStatusDB,} from './db.js'
 import {ERROR_MESSAGES} from "../../helpers/constants.js";
 
@@ -22,10 +22,6 @@ export const getActiveStatuses = async (req, res, next) => {
 
 export const createStatus = async (req, res, next) => {
     const arrayOfStatuses = req.body.data
-    const statusNamesAreUnique = areItemsUniqueByFieldname(arrayOfStatuses, 'statusName')
-    if (!statusNamesAreUnique) {
-        next({status: 403, message: ERROR_MESSAGES.ITEMS_ARE_NOT_UNIQUE})
-    }
     try {
         const newStatuses = await createStatusDB(arrayOfStatuses)
         res.json(responseDataCreator(newStatuses))

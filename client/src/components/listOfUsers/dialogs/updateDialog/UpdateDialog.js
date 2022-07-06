@@ -4,15 +4,15 @@ import MainDialog from "../helpers/MainDialog";
 import Content from "./Content";
 import { useUsersContext } from "../../../../features/users/UsersContextProvider";
 import { useDispatch } from "react-redux";
-import { getUsersPerPage, updateUser } from "../../../../features/users/usersSlice";
-import AlertMessage, { useAlertsContext } from "../../alerts/AlertMessage";
+import { getUsersPerPage, updateAndGetUsers } from "../../../../features/users/usersSlice";
 import { Form, Formik } from "formik";
 import { editUserSchema } from "../../../../features/users/validations";
-const UpdateDialog = ({user}) => {
-    const {page, limit, count, sortBy, searchInputValue, setPage, addUserData, setAddUserData, editUserData, setEditUserData} = useUsersContext();
-    const {showAlertMessage, setAlertMessage} = useAlertsContext();
+import { setSnackbar } from "../../../../features/snackbar/SnackbarSlice";
 
-    const dispatch = useDispatch()
+const UpdateDialog = ({user, editUserData, setEditUserData,  searchParams, setSearchParams}) => {
+    let [helperText, setHelperText] = useState("");
+    const dispatch = useDispatch();
+    console.log(searchParams.get('page'));
     const initialInputValues = {
         id: user.id,
         firstName: user.firstName,
@@ -24,48 +24,62 @@ const UpdateDialog = ({user}) => {
     }
 
     const onSubmit = (data) => {
-        console.log(data);
         const {id, ...newData} = data;
 
-        dispatch(updateUser({
-            id: +id,
-            newData,
-        }))
+        const message = `User with ID: ${id} is EDITED`
 
-        setAlertMessage(
-            <>
-             <AlertMessage severity="success" title="User Edited"  onClose={() => setAlertMessage(null)}/>
-            </>
-          )
+        const sameInputsCount = ["firstName", "lastName", "email", "phoneNumber", "role"].reduce((acc, key) => {
+            if(initialInputValues[key] === data[key]) {
+                return acc + 1;
+            } else {
+                return acc;
+            }
+        }, 0)
 
-          setTimeout(() => {
-            setAlertMessage(null)
-          }, 2000)
+        if(sameInputsCount === 5) {
+            setHelperText("Submission Denied: At least one input should be editted");
+        } else {
+            dispatch(updateAndGetUsers({
+                id: +id,
+                newData,
+                queries: {
+                    page: searchParams.get('page'),
+                    limit: searchParams.get('limit'),
+                    sortBy: searchParams.get('sortBy'),
+                    contains: searchParams.get('contains'),
+                }
+            }))
+    
+            onClose();
+    
+            dispatch(setSnackbar({
+                snackbarOpen: true,
+                snackbarMessage: message,
+                snackbarType: "success"
+            }))
+        }
 
-
-        setTimeout(() => {
-            dispatch(getUsersPerPage({page, limit, sortBy, contains: searchInputValue}))
-        })
-
-        onClose()
+       
     }
 
     const onClose = () => {
         setEditUserData(null)
     }
-
+    
     return (
         <>
             {editUserData && 
             <MainDialog 
                 title="Edit User"
+               
                 content =  {<Formik
                                 initialValues={initialInputValues}
                                 validationSchema={editUserSchema}
                                 onSubmit = {onSubmit}
+                                
                             >
-                                  <Form>
-                                    <Content user={user} />
+                                <Form>
+                                    <Content user={user} helperText={helperText} />
                                 </Form>     
                             </Formik> 
                             }

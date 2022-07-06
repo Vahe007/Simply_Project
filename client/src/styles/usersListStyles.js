@@ -6,8 +6,7 @@ jss.setup(preset());
 const styles = {
   ul: {
     listStyleType: "none",
-    display: "flex",
-    flexDirection: "column"
+    padding: 0
   },
 
   li: {
@@ -16,26 +15,28 @@ const styles = {
   },
 
   liSpan: {
-    flex: 1
+    flex: 1,
+    padding: "10px 0px",
   },
 
-  title: {
-    font: {
-      size: 40,
-      weight: 900
-    },
-    color: "#24292e"
-  },
-  link: {
-    color: "#24292e",
-    "&:hover": {
-      opacity: 0.5
-    }
-  },
   searchContainer: {
     marginBottom: "20px",
     textAlign: "center"
-  }
+  },
+
+  usersListContainer: {
+    maxWidth: "calc(100% - 100px)",
+    margin: "auto"
+  },
+
+  root: {
+    width: '100%',
+    overflowX: 'auto',
+  },
+  table: {
+    minWidth: 700,
+  },
+
 };
 
 export const { classes } = jss.createStyleSheet(styles).attach();

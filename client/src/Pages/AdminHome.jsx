@@ -3,15 +3,21 @@ import { Link, Outlet, Route, Routes } from "react-router-dom";
 import App from "../components/UsersPagination";
 import { useNavigate } from "react-router-dom";
 import {v4 as uuid} from 'uuid';
-import { useState } from "react";
+import { classes } from "../styles/adminHomePageStyle.js";
+import { useEffect } from "react";
 
 function AdminHome() {
+
     const navigate = useNavigate();
+
+    useEffect(() => {
+        navigate("users?page=1&limit=10&contains=&sortBy=")
+    }, [])
 
     const options = [
         {
             name: "Users",
-            path: "userslist",
+            path: "users?page=1&limit=10&contains=&sortBy=",
         },
 
         {
@@ -27,26 +33,28 @@ function AdminHome() {
     ]
     return (
         <>
-            <div>
-                {
-                    options
-                        .map(({name, path, variant}) => {
-                            return <Button
-                                        key={uuid()}
-                                        variant={variant}
-                                        onClick={() => {
-                                            navigate(path)
-                                        }}
-                                    > 
-                                        {name}
-
-                                    </Button>
-                        })
-                }
-          
-            </div>
+                
+                <div className={classes.header}>
+                    {
+                        options
+                            .map(({name, path, variant}) => {
+                                const label = {
+                                    className: classes.buttonHeader,
+                                    key: uuid(),
+                                    variant,
+                                    onClick: () => {
+                                        navigate(path)
+                                    }
+                                }
+                                return <Button{...label}> {name} </Button>
+                            })
+                    }
             
-            <Outlet />
+                </div>
+            
+                <Outlet />
+
+          
 
         </>
     )

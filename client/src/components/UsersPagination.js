@@ -1,63 +1,82 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ListUsers from './listOfUsers/ListUsers.js';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { getUsersPerPage } from '../features/users/usersSlice'
+import { useDispatch, useSelector } from 'react-redux';
+import { getUsersPerPage, selectUsers } from '../features/users/usersSlice'
 import { Pagination } from '@mui/material';
 import UsersPerPageSelection from './listOfUsers/forms/UsersPerPageSelection';
 import SortBySelection from './listOfUsers/forms/SortBySelection.js';
-import { useUsersContext } from '../features/users/UsersContextProvider.js';
-import { useAlertsContext } from './listOfUsers/alerts/AlertMessage.js';
 import SearchUser from './listOfUsers/searchInputs/SearchUser.js';
-import AddUser from './listOfUsers/AddUser.js';
-
-export const UsersContext = React.createContext();
-
+import { classes } from '../styles/usersListStyles';
+import { useSearchParams } from 'react-router-dom';
 
 function UsersPagination() { 
   const dispatch = useDispatch();
-  const {page, limit, count, sortBy, searchInputValue, setPage} = useUsersContext();
-  const {showAlertMessage} = useAlertsContext(null);
+  const { countAfterSearch } = useSelector(selectUsers);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [initial, setInitial] = useState(true);
+  const page = searchParams.get('page');
+  const limit = searchParams.get('limit');
+  const contains = searchParams.get('contains');
+  const sortBy = searchParams.get('sortBy');
 
   useEffect(() => {
     const queries = {
-      page,
+      page: 1,
       limit: 10,
-      contains: searchInputValue
+      contains: "",
+      sortBy: ""
     }
 
     dispatch(getUsersPerPage(queries));
+
+    setInitial(false)
   }, [])
 
-  const onPageChange = e => {
-    const { textContent } = e.target;
-    const currentPage = +textContent; 
+  useEffect(() => {
+      dispatch(getUsersPerPage({page, limit, contains, sortBy}));
+  }, [searchParams])
 
-    setPage(currentPage);
-    dispatch(getUsersPerPage({page: currentPage, sortBy, limit, contains: searchInputValue}));
 
+  const onPageChange = (_, page) => {
+    setSearchParams({
+      page,
+      limit: searchParams.get('limit'),
+      contains: searchParams.get('contains'),
+      sortBy: searchParams.get('sortBy')
+    })
   }
-
+      
   const paginationAttributes = {
-    count: Math.ceil(count / limit),
+    count: Math.ceil(countAfterSearch / limit),
     onChange: onPageChange,
   }
 
   return (
     <>      
-          { showAlertMessage }
+          <div className={classes.usersListContainer}>
+              <SearchUser 
+                searchParams={searchParams} 
+                setSearchParams={setSearchParams}
+              />
 
-          <SearchUser />
+              <ListUsers 
+                searchParams={searchParams} 
+                setSearchParams={setSearchParams}
+              />
 
-          <AddUser />
+              <Pagination {...paginationAttributes} />
 
-          <ListUsers />
+              <SortBySelection 
+                searchParams={searchParams} 
+                setSearchParams={setSearchParams}
+              />
 
-          <Pagination {...paginationAttributes} />
-          
-          <SortBySelection />
-
-          <UsersPerPageSelection />             
+              <UsersPerPageSelection 
+                searchParams={searchParams} 
+                setSearchParams={setSearchParams}
+              />            
+          </div>
     </>
   );
 

@@ -1,41 +1,83 @@
 import { useUsersContext } from "../../../features/users/UsersContextProvider";
 import {  Input } from '@mui/material';
 import { useDispatch } from "react-redux";
-import { getUsersPerPage } from "../../../features/users/usersSlice";
-import { classes } from "../styles";
+import { classes } from "../../../styles/usersListStyles";
+import AddUser from "../AddUser";
+import RadioButtons from "../RadioButtons";
+import { getActiveUsers, getUsersPerPage } from "../../../features/users/usersSlice";
+import MainRadioButtons from "../MainRadioButtons";
 
-
-function SearchUser() {
-    const { count, searchInputValue, page, sortBy, limit, setSearchInputValue } = useUsersContext();
+function SearchUser({searchParams, setSearchParams}) {
     const dispatch = useDispatch();
+  const handleChange =(e, value) => {
+        switch (value) {
+            case ("allUsers"): {
+                dispatch(getUsersPerPage({
+                    page: searchParams.get('page'),
+                    limit: searchParams.get('limit'),
+                    contains: searchParams.get('contains'),
+                    sortBy: searchParams.get('sortBy'),
+                }))
 
-    const wrapper = () => {
+                break;
+            }
+
+            case ("activeUsers"): {
+                dispatch(getActiveUsers({
+                    contains: searchParams.get('contains'),
+                    sortBy: searchParams.get('sortBy'),
+                }))
+
+                break;
+            }
+            case ("inactiveUsers"): {
+                dispatch(getActiveUsers({
+                    page: searchParams.get('page'),
+                    limit: searchParams.get('limit'),
+                    contains: searchParams.get('contains'),
+                    sortBy: searchParams.get('sortBy'),
+                }))
+            }
+        }
+    }
+    const searchInputWrapper = () => {
         let timerId;
 
         return (evt) => {
-            const {value} = evt.target;
             clearTimeout(timerId);
 
+            const {value} = evt.target;
+
             timerId = setTimeout(() => {
-                dispatch(getUsersPerPage({page, sortBy, limit, contains: value}));
-            }, 1000)
+                setSearchParams({
+                    limit: searchParams.get('limit'),
+                    contains: value,
+                    sortBy: searchParams.get('sortBy')
+                })
+            }, 600)
         }
     }
 
-    const onSearchInputChange = wrapper()
+    const onSearchInputChange = searchInputWrapper();
 
-    const inputAttributes = {
-        placeholder: count < 3 ? `enter ${3 - count} more user${2 - count ? 's' : ''} to enable search` : "search",
+    const label = {
+        placeholder: "search",
         sx: {width: 300},
         onChange: onSearchInputChange,
-        disabled: count < 3,
-        className: classes.searchContainer
     }
-
-   
-
     
-    return  <Input {...inputAttributes} />
+    return  <div className={classes.searchContainer}>
+                <Input {...label} />
+
+                <AddUser />
+
+                <MainRadioButtons 
+                    labels={["All users", 'Active users', "Inactive Users"]}
+                    values={["allUsers", "activeUsers", "inActiveUsers"]}
+                    handleChange={handleChange}
+                    defaultValue="allUsers"
+                />
+             </div>
 }
 
 export default SearchUser;

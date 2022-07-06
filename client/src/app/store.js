@@ -6,6 +6,8 @@ import userAccessReducer from "../features/userAccess/userAccessSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import usersReducer from '../features/users/usersSlice.js'
 import materialsReducer from '../features/materials/materialsSlice.js'
+import exhibitsReducer from '../features/exhibits/exhibitsSlice'
+import snackbarReducer from '../features/snackbar/SnackbarSlice'
 
 const store = configureStore({
   reducer: {
@@ -13,9 +15,14 @@ const store = configureStore({
     signup: signupReducer,
     userAccess: userAccessReducer,
     users: usersReducer,
-    materials: materialsReducer
+    materials: materialsReducer,
+    exhibits: exhibitsReducer,
+    snackbar: snackbarReducer
+    
   }
 })
 
 
 export default store;
+
+
