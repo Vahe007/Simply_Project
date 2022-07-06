@@ -1,4 +1,3 @@
-import e from "cors";
 import React, { createContext, useContext, useEffect } from "react";
 import { useState } from "react";
 import Cookies from 'js-cookie';
