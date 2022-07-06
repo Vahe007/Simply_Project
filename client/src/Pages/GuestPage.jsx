@@ -43,14 +43,14 @@ const GuestPage = ()=>{
             <input type="text" value={query} onChange={handleSearch} />
         </Box>
             {
-            exhibits.map((exhibit, index) => {
-                return index === exhibits.length - 1 ? <div ref={lastExhibitElementRef} key={exhibit.key} >{exhibit.title}</div> : <div key={exhibit.key} >{exhibit.title}</div>
-        
-            })
             // exhibits.map((exhibit, index) => {
-            //     return index === exhibits.length - 1 ? <Grid item ><ExhibitCard ref={lastExhibitElementRef} key={exhibit.key} /></Grid> : <Grid item ><ExhibitCard key={exhibit.key} /></Grid>
+            //     return index === exhibits.length - 1 ? <div ref={lastExhibitElementRef} key={exhibit.key} >{exhibit.title}</div> : <div key={exhibit.key} >{exhibit.title}</div>
         
             // })
+            exhibits.map((exhibit, index) => {
+                return index === exhibits.length - 1 ? <Grid item ><ExhibitCard ref={lastExhibitElementRef} key={exhibit.key} /></Grid> : <Grid item ><ExhibitCard key={exhibit.key} /></Grid>
+        
+            })
             }
         {loading && <CircularProgress />}
         {error && 'Error'}

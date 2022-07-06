@@ -1,32 +1,41 @@
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import { CardActionArea } from '@mui/material';
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import Typography from "@material-ui/core/Typography";
 
 
-const   ExhibitCard = ()=> {
-    return (
-      <Card sx={{ maxWidth: 345 }}>
-        <CardActionArea>
-          <CardMedia
-            component="img"
-            height="140"
-            image="/static/images/cards/contemplative-reptile.jpg"
-            alt="green iguana"
-          />
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              Lizard
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Lizards are a widespread group of squamate reptiles, with over 6,000
-              species, ranging across all continents except Antarctica
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-      </Card>
-    );
-  }
+const useStyles = makeStyles({
+  root: {
+    maxWidth: 345,
+  },
+});
 
-  export default  ExhibitCard 
+export default function ExibitCard() {
+  const classes = useStyles();
+
+  return (
+    <Card className={classes.root}>
+      <CardActionArea>
+        <CardMedia
+          component="img"
+          alt="Exibit"
+          height="140"
+          image={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8Dui-CG5_VcIxTHxks0tTiME_1rIvYeIfMA&usqp=CAU'}
+          title={'Title'}
+        />
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="h2">
+            {'Title'}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            {'Material'}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+    </Card>
+  );
+}
