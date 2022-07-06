@@ -1,49 +1,32 @@
 import { useState } from "react";
 import { Grid, InputLabel, MenuItem } from "@mui/material";
 import React from "react";
-import { FormControl } from "react-bootstrap";
 import Select from "../../FormsUI/Select";
 import MainDialog from "../helpers/MainDialog";
 import TextField from "../../FormsUI/TextField";
 import Button from "../../FormsUI/Button";
 
-function Content({user}) {
-    
-    const initialInputValues = {
-        id: user.id,
-        name: user.name,
-        surname: user.surname,
-        password: user.password,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        role: user.role
+function Content({user, helperText}) {
+    const disabled = () => {
+
     }
-
-  const [inputValues, setInputValues] = useState(initialInputValues)
-  
-
-const [role, setRole] = useState("");
 
     return (
         <>
           {<Grid container spacing={4}>
                 <Grid item xs={12}>
                     <TextField
-                        name="name"
-                        label="name"  
+                        name="firstName"
+                        label="First name"  
                     />
                     <TextField 
-                        name="surname"
-                        label="surname"
+                        name="lastName"
+                        label="Last name"
                     />
                     <TextField 
                         name="email"
                         label="email"
                         
-                    />
-                    <TextField
-                        name="password"
-                        label="password"
                     />
                     <TextField 
                         name="phoneNumber"
@@ -52,11 +35,12 @@ const [role, setRole] = useState("");
                     <Select 
                         name="role"
                         label="Role"
-                        options={["employee", "guest"]}
+                        options={["EMPLOYEE", "GUEST"]}
                     />
                     <Button>
                         Submit
                     </Button>
+                    <p style={{color: 'red'}}>{helperText}</p>
             </Grid>
             </Grid>      
         }

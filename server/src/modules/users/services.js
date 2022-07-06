@@ -1,12 +1,23 @@
 import {responseDataCreator} from '../../helpers/common.js'
-import {getAllUsersDB, createUserDB, getUserByIdDB, updateUserDB, deleteUserDB, loginDB} from './db.js'
+import {getAllUsersDB, createUserDB, getUserByIdDB, updateUserDB, deleteUserDB, loginDB, getActiveUsersDB} from './db.js'
 
-export const getAllUsers = async ({query}, res, next) => {
+export const getAllUsers = async ({query, body}, res, next) => {
+    console.log(body);
     try {
         const users = await getAllUsersDB(query);
         res.status(200).json(responseDataCreator(users))
     } catch (error) {
-        console.log(error)
+        console.log('hoo')
+        next(error)
+    }
+}
+
+export const getActiveUsers = async ({query}, res, next) => {
+    try {
+        const users = await getActiveUsersDB(query);
+        res.status(200).json(responseDataCreator(users))
+    } catch (error) {
+        console.log('hoo')
         next(error)
     }
 }
@@ -34,7 +45,7 @@ export const updateUser = async (req, res, next) => {
     const {id} = req.params;
     
     try {
-        const user = await updateUserDB(req.body, id);
+        const user = await updateUserDB(req.body, +id);
         res.status(200).json(responseDataCreator(user));
     } catch (error) {
         next(error);

@@ -24,6 +24,7 @@ import { useFormik } from 'formik';
 
 
 function Login({ type }) {
+
   const [isVisible, setVisibility] = useState(false);
   const [message, setMessage] = useState("");
   const token = useSelector(getToken);

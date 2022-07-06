@@ -1,20 +1,20 @@
-import { editUserSchema } from "../../../features/users/validations";
+import { editUserSchema } from "../../../../features/users/validations";
 import MainDialog from "../helpers/MainDialog";
-import { Formik, Form  } from "formik";
-import { useDispatch } from "react-redux";
-import { createUser, getUsersPerPage } from "../../../features/users/usersSlice";
-import { useUsersContext } from "../../../features/users/UsersContextProvider";
-import AlertMessage, { useAlertsContext } from "../../alerts/AlertMessage";
+import { Formik, Form, useFormik  } from "formik";
+import { useDispatch, useSelector } from "react-redux";
+import { createUser, getUsersPerPage, selectUsers } from "../../../../features/users/usersSlice";
+import { useUsersContext } from "../../../../features/users/UsersContextProvider";
 import Content from "./Content";
+import { setSnackbar } from "../../../../features/snackbar/SnackbarSlice";
 
-const AddUserDialog = () => {
-    const {page, limit, sortBy, contains: searchInputValue, setAddUserData} = useUsersContext();
+const AddUserDialog = ({setAddUserData}) => {
+    const {page, limit, sortBy, contains: searchInputValue} = useUsersContext();
     const dispatch = useDispatch(); 
-    const { setAlertMessage } = useAlertsContext(null);
+    const {error } = useSelector(selectUsers);
 
     const initialInputValues = {
-        name: '',
-        surname: '',
+        firstName: '',
+        lastName: '',
         email: '',
         password: '',
         phoneNumber: '',
@@ -22,37 +22,42 @@ const AddUserDialog = () => {
     }
 
     const onSubmit = (values) => {
-
         dispatch(createUser(values));
         
         setTimeout(() => {
             dispatch(getUsersPerPage({page, limit, sortBy, contains: searchInputValue || ""}))
         }, 0)
+
+        if(!error) {
+            dispatch(setSnackbar({
+                snackbarOpen: true,
+                snackbarType: "success",
+                snackbarMessage: "User successfully added"
+            }))
+        }
+       
         
         onClose()
     
-        setAlertMessage(
-            <>
-                <AlertMessage severity="success" title="User Added" onClose={() => setAlertMessage(null)}/>
-            </>
-          )
-    
-        setTimeout(() => {
-          setAlertMessage(null)
-        }, 2000)
     }
 
     const onClose = () => {
         setAddUserData(null)
     }
 
+    const formik = useFormik({
+        initialValues: initialInputValues,
+        validationSchema: editUserSchema,
+        onSubmit: onSubmit
+    })
+
     return (
         <MainDialog
             title="Add User"
             content= {<Formik
+                            onSubmit={onSubmit}
                             initialValues={initialInputValues}
                             validationSchema={editUserSchema}
-                            onSubmit={onSubmit}      
                         >
                             <Form>
                                 <Content />
