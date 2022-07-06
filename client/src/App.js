@@ -6,6 +6,7 @@ import { AuthProvider } from "./components/auth.js";
 import Profile from "./Pages/Profile.jsx";
 import RequireAuth from "./components/RequireAuth";
 import Employee from "./Pages/Employee";
+import GuestPage from "./Pages/GuestPage"
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="signup" element={<Signup type="signup" />} />
           <Route path="*" element={<Navigate to="signup" />} />
           <Route path="employee" element={<Employee />} />
+          <Route path='guest' element={<GuestPage />} />
           <Route path="users">
             <Route path=":userId" element={<Login />} />
             <Route path="admin" element={<Login />} />
