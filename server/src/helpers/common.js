@@ -16,6 +16,7 @@ export const validate = (schema) => {
             schema.body && (await schema.body.validateAsync(body))
             return next()
         } catch (error) {
+            console.log('hii');
             next(badRequestErrorCreator(error.details))
         }
     }
@@ -23,11 +24,6 @@ export const validate = (schema) => {
 
 export const responseDataCreator = (data) => ({
     ...data,
-})
-
-export const getPagination = ({page = 1, limit = 10}) => ({
-    skip: (+page - 1) * +limit,
-    take: +limit,
 })
 
 export const generateAccessToken = (id, roles) => {
@@ -60,3 +56,13 @@ export const areItemsUniqueByFieldname = (array, fieldName) => {
     const uniqueValues = new Set(array.map(item => item[fieldName]))
     return uniqueValues.size === array.length
 }
+
+//exclude Property from array of objects for prisma data
+export function exclude(obj, options) {
+      const objClone = {...obj};
+        for(const value of options) {
+            delete objClone[options];            
+        }
+        return objClone;
+  }
+  

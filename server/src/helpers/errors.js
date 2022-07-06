@@ -10,7 +10,6 @@ export const notFoundErrorCreator = () => {
 export const internalServerErrorCreator = () => {
     const error = new Error(ERROR_MESSAGES.INTERNAL_SERVER_ERROR)
     error.status = 500
-
     return error
 }
 
