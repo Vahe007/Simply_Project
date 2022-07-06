@@ -7,14 +7,16 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
+import Avatar from "./Avatar";
 import Logo from "../../assets/Logo.svg";
 
 const settings = ["Profile", "Logout"];
 
 const ProfileHeader = () => {
+  const name = "sdf";
+  const surname = "oghosyan";
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -112,7 +114,9 @@ const ProfileHeader = () => {
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 {/* ------------------ avatar part to do--------------------- */}
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                {/* <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" /> */}
+                {/* <AvatarGenerator></AvatarGenerator> */}
+                <Avatar name={name} surname={surname} />
               </IconButton>
             </Tooltip>
             <Menu

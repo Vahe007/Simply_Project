@@ -1,5 +1,5 @@
 import * as React from "react";
-import Avatar from "@mui/material/Avatar";
+import MuiAvatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 
 function stringToColor(string) {
@@ -31,12 +31,6 @@ function stringAvatar(name) {
   };
 }
 
-export default function BackgroundLetterAvatars() {
-  return (
-    <Stack direction="row" spacing={2}>
-      <Avatar {...stringAvatar("Kent Dodds")} />
-      <Avatar {...stringAvatar("Jed Watson")} />
-      <Avatar {...stringAvatar("Tim Neutkens")} />
-    </Stack>
-  );
+export default function Avatar({ name, surname }) {
+  return <MuiAvatar {...stringAvatar(`${name} ${surname}`)} />;
 }
