@@ -10,6 +10,7 @@ export const validate = (schema) => {
 
     return async (req, res, next) => {
         const {params, body} = req
+        console.log(req.body);
 
         try {
             schema.params && (await schema.params.validateAsync(params))
@@ -51,11 +52,6 @@ const storage = multer.diskStorage({
 })
 
 export const upload = multer({storage})
-
-export const areItemsUniqueByFieldname = (array, fieldName) => {
-    const uniqueValues = new Set(array.map(item => item[fieldName]))
-    return uniqueValues.size === array.length
-}
 
 //exclude Property from array of objects for prisma data
 export function exclude(obj, options) {

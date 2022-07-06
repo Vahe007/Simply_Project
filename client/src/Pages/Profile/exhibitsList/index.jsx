@@ -151,15 +151,15 @@ const ExhibitsList = () => {
     filteredCount,
   };
 
-  const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.common.blue,
-      color: theme.palette.common.white,
-    },
-    [`&.${tableCellClasses.body}`]: {
-      fontSize: 20,
-    },
-  }));
+  // const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  //   [`&.${tableCellClasses.head}`]: {
+  //     backgroundColor: theme.palette.common.blue,
+  //     color: theme.palette.common.white,
+  //   },
+  //   [`&.${tableCellClasses.body}`]: {
+  //     fontSize: 20,
+  //   },
+  // }));
 
   return (
     <React.Fragment>
@@ -170,18 +170,18 @@ const ExhibitsList = () => {
           <FilteringSelect {...categoriesSelectAttributes} />
         </div>
       </Box>
-      <TableContainer>
-        <Table>
-          <TableHead>
+      <TableContainer sx={{maxHeight: 440}}>
+        <Table stickyHeader aria-label="sticky table">
+          <TableHead sx={{bgColor: "yellow"}}>
             <TableRow sx={{ backgroundColor: "#1e344a" }}>
               <TableCell />
-              <StyledTableCell>Image</StyledTableCell>
-              <StyledTableCell align="right">ID</StyledTableCell>
-              <StyledTableCell align="right">ExhibitName</StyledTableCell>
-              <StyledTableCell align="right">Material</StyledTableCell>
-              <StyledTableCell align="right">Category</StyledTableCell>
-              <StyledTableCell align="right">Edit</StyledTableCell>
-              <StyledTableCell align="right">Delete</StyledTableCell>
+              <TableCell>Image</TableCell>
+              <TableCell align="right">ID</TableCell>
+              <TableCell align="right">ExhibitName</TableCell>
+              <TableCell align="right">Material</TableCell>
+              <TableCell align="right">Category</TableCell>
+              <TableCell align="right">Edit</TableCell>
+              <TableCell align="right">Delete</TableCell>
             </TableRow>
           </TableHead>
           <TableBody style={{ overflowY: "scroll", height: "max-content" }}>

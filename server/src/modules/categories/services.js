@@ -1,4 +1,4 @@
-import {areItemsUniqueByFieldname, responseDataCreator} from '../../helpers/common.js';
+import {responseDataCreator} from '../../helpers/common.js';
 import {
     createCategoryDB,
     deleteCategorylDB,
@@ -32,10 +32,6 @@ export const getActiveCategories = async (req, res, next) => {
 
 export const createCategory = async (req, res, next) => {
     const arrayOfCategories = req.body.data
-    const categoryNamesAreUnique = areItemsUniqueByFieldname(arrayOfCategories, 'categoryName')
-    if (!categoryNamesAreUnique) {
-        next({status: 403, message: ERROR_MESSAGES.ITEMS_ARE_NOT_UNIQUE})
-    }
     try {
         const category = await createCategoryDB(arrayOfCategories);
         res.json(responseDataCreator(category));

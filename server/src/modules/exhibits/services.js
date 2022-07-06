@@ -22,7 +22,7 @@ export const getActiveExhibits = async (req, res, next) => {
 export const createExhibit = async (req, res, next) => {
     const {id: userId} = req.body
     try {
-        const newExhibit = await createExhibitDB(userId, req.body)
+        const newExhibit = await createExhibitDB(req.body)
         res.json(responseDataCreator(newExhibit))
     } catch (error) {
         next(error)

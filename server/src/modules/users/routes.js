@@ -1,7 +1,7 @@
 import {Router} from 'express'
 import {validate} from '../../helpers/common.js'
 
-import {getAllUsers, getUserById, createUser, updateUser, deleteUser, login} from './services.js'
+import {getAllUsers, getUserById, createUser, updateUser, deleteUser, login, getActiveUsers} from './services.js'
 import validations from './validations.js';
 
 
@@ -10,6 +10,7 @@ const {getUserByIdSchema, createUserSchema, updateUserByIdSchema, loginUserSchem
 const router = Router()
 
 router.get('/', getAllUsers);
+router.get('/active', getActiveUsers);
 router.get('/:id', validate(getUserByIdSchema), getUserById);
 router.post('/registration', validate(createUserSchema), createUser)
 router.post('/login', validate(loginUserSchema), login)

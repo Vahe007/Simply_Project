@@ -37,7 +37,12 @@ export default {
             statusId: Joi.number().integer(),
             description: Joi.string().min(3).max(200),
             contributors: Joi.any(),
+            material: Joi.any(),
+            status: Joi.any(),
             categoryId: Joi.number().integer(),
+            creator: Joi.any(),
+            updater: Joi.any(),
+            category: Joi.any(),
         })
     },
     updateExhibitValidation: {

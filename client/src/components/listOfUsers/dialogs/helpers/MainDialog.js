@@ -9,14 +9,18 @@ function MainDialog(props) {
             
              <Dialog
                 open
-                
+                sx={{
+                    paddingTop: '0px'
+                }}
             >
                { !deleteId && 
                  <CloseIcon 
                     onClick={onClose}
                 /> 
                 }
-                <DialogTitle>
+                <DialogTitle
+                  
+                >
                     {title}
                 </DialogTitle>
 
