@@ -75,18 +75,12 @@ function Login({ type }) {
   }
 
   return (
-<<<<<<< HEAD
     <div className="login" style={{ overflowY: "hidden" }}>
       <Header type="login" />
       <Box
         sx={{
           mt: "150px",
         }}
-=======
-    <>
-      <Formik
-      // validationSchema={editUserSchema}
->>>>>>> fba7bc4642fc45b1087d9200b266df5e75e64d13
       >
         <form
           onSubmit={formik.handleSubmit}

@@ -173,7 +173,7 @@ const ExhibitsList = () => {
       <TableContainer>
         <Table>
           <TableHead>
-            <TableRow style={{ backgroundColor: "#1e344a" }}>
+            <TableRow sx={{ backgroundColor: "#1e344a" }}>
               <TableCell />
               <StyledTableCell>Image</StyledTableCell>
               <StyledTableCell align="right">ID</StyledTableCell>

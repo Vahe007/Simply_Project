@@ -35,98 +35,11 @@ const Signup = () => {
     phoneNumber: "",
   };
 
-<<<<<<< HEAD
   const handleRegistration = async (values, {resetForm}) => {
     await dispatch(createUser(values));
     setMessage(localStorage.getItem("message"));
     if (localStorage.getItem("message") === "User successfully created") {
       resetForm({ values: "" });
-=======
-    // return () => {
-    //   console.log("cleaned up");
-    //   localStorage.removeItem("error");
-    // };
-  }, [error]);
-
-  const isLoading = useSelector((state) => {
-    return state.signup.isLoading;
-  });
-
-  const [state, setState] = useState({
-    name: {
-      value: "",
-      isRed: false,
-    },
-    surname: {
-      value: "",
-      isRed: false,
-    },
-    email: {
-      value: "",
-      isRed: false,
-    },
-    password: {
-      value: "",
-      isRed: false,
-    },
-    phone: {
-      value: "",
-      isRed: false,
-    },
-  });
-  //handle second error with useEffect
-  const handleRegistration = async () => {
-    const keys = Object.keys(state);
-    let flag = true;
-    keys.forEach((key) => {
-      if (key !== "phone" && state[key].value === "") {
-        flag = false;
-        setState((prevState) => {
-          return {
-            ...prevState,
-            [key]: {
-              value: "",
-              isRed: true,
-            },
-          };
-        });
-      }
-    });
-
-    if (flag) {
-      const body = {
-        name: state.name.value,
-        surname: state.surname.value,
-        email: state.email.value,
-        password: state.password.value,
-        phoneNumber: state.phone.value || null,
-      };
-      await dispatch(loadUser({ body, type: "registration" }));
-      setMessage(localStorage.getItem("error"));
-
-      // setState({
-      //   name: {
-      //     value: "",
-      //     isRed: false,
-      //   },
-      //   surname: {
-      //     value: "",
-      //     isRed: false,
-      //   },
-      //   email: {
-      //     value: "",
-      //     isRed: false,
-      //   },
-      //   password: {
-      //     value: "",
-      //     isRed: false,
-      //   },
-      //   phone: {
-      //     value: "",
-      //     isRed: false,
-      //   },
-      // });
->>>>>>> fba7bc4642fc45b1087d9200b266df5e75e64d13
     }
   };
 
