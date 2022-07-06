@@ -91,7 +91,6 @@ const ProfileHeader = () => {
 
           <Typography
             variant="h5"
-            noWrap
             component="a"
             href=""
             sx={{
