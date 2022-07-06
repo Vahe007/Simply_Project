@@ -16,8 +16,8 @@ const settings = ["Profile", "Logout"];
 
 const ProfileHeader = () => {
   // hardcode below, needs to change for DB
-  const name = "Mikayel";
-  const surname = "Bejanyan";
+  const name = "Tigran";
+  const surname = "I";
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
