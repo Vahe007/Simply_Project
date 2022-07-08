@@ -1,18 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import MainDialog from "../helpers/MainDialog";
 import Content from "./Content";
-import { useUsersContext } from "../../../../features/users/UsersContextProvider";
+import { useUsersContext } from "../../UsersContextProvider";
 import { useDispatch } from "react-redux";
-import { getUsersPerPage, updateAndGetUsers } from "../../../../features/users/usersSlice";
+import { getUsersPerPage, selectUsers, updateAndGetUsers } from "../../../../features/users/usersSlice";
 import { Form, Formik } from "formik";
 import { editUserSchema } from "../../../../features/users/validations";
 import { setSnackbar } from "../../../../features/snackbar/SnackbarSlice";
+import {useSelector} from 'react-redux';
+import { getQueries } from "./helpers";
 
 const UpdateDialog = ({user, editUserData, setEditUserData,  searchParams, setSearchParams}) => {
     let [helperText, setHelperText] = useState("");
     const dispatch = useDispatch();
-    console.log(searchParams.get('page'));
+    const users = useSelector(selectUsers);
+    const [isFirstTime, setIsFirstTime] = useState(true)
+
+
+    useEffect(() => {
+        if (isFirstTime) {
+            setIsFirstTime(false);
+            return;
+        }
+        console.log(users.error);
+        if (!users.error.isError) {
+            console.log(users.error)
+            dispatch(setSnackbar({
+                snackbarOpen: true,
+                snackbarType: "success",
+                snackbarMessage: "User successfully Eddited"
+            }))
+            onClose();
+        }
+    }, [users.error])
+
     const initialInputValues = {
         id: user.id,
         firstName: user.firstName,
@@ -42,24 +64,9 @@ const UpdateDialog = ({user, editUserData, setEditUserData,  searchParams, setSe
             dispatch(updateAndGetUsers({
                 id: +id,
                 newData,
-                queries: {
-                    page: searchParams.get('page'),
-                    limit: searchParams.get('limit'),
-                    sortBy: searchParams.get('sortBy'),
-                    contains: searchParams.get('contains'),
-                }
-            }))
-    
-            onClose();
-    
-            dispatch(setSnackbar({
-                snackbarOpen: true,
-                snackbarMessage: message,
-                snackbarType: "success"
+                queries: getQueries(searchParams)
             }))
         }
-
-       
     }
 
     const onClose = () => {
@@ -75,12 +82,16 @@ const UpdateDialog = ({user, editUserData, setEditUserData,  searchParams, setSe
                 content =  {<Formik
                                 initialValues={initialInputValues}
                                 validationSchema={editUserSchema}
-                                onSubmit = {onSubmit}
-                                
+                                onSubmit = {onSubmit}     
                             >
-                                <Form>
-                                    <Content user={user} helperText={helperText} />
-                                </Form>     
+                            {
+                                ({setFieldError}) => (
+                                    <Form>
+                                        <Content helperText={helperText} setFieldError={setFieldError}/>
+                                    </Form> 
+                                )
+                            }
+                                 
                             </Formik> 
                             }
                         

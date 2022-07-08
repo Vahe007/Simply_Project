@@ -35,9 +35,20 @@ export const generateAccessToken = (id, roles) => {
     return jwt.sign(payload, process.env.TOKEN_SECRET)
 }
 
+
+const isImage = (req, file, cb) => {
+    console.log(file);
+    if(file.mimetype.startsWith('image')) {
+        cb(null, true);
+    } else {
+        cb(new Error("Only image is allowed.."))
+    }
+}
+
 export let createdFilename = ''
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
+        console.log('hii');
         const {exhibitId} = req.params
         const dir = PUBLIC_FOLDER_PATH + `${exhibitId}`
         if (!fs.existsSync(dir)) {
@@ -45,13 +56,20 @@ const storage = multer.diskStorage({
         }
         cb(null, dir)
     },
-    filename: function (req, file, cb) {
+    filename: (req, file, cb) => {
+        console.log(file);
         createdFilename = Date.now() + file.originalname
         cb(null, createdFilename)
     },
+
 })
 
-export const upload = multer({storage})
+
+export const upload = multer({
+    storage,
+    fileFilter: isImage
+}).array("file", 12)
+
 
 //exclude Property from array of objects for prisma data
 export function exclude(obj, options) {

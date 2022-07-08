@@ -71,7 +71,6 @@ function Login({ type }) {
 
 
   if (auth.user) {
-    
     return <Profile />;
   }
 

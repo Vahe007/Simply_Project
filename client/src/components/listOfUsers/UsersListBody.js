@@ -1,30 +1,19 @@
-import {v4 as uuid} from 'uuid';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux/es/exports';
 import DeleteDialog from './dialogs/deleteDialog/DeleteDialog';
 import UpdateDialog from './dialogs/updateDialog/UpdateDialog';
-import { getUsersPerPage, selectUsers, updateAndGetUsers } from '../../features/users/usersSlice';
-import { classes } from '../../styles/usersListStyles';
+import { selectUsers, updateAndGetUsers } from '../../features/users/usersSlice';
 import { setSnackbar } from '../../features/snackbar/SnackbarSlice';
-import { Paper, Switch } from '@material-ui/core';
-import React from 'react';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import { Switch } from '@material-ui/core';
 import ButtonMUI from './ButtonMUI';
 import MainTable from './MainTable';
+import { getQueries } from './dialogs/updateDialog/helpers';
 
 const ListUsers = ({searchParams, setSearchParams}) => {
-    const {usersPerPage, searchInputValue} = useSelector(selectUsers);
+    const {usersPerPage } = useSelector(selectUsers);
     const dispatch = useDispatch();
     const [editUserData, setEditUserData] = useState(null)
     const [deleteUserId, setDeleteUserId] = useState(null);
-    const page = searchParams.get('page')
-    const limit = searchParams.get('limit')
-    const sortBy = searchParams.get('sortBy')
-    const contains = searchParams.get('contains')
 
     const onEditClick = (user) => {
         setEditUserData(user)
@@ -36,7 +25,7 @@ const ListUsers = ({searchParams, setSearchParams}) => {
 
     const onSwitchChange = (evt, user) => {
       const {id, firstName, lastName, password, email, phoneNumber, role, isActive} = user;
-
+      console.log(user);
       const newData =  {
         firstName,
         lastName,
@@ -50,12 +39,7 @@ const ListUsers = ({searchParams, setSearchParams}) => {
       dispatch(updateAndGetUsers({
         id: user.id,
         newData,
-        queries: {
-            page: searchParams.get('page'),
-            limit: searchParams.get('limit'),
-            contains: searchParams.get('contains'),
-            sortBy: searchParams.get('sortBy'),
-        }
+        queries: getQueries(searchParams)
         }))
 
         const message = `User with ID: ${id} is ${isActive ? "DEACTIVATED" : "ACTIVATED"}`
@@ -65,14 +49,6 @@ const ListUsers = ({searchParams, setSearchParams}) => {
             snackbarType: "success"
         }))
 
-        setTimeout(() => {
-            setSearchParams({
-                page: searchParams.get('page'),
-                limit: searchParams.get('limit'),
-                contains: searchParams.get('contains'),
-                sortBy: searchParams.get('sortBy'),
-            })
-        }, 0)
     }
     
     const onDeleteClose = () => {
@@ -114,6 +90,7 @@ const ListUsers = ({searchParams, setSearchParams}) => {
             <MainTable 
                 headRow={headRow}
                 data={data}
+                searchParams={searchParams}
             />
 
             {deleteUserId && 
@@ -138,49 +115,3 @@ const ListUsers = ({searchParams, setSearchParams}) => {
 }
 
 export default ListUsers;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//rubbish
-{/* <ul className={classes.ul}>
-<ListTitles />
-{
-    usersPerPage.map(user => {
-        return <TableRow key={user.id}>
-                    <ListUser 
-                        user={user} 
-                        onEditClick={onEditClick}
-                        onDeleteClick={onDeleteClick}
-                        onSwitchChange = {onSwitchChange}
-                        searchParams={searchParams} 
-                        setSearchParams={setSearchParams}    
-                    />
-               </TableRow>
-    })
-}
-<span>total: {count} users</span>
-</ul> */}

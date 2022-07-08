@@ -4,9 +4,18 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { FieldArray } from 'formik'
 import DeleteIcon from '@mui/icons-material/Delete';
 import { classes } from "../../styles/materialsStyle";
+import { selectMaterials } from "../../features/materials/materialsSlice";
+import {useSelector} from 'react-redux';
+import { useEffect } from "react";
 
-function Content() {
-
+function Content({setFieldError}) {
+    const {error} = useSelector(selectMaterials);
+    useEffect(() => {
+        if(error && error.message === 'Email is already registered') {
+            setFieldError("materialNames[1]", error.message);
+        }
+        console.log(error);
+    }, [error]);
     return <>
                     <FieldArray name="materialNames">
                         {

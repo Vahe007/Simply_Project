@@ -3,11 +3,22 @@ import {ERROR_MESSAGES} from "../../helpers/constants.js";
 
 const {material} = prisma;
 
-export const getAllMaterialsDB = async () => {
+export const getAllMaterialsDB = async (query) => {
+    if(query.isActive === 'true') {
+        query.isActive = true;
+    } else if(query.isActive === 'false') {
+        query.isActive = false;
+    } else {
+        query.isActive = undefined;
+    }
+
     try {
         const allMaterials = await material.findMany({
             include: {
                 exhibit: true
+            },
+            where: {
+                isActive: query.isActive,
             }
         })
         return {
@@ -23,24 +34,6 @@ export const getAllMaterialsDB = async () => {
     }
 }
 
-export const getActiveMaterialsDB = async () => {
-    try {
-        const activeMaterials = await material.findMany({
-            where: {
-                isActive: true
-            }
-        })
-        return {
-            data: activeMaterials,
-            error: null,
-        }
-    } catch (error) {
-        return {
-            data: null,
-            error,
-        }
-    }
-}
 
 export const createMaterialDB = async (data) => {
     try {

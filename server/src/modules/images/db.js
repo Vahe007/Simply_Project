@@ -2,7 +2,9 @@ import {prisma} from '../../services/Prisma.js'
 
 const {image} = prisma
 
-export const uploadFileDB = async (imageInfo) => {
+export const uploadImageDB = async (imageInfo) => {
+    console.log('-----------------');
+    console.log(imageInfo);
     try {
         const file = await image.create({
             data: imageInfo,
@@ -13,6 +15,7 @@ export const uploadFileDB = async (imageInfo) => {
             error: null,
         }
     } catch (error) {
+        console.log('errot');
         return {
             data: null,
             error,
@@ -20,12 +23,17 @@ export const uploadFileDB = async (imageInfo) => {
     }
 }
 
-export const getImagesByExhibitIdlDB = async (exhibitId, isActive = false) => {
+export const getImagesByExhibitIdlDB = async ({exhibitId, isActive}) => {
     const whereObj = {
         itemId: +exhibitId
     }
-    if (isActive) {
+    
+    if (isActive === 'true') {
         whereObj.isActive = true
+    } else if(isActive === 'false') {
+        whereObj.isActive = false;
+    } else {
+        whereObj.isActive = undefined;
     }
 
     try {
@@ -33,6 +41,7 @@ export const getImagesByExhibitIdlDB = async (exhibitId, isActive = false) => {
         const images = await image.findMany({
             where: whereObj
         })
+        console.log(images);
 
         return {
             data: images,
@@ -44,6 +53,7 @@ export const getImagesByExhibitIdlDB = async (exhibitId, isActive = false) => {
             error,
         }
     }
+
 }
 
 export const updateImageIsactiveDB = async (exhibitId, isActive) => {

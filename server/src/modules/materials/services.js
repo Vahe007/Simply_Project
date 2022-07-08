@@ -1,20 +1,12 @@
 import {responseDataCreator} from '../../helpers/common.js';
-import {createMaterialDB, deleteMaterialDB, getActiveMaterialsDB, getAllMaterialsDB, updateMaterialDB} from './db.js';
+import {createMaterialDB, deleteMaterialDB, getAllMaterialsDB, updateMaterialDB} from './db.js';
 import {ERROR_MESSAGES} from "../../helpers/constants.js";
 
 export const getAllMaterials = async (req, res, next) => {
+    console.log(req.query);
     try {
-        const materials = await getAllMaterialsDB();
+        const materials = await getAllMaterialsDB(req.query);
         res.json(responseDataCreator(materials));
-    } catch (error) {
-        next(error);
-    }
-}
-export const getActiveMaterials = async (req, res, next) => {
-    try {
-        const materials = await getActiveMaterialsDB();
-        res.json(responseDataCreator(materials));
-
     } catch (error) {
         next(error);
     }

@@ -6,7 +6,6 @@ import { AuthProvider } from "./components/auth.js";
 import Profile from "./pages/Profile.jsx";
 import RequireAuth from "./components/RequireAuth"
 import AdminHome from "./pages/AdminHome.jsx";
-import UsersContextProvider from "./features/users/UsersContextProvider.js";
 import UsersPagination from "./components/UsersPagination.js";
 import Materials from "./components/materials/Materials";
 import Snackbar from './components/snackBar/Snackbar'
@@ -14,7 +13,6 @@ import Snackbar from './components/snackBar/Snackbar'
 function App() {
   return (
                             <AuthProvider>
-                            <UsersContextProvider>
                               <Snackbar />
                                 <Router>
                                     <Routes >  
@@ -42,7 +40,6 @@ function App() {
                                             </Route>    
                                     </Routes>
                                 </Router>
-                                </UsersContextProvider>
                           </AuthProvider>
 
   );

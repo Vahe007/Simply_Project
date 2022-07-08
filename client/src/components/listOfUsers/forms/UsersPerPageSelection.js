@@ -5,20 +5,15 @@ import {v4 as uuid} from 'uuid';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { getUsersPerPage } from '../../../features/users/usersSlice';
-import { useUsersContext } from '../../../features/users/UsersContextProvider';
+import { useUsersContext } from '../UsersContextProvider';
 import { Select } from '@mui/material';
 
 function UsersPerPageSelection({searchParams, setSearchParams}) {
-    const {count} = useUsersContext();
 
     const onPageNumberChange = (e) => {
-        setSearchParams({
-            page: 1,
-            limit: e.target.value,
-            contains: searchParams.get('contains'),
-            sortBy: searchParams.get('sortBy'),
-            
-        })
+        searchParams.set('page', 1);
+        searchParams.set('limit', e.target.value);
+        setSearchParams(searchParams);
     }
 
     return (
@@ -33,7 +28,7 @@ function UsersPerPageSelection({searchParams, setSearchParams}) {
                     onChange={onPageNumberChange}
                  >
                     
-                 {[3,5,10].map(el => <MenuItem key={uuid()} value={el} disabled={el >= count }> {el} </MenuItem>)}
+                 {[3,5,10].map(el => <MenuItem key={uuid()} value={el} > {el} </MenuItem>)}
                  </Select>
              </FormControl>
                

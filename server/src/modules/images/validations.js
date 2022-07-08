@@ -1,7 +1,7 @@
 import Joi from 'joi'
 
 export default {
-    uploadFileSchema: {
+    uploadImageSchema: {
         params: Joi.object({
             exhibitId: Joi.number().integer().required(),
         }),

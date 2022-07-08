@@ -1,10 +1,11 @@
 import {responseDataCreator, createdFilename} from '../../helpers/common.js'
-import {getImagesByExhibitIdlDB, updateImageIsactiveDB, uploadFileDB} from './db.js'
+import {getImagesByExhibitIdlDB, updateImageIsactiveDB, uploadImageDB} from './db.js'
 
-export const uploadFile = async (req, res, next) => {
+export const uploadImage = async (req, res, next) => {
+    console.log('hiiii');
     const {exhibitId} = req.params
     try {
-        const file = await uploadFileDB({
+        const file = await uploadImageDB({
             itemId: +exhibitId,
             name: createdFilename,
             path: `${exhibitId}/${createdFilename}`,
@@ -18,7 +19,9 @@ export const uploadFile = async (req, res, next) => {
 export const getAllImagesByExhibitId = async (req, res, next) => {
     try {
         const {exhibitId} = req.params;
-        const images = await getImagesByExhibitIdlDB(exhibitId);
+        const {isActive} = req.query;
+
+        const images = await getImagesByExhibitIdlDB({exhibitId, isActive});
         res.json(responseDataCreator(images));
     } catch (error) {
         next(error);

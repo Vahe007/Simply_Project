@@ -11,24 +11,19 @@ function AdminHome() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        navigate("users?page=1&limit=10&contains=&sortBy=")
+        navigate("users")
     }, [])
 
     const options = [
         {
             name: "Users",
-            path: "users?page=1&limit=10&contains=&sortBy=",
+            path: "users",
         },
 
         {
             name: "Materials",
             path: "allmaterials",
         },
-
-        {
-            name: "Statuses",
-            path: "allstatuses",
-        }
 
     ]
     return (

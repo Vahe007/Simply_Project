@@ -5,9 +5,28 @@ import {ERROR_MESSAGES} from "../../helpers/constants.js";
 
 const {user} = prisma
 
+const searchHandler = (contains) => {
+  return contains?.split(' ').map(search => {
+      return ['firstName', 'lastName', 'email', 'phoneNumber'].map(el => {
+        return {
+            [el]: {
+              contains: search 
+            }}
+      })
+    }).flat()
+}
 
+console.log(searchHandler());
 export const getAllUsersDB = async (query) => {
-    const {page, limit , sortBy, contains = ""} = query;
+    console.log(query);
+    if(query.isActive === 'true') {
+        query.isActive = true;
+    } else if(query.isActive === 'false') {
+        query.isActive = false;
+    } else {
+        query.isActive = undefined;
+    }
+    const {page, limit , sortBy, contains = "", isActive} = query;
     const handleSortBy = {
       "name [A-Z]": {
         "firstName": "asc"
@@ -37,34 +56,20 @@ export const getAllUsersDB = async (query) => {
     try {
       const countAfterSearch = await user.count({
         where: {
-          OR: 
-            ['firstName', 'lastName', 'email', 'phoneNumber'].map(el => {
-              return {
-                [el]: {
-                  contains: contains
-                }
-              }
-            })
-        }
-      })
+          isActive: query.isActive,
+          OR: searchHandler(contains)
+        
+      }})
 
       const usersCount = await user.count()
   
-  
       const usersPerPage = await user.findMany({
         where: {
-          OR: 
-            ['firstName', 'lastName', 'email', 'phoneNumber'].map(el => {
-              return {
-                [el]: {
-                  contains: contains
-                }
-              }
-            })
+          isActive: query.isActive,
+          OR: searchHandler(contains)
+            
         },
 
-  
-      
         skip: (+page - 1) * +limit || undefined,
         take: +limit || undefined,
         orderBy: handleSortBy[sortBy] || undefined,
@@ -74,7 +79,7 @@ export const getAllUsersDB = async (query) => {
           exhibitsUpdated: true,
         }
       });
-  
+
       return {
         data: {
           usersPerPage,
@@ -84,102 +89,6 @@ export const getAllUsersDB = async (query) => {
         error: null
       }
     } catch(error) {
-      console.log(error);
-      return {
-        data: null,
-        error
-      }
-    }
-  }
-
-  export const getActiveUsersDB = async (query) => {
-    const {page, limit , sortBy, contains = ""} = query;
-    console.log(query);
-    const handleSortBy = {
-      "name [A-Z]": {
-        "firstName": "asc"
-      },
-  
-      "name [Z-A]":{
-        "firstName": "desc"
-      },
-  
-      "created date (new to old)":{
-        "createdAt": "desc"
-      },
-  
-      "created date (old to new)": {
-        "createdAt": "asc"
-  
-      },
-  
-      "updated date (new to old)": {
-        "updatedAt": "desc"
-  
-      },
-  
-      "updated date (new to old)": {
-        "updatedAt": "asc"
-  
-      },
-    }
-  
-    try {
-      const countAfterSearch = await user.count({
-        where: {
-          OR: 
-            ['firstName', 'lastName', 'email', 'phoneNumber'].map(el => {
-              return {
-                [el]: {
-                  contains: contains
-                }
-              }
-            })
-        }
-      })
-
-      const usersCount = await user.count({
-        where: {
-          isActive: true
-        }
-      })
-  
-  
-      const usersPerPage = await user.findMany({
-        where: {
-          isActive: true,
-          OR: 
-            ['firstName', 'lastName', 'email', 'phoneNumber'].map(el => {
-              return {
-                [el]: {
-                  contains: contains
-                }
-              }
-            })
-
-        },
-  
-      
-        skip: (+page - 1) * +limit || undefined,
-        take: +limit || undefined,
-        orderBy: handleSortBy[sortBy] || undefined,
-  
-        include: {
-          exhibitsCreated: true,
-          exhibitsUpdated: true,
-        }
-      });
-  
-      return {
-        data: {
-          usersPerPage,
-          count: usersCount,
-          countAfterSearch
-        },
-        error: null
-      }
-    } catch(error) {
-      console.log(error);
       return {
         data: null,
         error
@@ -301,7 +210,6 @@ export const createUserDB = async (userData) => {
         }
 
     } catch (error) {
-        console.log(error);
         return {
             data: null,
             error,
@@ -345,7 +253,6 @@ export const loginDB = async (userData) => {
             error: null,
         }
     } catch (error) {
-      console.log(error);
         return {
             data: null,
             error,

@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid, InputLabel, MenuItem } from "@mui/material";
 import React from "react";
 import Select from "../../FormsUI/Select";
 import MainDialog from "../helpers/MainDialog";
 import TextField from "../../FormsUI/TextField";
 import Button from "../../FormsUI/Button";
+import { selectUsers } from "../../../../features/users/usersSlice";
+import {useSelector} from 'react-redux';
 
-function Content({user, helperText}) {
-    const disabled = () => {
+function Content({ helperText,setFieldError}) {
+    const {error} = useSelector(selectUsers);
 
-    }
+    useEffect(() => {
+        if(error && error.message === 'Email is already registered') {
+            setFieldError("email", error.message);
+        }
+        console.log(error);
+    }, [error])
+
 
     return (
         <>

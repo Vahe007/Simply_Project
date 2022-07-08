@@ -5,16 +5,22 @@ const initialState = {
     allMaterials: [],
     filteredMaterials: [],
     count: 0,
-    loading: false
+    loading: false,
+    error: {
+        isError: false,
+        message: ""
+    }
 }
+export const selectMaterials = state => state.materials;
 
-export const getMaterials = createAsyncThunk("getAllMaterials", async () => {
-    const response = await fetch(`${baseUrl}materials`);
+export const getMaterials = createAsyncThunk("getAllMaterials", async ({isActive = ""}) => {
+    console.log(isActive);
+    const response = await fetch(`${baseUrl}materials?isActive=${isActive}`);
 
     return response.json();
 })
 
-export const createMaterial = createAsyncThunk("createMaterial", async (data) => {
+export const createAndGetMaterials = createAsyncThunk("createAndGetMaterials", async ({data, isActive}) => {
     const response = await fetch(`${baseUrl}materials`, {
         method: "post",
         body: JSON.stringify(data),
@@ -22,28 +28,27 @@ export const createMaterial = createAsyncThunk("createMaterial", async (data) =>
             "Content-Type": "application/json"
         }
     });
+
+    const response2 = await fetch(`${baseUrl}materials?isActive=${isActive}`);
+
+    return {
+        createResponse: await response.json(),
+        getResponse: await response2.json()
+    }
 })
 
-export const updateMaterial = createAsyncThunk("updateMaterial", async ({id, newData}) => {
-    if(Array.isArray(id)) {
-        const response = await fetch(`${baseUrl}materials/${id}`, {
-            method: "put",
-            body: JSON.stringify(newData),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-    } else {
-        const response = await fetch(`${baseUrl}materials/${id}`, {
-            method: "put",
-            body: JSON.stringify(newData),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-    }
+export const updateMaterial = createAsyncThunk("updateMaterial", async ({id, newData, isActive}) => {
+    const response = await fetch(`${baseUrl}materials/${id}`, {
+        method: "put",
+        body: JSON.stringify(newData),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
 
-   
+    const response2 = await fetch(`${baseUrl}materials?isActive=${isActive}`);
+
+    return response2.json();
 })
 
 
@@ -84,16 +89,28 @@ const materialsSlice = createSlice({
             state.loading = false;
         },
 
-        [createMaterial.pending]: (state, action) => {
+        [createAndGetMaterials.pending]: (state, action) => {
             state.loading = true
         },
 
-        [createMaterial.fulfilled]: (state, action) => {
-            console.log(action.payload)
+        [createAndGetMaterials.fulfilled]: (state, {payload}) => {
+            if(payload.createResponse.error && payload.createResponse.error.code === "P2002") {
+                state.error = {
+                    isError: true,
+                    message: "user Already Exists"
+                }
+            } else {
+                state.error = {
+                    isError: false,
+                    message: ""
+                }
+            }
             state.loading = false;
+            state.allMaterials = payload.getResponse.data
+            state.filteredMaterials = payload.getResponse.data;
         },
 
-        [createMaterial.rejected]: (state, action) => {
+        [createAndGetMaterials.rejected]: (state, action) => {
             state.loading = false;
         },
 
@@ -102,6 +119,8 @@ const materialsSlice = createSlice({
         },
 
         [updateMaterial.fulfilled]: (state, action) => {
+            state.allMaterials = action.payload.data
+            state.filteredMaterials = action.payload.data;
             state.loading = false;
         },
 
@@ -114,6 +133,5 @@ const materialsSlice = createSlice({
 
 export const {changeChecked, getActiveMaterials, uncheckAllMaterials, getInactiveMaterials} = materialsSlice.actions;
 
-export const selectMaterials = state => state.materials.filteredMaterials;
 
 export default materialsSlice.reducer;

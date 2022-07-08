@@ -1,10 +1,9 @@
 import AddUserDialog from './dialogs/addDialog/AddUserDialog';
 import ButtonMUI from './ButtonMUI';
-import { useUsersContext } from '../../features/users/UsersContextProvider';
 import { classes } from '../../styles/usersListStyles';
 import { useState } from 'react';
 
-function AddUser() {
+function AddUser({searchParams, setSearchParams}) {
     const [addUserData, setAddUserData] = useState(null)
 
     const ButtonMUIAttributes = {
@@ -25,7 +24,9 @@ function AddUser() {
                     {
                     addUserData && 
                     <AddUserDialog 
-                    setAddUserData={setAddUserData}
+                        setAddUserData={setAddUserData}
+                        searchParams={searchParams}
+                        setSearchParams={setSearchParams}
                     />
                     }    
             </>
