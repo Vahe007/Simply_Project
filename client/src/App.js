@@ -1,14 +1,14 @@
-import Login from "./pages/Login.jsx";
-import Signup from "./pages/Signup.jsx";
+import Login from "./Pages/Login";
+import Signup from "./Pages/Signup";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import { AuthProvider } from "./components/auth.js";
-import Profile from "./pages/Profile.jsx";
+import Profile from "./Pages/Profile";
 import RequireAuth from "./components/RequireAuth"
-import AdminHome from "./pages/AdminHome.jsx";
+import AdminHome from "./Pages/AdminHome";
 import UsersContextProvider from "./features/users/UsersContextProvider.js";
 import UsersPagination from "./components/UsersPagination.js";
-import Materials from "./components/materials/Materials";
+import Materials from "./components/Materials/Materials";
 import Snackbar from './components/snackBar/Snackbar'
 
 function App() {
