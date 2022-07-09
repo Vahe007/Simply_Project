@@ -8,7 +8,7 @@ import Select from "@mui/material/Select";
 import { useSelector, useDispatch } from "react-redux";
 import { getExhibitsPerPage } from "../features/exhibits/exhibitsSlice";
 import ExhibitsList from "./Profile/exhibitsList";
-
+import ProfileHeader from "../components/ProfileHeader/ProfileHeader"
 const Profile = () => {
   const auth = useAuth();
   const [a, setA] = useState("");
@@ -21,7 +21,7 @@ const Profile = () => {
   if (auth.user) {
     return (
       <>
-        {/* <Header /> */}
+        <ProfileHeader />
         {/* <div>
           <Select
             value={a}
