@@ -9,7 +9,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import Avatar from "./Avatar";
+import Avatar from "../Avatar/Avatar";
 import Logo from "../../assets/Logo.svg";
 
 const settings = ["Profile", "Logout"];
