@@ -6,6 +6,10 @@ import ExhibitCard from '../components/ExhibitCard/ExhibitCard'
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import RootRef from '@material-ui/core/RootRef';
+import {  TextField, IconButton } from '@material-ui/core';
+
+import SearchIcon from '@mui/icons-material/Search';
 const GuestPage = ()=>{
     const [query, setQuery] = useState('')
     const [pageNumber, setPageNumber] = useState(1)
@@ -37,25 +41,35 @@ const GuestPage = ()=>{
     }
 
     return (
-    <div style={{display:'flex', flexDirection:'column'}}>
-
-        <Box>
-            <input type="text" value={query} onChange={handleSearch} />
-        </Box>
+    <Grid sx={{ flexGrow: 1 }} container spacing={2} px={1}>
+        <Grid item xs={12}>
+            <TextField
+                fullWidth
+                onChange={handleSearch}
+                value={query}
+                id="standard-bare"
+                variant="outlined"
+                defaultValue="How can we help"
+                InputProps={{
+                  endAdornment: (
+                    <IconButton>
+                      <SearchIcon />
+                    </IconButton>
+                  ),
+                }}
+              />
+        </Grid>
             {
-            // exhibits.map((exhibit, index) => {
-            //     return index === exhibits.length - 1 ? <div ref={lastExhibitElementRef} key={exhibit.key} >{exhibit.title}</div> : <div key={exhibit.key} >{exhibit.title}</div>
-        
-            // })
             exhibits.map((exhibit, index) => {
-                return index === exhibits.length - 1 ? <Grid item ><ExhibitCard ref={lastExhibitElementRef} key={exhibit.key} /></Grid> : <Grid item ><ExhibitCard key={exhibit.key} /></Grid>
+                return index === exhibits.length - 1 ? <Grid item md={3}><RootRef rootRef={lastExhibitElementRef}><ExhibitCard key={exhibit.key} /></RootRef></Grid> : <Grid md={3} item ><ExhibitCard key={exhibit.key} /></Grid>
         
             })
             }
-        {loading && <CircularProgress />}
+
+        {loading && <Grid align={'center'} item xs={12}><CircularProgress /></Grid>}
         {error && 'Error'}
 
-    </div>
+    </Grid>
     
     )
 }

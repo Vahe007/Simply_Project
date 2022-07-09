@@ -10,14 +10,15 @@ import UsersContextProvider from "./features/users/UsersContextProvider.js";
 import UsersPagination from "./components/UsersPagination.js";
 import Materials from "./components/Materials/Materials";
 import Snackbar from './components/snackBar/Snackbar'
-
+import GuestPage from "./Pages/GuestPage"
 function App() {
   return (
                             <AuthProvider>
                             <UsersContextProvider>
                               <Snackbar />
                                 <Router>
-                                    <Routes >  
+                                    <Routes >
+                                        <Route path="guest" element={<GuestPage />} />  
                                         <Route path="login" element={<Login type="login" />} />
                                         <Route path="signup" element={<Signup type="signup" />} />
                                         <Route path="*" element={<Navigate to="signup"/>} />  

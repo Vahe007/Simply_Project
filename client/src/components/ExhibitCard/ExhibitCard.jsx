@@ -11,25 +11,21 @@ import Typography from "@material-ui/core/Typography";
 const useStyles = makeStyles({
   root: {
     maxWidth: 345,
+    minWidth:"100%"
   },
 });
 
-<<<<<<< HEAD
-export default function ExibitCard() {
-=======
-export default function ExibitCard({ props }) {
->>>>>>> develop
+export default function ExibitCard({ref}) {
   const classes = useStyles();
 
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} ref={ref}>
       <CardActionArea>
         <CardMedia
           component="img"
           alt="Exibit"
           height="140"
-          image={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8Dui-CG5_VcIxTHxks0tTiME_1rIvYeIfMA&usqp=CAU'}
-<<<<<<< HEAD
+          image={'https://cdn.w600.comps.canstockphoto.com/no-image-available-stock-illustrations_csp38533655.jpg'}
           title={'Title'}
         />
         <CardContent>
@@ -38,16 +34,6 @@ export default function ExibitCard({ props }) {
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
             {'Material'}
-=======
-          title={props.itemName}
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5" component="h2">
-            {props.itemName}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p">
-            {props.material}
->>>>>>> develop
           </Typography>
         </CardContent>
       </CardActionArea>
