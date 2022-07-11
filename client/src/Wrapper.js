@@ -6,10 +6,7 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
-import {
-  getLoading,
-  getUserInfo,
-} from "./features/userAccess/selectors.js";
+import { getLoading, getUserInfo } from "./features/userAccess/selectors.js";
 import { getMeCall } from "./features/userAccess/userAccessSlice.js";
 import { LinearProgress } from "@mui/material";
 import Profile from "./Pages/Profile.jsx";
@@ -30,7 +27,6 @@ function Wrapper() {
 
     token && id && dispatch(getMeCall({ id: +id, token }));
   }, []);
-
 
   if (isLoading) {
     return <LinearProgress />;

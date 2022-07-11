@@ -8,7 +8,6 @@ import Select from "@mui/material/Select";
 import { useSelector, useDispatch } from "react-redux";
 import { getExhibitsPerPage } from "../features/exhibits/exhibitsSlice";
 import ExhibitsList from "../components/exhibitsList";
-import { useLocation } from "react-router-dom";
 import { updateRoute } from "../features/userAccess/userAccessSlice";
 
 const Employee = () => {
@@ -20,11 +19,7 @@ const Employee = () => {
 
 
   const dispatch = useDispatch();
-  const location = useLocation();
 
-  useEffect(() => {
-    dispatch(updateRoute(location.pathname));
-  }, [location])
 
 
     return (

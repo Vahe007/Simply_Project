@@ -1,33 +1,3 @@
-<<<<<<< HEAD
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import { classes } from '../../styles/materialsStyle';
-
-function MainTable(props) {
-    let id = 0;
-    const {headRow, data} = props;
-    return (
-        <Paper className={classes.root}>
-          <Table className={classes.table}>
-            <TableHead>
-              <TableRow>
-                {
-                    headRow.map(column =>  <TableCell key={id++} align='left'>{column}</TableCell>)
-                }
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data.map(row => (
-                <TableRow key={id++}>
-                    {
-                        Object.values(row).map(value => <TableCell key={id++} alight="left">{value}</TableCell>)
-                    }
-                </TableRow>
-=======
 import { useState } from "react";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -64,7 +34,6 @@ function MainTable(props) {
                 <TableCell key={uuid()} alight="left">
                   {value}
                 </TableCell>
->>>>>>> f06f86c99285b9dc1f0fff699d3dbdc5c849e342
               ))}
             </TableRow>
           ))}
@@ -99,7 +68,6 @@ function MainTable(props) {
 }
 
 export default MainTable;
-<<<<<<< HEAD
 
 
 
@@ -157,5 +125,3 @@ function MainTable(props) {
 }
 
 export default MainTable**/
-=======
->>>>>>> f06f86c99285b9dc1f0fff699d3dbdc5c849e342

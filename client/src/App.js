@@ -1,8 +1,7 @@
 import React from "react";
 import Wrapper from "./Wrapper";
-import { useLocation } from "react-router-dom";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import UsersContextProvider from "./features/users/UsersContextProvider.js";
+import {UsersContextProvider} from "../src/components/listOfUsers/UsersContextProvider.js";
 import { AuthProvider } from "./hoc/auth";
 import ExhibitsContextProvider from "./features/exhibits/ExhibitsContextProvider";
 import Snackbar from './components/snackBar/Snackbar'
