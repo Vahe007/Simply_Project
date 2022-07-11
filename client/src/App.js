@@ -1,24 +1,24 @@
 import React from "react";
 import Wrapper from "./Wrapper";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import {UsersContextProvider} from "../src/components/listOfUsers/UsersContextProvider.js";
 import { AuthProvider } from "./hoc/auth";
 import ExhibitsContextProvider from "./features/exhibits/ExhibitsContextProvider";
-import Snackbar from './components/snackBar/Snackbar'
-
-
+import Snackbar from "./components/snackBar/Snackbar";
+import SearchParamsContextProvider from "./components/listOfUsers/SearchParamsContext";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   return (
-    <ExhibitsContextProvider>
+    <Router>
       <AuthProvider>
-        <UsersContextProvider>
-          <Router>
+        <Snackbar />
+        <ExhibitsContextProvider>
+          <SearchParamsContextProvider>
             <Wrapper />
-          </Router>
-        </UsersContextProvider>
+          </SearchParamsContextProvider>
+        </ExhibitsContextProvider>
       </AuthProvider>
-    </ExhibitsContextProvider>
+    </Router>
   );
 };
 

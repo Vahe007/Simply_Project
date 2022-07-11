@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect } from "react";
 import { useState } from "react";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
 import { getMeCall } from "../features/userAccess/userAccessSlice";
 
@@ -11,15 +11,12 @@ export const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
   // const currentRoute = useSelector(getCurrentRoute);
 
-
   useEffect(() => {
     const token = Cookies.get("token");
     const id = Cookies.get("id");
 
     token && id && dispatch(getMeCall({ id: +id, token }));
   }, []);
-
-
 
   const login = (user, cb) => {
     setUser(user);
@@ -38,6 +35,5 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
 
 export const useAuth = () => useContext(AuthContext);

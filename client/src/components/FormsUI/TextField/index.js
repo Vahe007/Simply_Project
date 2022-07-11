@@ -6,7 +6,6 @@ const TextFieldWrapper = (props) => {
   const { name, formik, ...otherProps } = props;
   const configTextField = {
     name,
-    onChange: formik.handleChange,
     value: formik.values[name],
     onBlur: formik.handleBlur,
     touched: formik.errors[name],

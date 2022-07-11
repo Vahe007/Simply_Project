@@ -35,10 +35,6 @@ const inputAllProps = (field, formik, isVisible, changeVisibility, message) => {
         label: `${field.charAt(0).toUpperCase()}${field.slice(1)}`,
         margin: 'normal',
         onChange: formik.handleChange,
-        value: formik.values[field],
-        error: formik.errors[field],
-        touched: formik.touched[field],
-        onBlur: formik.handleBlur,
         message,
         ...addVisibilityIcon(field, isVisible, changeVisibility),
     }
@@ -48,7 +44,7 @@ const inputAllProps = (field, formik, isVisible, changeVisibility, message) => {
 function Form({type, initialValues, fields, validationSchema, headTitle, btnTitle, links, getUser}) {
   const [isVisible, setVisibility] = useState(false);
   const message = useSelector(getMessage);
-
+  console.log(message);
   const dispatch = useDispatch();
   const onSubmit = (values) => {
     dispatch(getUser(values));
@@ -105,7 +101,7 @@ function Form({type, initialValues, fields, validationSchema, headTitle, btnTitl
             <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 1 }}>
               {fields.map((field, index) => {
                 return (
-                  <TextField key={index} {...inputAllProps(field, formik, isVisible, changeVisibility, message)}/>
+                  <TextField key={index} formik={formik} {...inputAllProps(field, formik, isVisible, changeVisibility, message)}/>
                 );
               })}
               <Button fullWidth={true} type="submit" sx={{ mt: "15px" }}>

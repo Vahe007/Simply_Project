@@ -6,7 +6,7 @@ const ExhibitsContextProvider = ({ children }) => {
   const [exhibit, setExhibit] = useState(null);
 
   return (
-    <ExhibitsContext.Provider value={{exhibit, setExhibit}}>
+    <ExhibitsContext.Provider value={{ exhibit, setExhibit }}>
       {children}
     </ExhibitsContext.Provider>
   );

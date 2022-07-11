@@ -60,9 +60,9 @@ const ExhibitView = () => {
       <div style={{ width: 300, marginBottom: '20px' }}>
         <Box component='form' onSubmit={formik.handleSubmit}>
           {stringFields.map((field, index) => {
-            return <TextField key={index} name={field} label={field} value={formik.values[field] || ''} onChange={formik.handleChange} />
+            return <TextField formik={formik} key={index} name={field} label={field}  />
           })}
-          <TextField name='materialName' value={formik.values.materialName} onChange={formik.handleChange} />
+          <TextField formik={formik} name='materialName' value={formik.values.materialName} onChange={formik.handleChange} />
 
 
           <Stack direction="row" alignItems="center" spacing={2}>

@@ -140,7 +140,7 @@ const ExhibitsList = () => {
   };
   const viewExhibit = (exhibitInfo) => {
     exhibit.setExhibit(exhibitInfo);
-    navigate('/users/exhibit-view');
+    navigate('/exhibit-view');
   }
 
 

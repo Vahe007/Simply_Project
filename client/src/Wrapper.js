@@ -12,6 +12,9 @@ import { LinearProgress } from "@mui/material";
 import Profile from "./Pages/Profile.jsx";
 import Form from "./Pages/Form";
 import ExhibitView from "./Pages/ExhibitView.jsx";
+import UsersPagination from "./components/UsersPagination";
+import Materials from "./components/Materials/Materials";
+import Navbar from "./components/Navbar";
 
 const requireAuth = ["/users/admin", "/users/guest", "/users/employee"];
 
@@ -19,20 +22,28 @@ function Wrapper() {
   const dispatch = useDispatch();
   const userInfo = useSelector(getUserInfo);
   const isLoading = useSelector(getLoading);
-
   const location = useLocation();
+  const [stateToken, setStateToken] = useState(Cookies.get('token'));
+  const token = Cookies.get('token');
+
   useEffect(() => {
     const token = Cookies.get("token");
     const id = Cookies.get("id");
 
-    token && id && dispatch(getMeCall({ id: +id, token }));
+    stateToken && id && dispatch(getMeCall({ id: +id, token }));
   }, []);
+
+  useEffect(() => {
+    if (!Cookies.get('token')) {
+      setStateToken(null);
+    }
+  }, [Cookies.get("token")])
 
   if (isLoading) {
     return <LinearProgress />;
   }
 
-  if (!Object.keys(userInfo).length) {
+  if (!Object.keys(userInfo).length && !stateToken) {
     return (
       <Routes>
         <Route path="form" element={<Form />} />
@@ -42,22 +53,23 @@ function Wrapper() {
       </Routes>
     );
   }
-  return (
-    <Routes>
-      <Route path="users">
-        <Route path="main" element={<Profile role={userInfo.role} />} />
-        <Route path="exhibit-view" element={<ExhibitView />} />
-      </Route>
-      <Route path="*" element={<Navigate to="users/main" />} />
-    </Routes>
-  );
+  if (userInfo.role === "ADMIN") {
+    return (
+      <>
+        <Navbar />
+        <Routes>
+          <Route path="main">
+            <Route path="users" element={<UsersPagination />} />
+            <Route path="materials" element={<Materials />} />
+          </Route>
+          <Route pth="exhibit-view" element={<ExhibitView />} />
+          <Route path="*" element={<Navigate to="main/users" />} />
+        </Routes>
+      </>
+    );
+  }
 }
 
 export default Wrapper;
 
-{
-  /* <Route path="admin/*" element={<AdminHome />}>
-                  <Route path="users" element={<UsersPagination />} />
-                  <Route path="allmaterials" element={<Materials />} />
-                </Route> */
-}
+// element={<Profile role={userInfo.role} />}
