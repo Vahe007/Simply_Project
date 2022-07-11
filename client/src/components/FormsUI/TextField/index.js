@@ -4,21 +4,31 @@ import { useField } from "formik";
 
 
 const TextFieldWrapper = (props) => {
-    const { name, ...otherProps } = props;
-    // const [ field, meta ] = useField(name);
+    const { name, error, touched, message, ...otherProps } = props;
+    
+    // const [meta, field] = useField();
+
+    // if (meta && meta.touched && meta.error) {
+    //     configTextField.error = true;
+    //     configTextField.helperText = meta.error;
+    // }
+
 
     const configTextField = {
-        // ...field,
         name,
         ...otherProps,
         fullWidth: true,
         variant: 'outlined'
     };
 
-    // if (meta && meta.touched && meta.error) {
-    //     configTextField.error = true;
-    //     configTextField.helperText = meta.error;
-    // }
+    if (touched && error) {
+        configTextField.error = true;
+        configTextField.helperText = error;
+    }
+    if (message) {
+        configTextField.error = true;
+        configTextField.helperText = message;
+    }
 
     return (
         <TextField 

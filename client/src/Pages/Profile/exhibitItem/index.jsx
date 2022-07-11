@@ -12,13 +12,27 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Button from "../../../components/FormsUI/Button";
 import Dialog from "../../../components/Dialog";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { update_getExhibit } from "../../../features/exhibits/exhibitsSlice";
+import Switch from "@mui/material/Switch";
+import { Formik } from "formik";
+import { Navigate, useNavigate } from "react-router-dom";
+import { Grid } from "react-loader-spinner";
+import { BASE_URL } from "../../../constants";
+import { useEffect } from "react";
+import { getImage } from "../../../features/images/imagesSlice";
 
 const ExhibitItem = ({ exhibit, searchParams }) => {
   const [expand, setExpand] = useState(false);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
+
+
+  let imgPath;
+  if (exhibit.id === 6) {
+    imgPath = `${BASE_URL}images/${exhibit.images[0].path}`
+  }
+  
   const {
     exhibitName,
     description,
@@ -27,36 +41,33 @@ const ExhibitItem = ({ exhibit, searchParams }) => {
     category,
     createdAt,
     updatedAt,
-    isActive
+    isActive,
   } = exhibit;
   const { materialName } = material;
   const { categoryName } = category;
 
-  const handleDelete = () => {
-    setOpen(true);
-  }
+  const navigate = useNavigate();
+  const [checked, setChecked] = useState(isActive);
 
- 
-  const onClose = () => {
-    setOpen(false);
-  }
-  const onConfirm = () => {
-    dispatch(update_getExhibit({...Object.fromEntries([...searchParams]), id}));
-    setOpen(false);
-  }
+  const onSwitchChange = () => {
+    setChecked(!checked);
+    dispatch(
+      update_getExhibit({
+        ...Object.fromEntries([...searchParams]),
+        id,
+        isActive,
+      })
+    );
+  };
 
-  const dialogAttributes = {
-    onClose,
-    onConfirm,
-    open,
-    setOpen
-  }
+  const onEditClick = () => {
+    return navigate(`/users/exhibit`);
+  };
 
-  
+  const label = { inputProps: { "aria-label": "Switch demo" } };
   return (
     <>
-      <Dialog {...dialogAttributes}/>
-      <TableRow sx={!isActive && {opacity: 0.3}}>
+      <TableRow sx={!isActive && { opacity: 0.3 }}>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -67,27 +78,19 @@ const ExhibitItem = ({ exhibit, searchParams }) => {
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {"image"}
+          <img src={imgPath} style={{width: '80px'}} />
         </TableCell>
         <TableCell align="right">{id}</TableCell>
         <TableCell align="right">{exhibitName}</TableCell>
         <TableCell align="right">{materialName}</TableCell>
         <TableCell align="right">{categoryName}</TableCell>
         <TableCell align="right">
-          <Button variant="contained">Edit</Button>
+          <Button onClick={onEditClick} variant="contained">
+            Edit
+          </Button>
         </TableCell>
         <TableCell align="right">
-          <Button
-            onClick={handleDelete}
-            variant="contained"
-            sx={{
-              backgroundColor: "red",
-              color: "white",
-              "&:hover": { backgroundColor: "#9e0000" },
-            }}
-          >
-            Delete
-          </Button>
+          <Switch {...label} checked={checked} onClick={onSwitchChange} />
         </TableCell>
       </TableRow>
       <TableRow>

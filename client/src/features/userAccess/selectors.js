@@ -7,3 +7,6 @@ export const getUserInfo = (state) => {
 export const getToken = (state) => {
     return state.userAccess.token;
 }
+export const getMessage = (state) => {
+    return state.userAccess.message;
+}

@@ -203,9 +203,10 @@ export const getUserByIdDB = async (id) => {
 
       if(userData && isActive) {
         const userPassExcluded = exclude(userData, ['password']);
-
+        const {id, role} = userPassExcluded;
+        const token = generateAccessToken(id, role);
         return {
-          data: userPassExcluded,
+          data: {...userPassExcluded, token},
           error: null,
         }
       } else {
@@ -338,8 +339,8 @@ export const loginDB = async (userData) => {
                 error: {message: 'Password incorrect'},
             }
         }
-        const {password: createdUserPass, role, ...userInfo} = candidate
-        const token = generateAccessToken(userInfo.id, role)
+        const {password: createdUserPass, ...userInfo} = candidate
+        const token = generateAccessToken(userInfo.id, userInfo.role)
         return {
             data: {...userInfo, token},
             error: null,
