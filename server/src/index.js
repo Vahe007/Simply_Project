@@ -17,10 +17,24 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   const error = err.status ? err : internalServerErrorCreator()
   const status = err.status || 500
-  
+
   res.status(status).json(error)
 })
 
 app.listen(PORT, function () {
   console.log(`\n🚀 Server ready at: http://localhost:${this.address().port}\n`)
 })
+
+// prisma.exhibit.create({
+//   name: 'asdf',
+//   images: [
+//     {
+//       name: jkasdf,
+//       asjdkfad
+//     },
+//     {
+//       name: jkasdf,
+//       asjdkfad
+//     },
+//   ]
+// })
