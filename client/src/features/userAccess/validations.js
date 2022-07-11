@@ -34,6 +34,6 @@ export const editUserSignupSchema = Yup.object().shape({
     phoneNumber: Yup.number()
       .required('Required')
       .integer()
-      .test('length', 'Must be exactly 9 numbers', val => String(val).length === 9),    
+      .test('length', 'Must be exactly 9 numbers', val => String(val).length === 8),    
 
 });

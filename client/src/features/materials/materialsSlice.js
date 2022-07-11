@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk} from "@reduxjs/toolkit";
-import { baseUrl } from "../../helpers/common";
+import { BASE_URL } from "../../constants";
 
 const initialState = {
     allMaterials: [],
@@ -13,6 +13,7 @@ const initialState = {
 }
 export const selectMaterials = state => state.materials;
 
+<<<<<<< HEAD
 export const getMaterials = createAsyncThunk("getAllMaterials", async ({isActive = ""}) => {
     const response = await fetch(`${baseUrl}materials?isActive=${isActive}`);
 
@@ -21,6 +22,15 @@ export const getMaterials = createAsyncThunk("getAllMaterials", async ({isActive
 
 export const createAndGetMaterials = createAsyncThunk("createAndGetMaterials", async ({data, isActive}) => {
     const response = await fetch(`${baseUrl}materials`, {
+=======
+export const getMaterials = createAsyncThunk("getAllMaterials", async () => {
+    const response = await fetch(`${BASE_URL}materials`);
+    return response.json();
+})
+
+export const createMaterial = createAsyncThunk("createMaterial", async (data) => {
+    const response = await fetch(`${BASE_URL}materials`, {
+>>>>>>> f06f86c99285b9dc1f0fff699d3dbdc5c849e342
         method: "post",
         body: JSON.stringify(data),
         headers: {
@@ -36,6 +46,7 @@ export const createAndGetMaterials = createAsyncThunk("createAndGetMaterials", a
     }
 })
 
+<<<<<<< HEAD
 export const updateMaterial = createAsyncThunk("updateMaterial", async ({id, newData, isActive}) => {
     const response = await fetch(`${baseUrl}materials/${id}`, {
         method: "put",
@@ -44,6 +55,26 @@ export const updateMaterial = createAsyncThunk("updateMaterial", async ({id, new
             "Content-Type": "application/json"
         }
     });
+=======
+export const updateMaterial = createAsyncThunk("updateMaterial", async ({id, newData}) => {
+    if(Array.isArray(id)) {
+        const response = await fetch(`${BASE_URL}materials/${id}`, {
+            method: "put",
+            body: JSON.stringify(newData),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+    } else {
+        const response = await fetch(`${BASE_URL}materials/${id}`, {
+            method: "put",
+            body: JSON.stringify(newData),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+    }
+>>>>>>> f06f86c99285b9dc1f0fff699d3dbdc5c849e342
 
     const response2 = await fetch(`${baseUrl}materials?isActive=${isActive}`);
 

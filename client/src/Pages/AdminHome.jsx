@@ -2,13 +2,16 @@ import { Button } from "@mui/material";
 import { Link, Outlet, Route, Routes } from "react-router-dom";
 import App from "../components/UsersPagination";
 import { useNavigate } from "react-router-dom";
-import {v4 as uuid} from 'uuid';
+import { v4 as uuid } from "uuid";
 import { classes } from "../styles/adminHomePageStyle.js";
 import { useEffect } from "react";
 
 function AdminHome() {
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  useEffect(() => {
+    navigate("?page=1&limit=10&contains=&sortBy=");
+  }, []);
 
     useEffect(() => {
         navigate("users")

@@ -21,7 +21,6 @@ function MainDialog(props) {
                 /> 
                 }
                 <DialogTitle
-                  
                 >
                     {title}
                 </DialogTitle>

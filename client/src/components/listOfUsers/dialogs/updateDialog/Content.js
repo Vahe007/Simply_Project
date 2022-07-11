@@ -57,32 +57,3 @@ function Content({ helperText,setFieldError}) {
 }
 
 export default Content;
-
-// Object.entries(inputValues).slice(1, -1).map(([inputName, inputValue], index) => {
-//     if(inputName === 'role') {
-//             return  <FormControl key={index} sx={{width: 140}}>
-//                             <InputLabel id="demo-simple-select-label">Role</InputLabel>
-//                                 <Select
-//                                     labelId="demo-simple-select-label"
-//                                     id="demo-simple-select"
-//                                     value={inputValue}
-//                                     label="Role"
-//                                     onChange={onRoleChange}
-//                                 >
-//                                     <MenuItem value={"EMPLOYEE"}>EMPLOYEE</MenuItem>
-//                                     <MenuItem value={"GUEST"}>GUEST</MenuItem>
-//                                     </Select> 
-//                     </FormControl>
-//         }
-
-//     return <TextField 
-//                 key={index}
-//                 className="textField" 
-//                 value={inputValue} 
-//                 id={inputName}
-//                 name={inputName}
-//                 onChange={onInputChange} 
-//                 label={inputName} 
-//                 variant="outlined"
-//             />
-// })
