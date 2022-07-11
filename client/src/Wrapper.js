@@ -1,5 +1,5 @@
-import Login from "./pages/Login.jsx";
-import Signup from "./pages/Signup.jsx";
+import Login from "./Pages/Login";
+import Signup from "./Pages/Signup";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import Cookies from "js-cookie";
@@ -12,9 +12,9 @@ import {
 } from "./features/userAccess/selectors.js";
 import { getMeCall } from "./features/userAccess/userAccessSlice.js";
 import { LinearProgress } from "@mui/material";
-import Profile from "./pages/Profile.jsx";
-import Form from "./pages/Form";
-import ExhibitView from "./pages/ExhibitView.jsx";
+import Profile from "./Pages/Profile.jsx";
+import Form from "./Pages/Form";
+import ExhibitView from "./Pages/ExhibitView.jsx";
 
 const requireAuth = ["/users/admin", "/users/guest", "/users/employee"];
 

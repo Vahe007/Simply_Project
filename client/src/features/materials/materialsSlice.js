@@ -14,7 +14,7 @@ export const getMaterials = createAsyncThunk("getAllMaterials", async () => {
 })
 
 export const createMaterial = createAsyncThunk("createMaterial", async (data) => {
-    const response = await fetch(`${baseUrl}materials`, {
+    const response = await fetch(`${BASE_URL}materials`, {
         method: "post",
         body: JSON.stringify(data),
         headers: {
@@ -25,7 +25,7 @@ export const createMaterial = createAsyncThunk("createMaterial", async (data) =>
 
 export const updateMaterial = createAsyncThunk("updateMaterial", async ({id, newData}) => {
     if(Array.isArray(id)) {
-        const response = await fetch(`${baseUrl}materials/${id}`, {
+        const response = await fetch(`${BASE_URL}materials/${id}`, {
             method: "put",
             body: JSON.stringify(newData),
             headers: {
@@ -33,7 +33,7 @@ export const updateMaterial = createAsyncThunk("updateMaterial", async ({id, new
             }
         });
     } else {
-        const response = await fetch(`${baseUrl}materials/${id}`, {
+        const response = await fetch(`${BASE_URL}materials/${id}`, {
             method: "put",
             body: JSON.stringify(newData),
             headers: {
