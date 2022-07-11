@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk} from "@reduxjs/toolkit";
-import { baseUrl } from "../../helpers/common";
+import { BASE_URL } from "../../constants";
 
 const initialState = {
     allMaterials: [],
@@ -9,8 +9,7 @@ const initialState = {
 }
 
 export const getMaterials = createAsyncThunk("getAllMaterials", async () => {
-    const response = await fetch(`${baseUrl}materials`);
-
+    const response = await fetch(`${BASE_URL}materials`);
     return response.json();
 })
 

@@ -3,12 +3,12 @@ import { BASE_URL } from "../../constants";
 
 
 export const getMaterials = createAsyncThunk('materials', async () => {
-    const response = await fetch(`${BASE_URL}materials/active`);
+    const response = await fetch(`${BASE_URL}materials`);
     return response.json();
 })
 
 export const getCategories = createAsyncThunk("categories", async () => {
-    const response = await fetch(`${BASE_URL}categories/active`);
+    const response = await fetch(`${BASE_URL}categories`);
     return response.json();
 })
 

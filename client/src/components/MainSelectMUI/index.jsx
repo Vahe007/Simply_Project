@@ -15,21 +15,18 @@ const MainSelectMUI = ({
   options = {},
   setSearchParams,
   searchParams,
-  label,
+  label='',
   styles,
 }) => {
-    const dispatch = useDispatch();
 
   const handleChange = ({target: {value}}) => {
-    // searchParams.delete(label);
-    // value ? setSearchParams({...params, [label]: value}) : setSearchParams(searchParams);
-
     if (value === "") {
       searchParams.delete(label);
       setSearchParams(searchParams);
     }
     else  {
-      setSearchParams({...Object.fromEntries([...searchParams]), [label]: value})
+      searchParams.set(label, value);
+      setSearchParams(searchParams);
     }
   };
   return (

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { BASE_URL } from "../../constants";
 
-export const getExhibitsPerPage = createAsyncThunk("exhibits", async({page = 1, sortBy, limit = 4, contains='', material, category}) => {
+export const getExhibitsPerPage = createAsyncThunk("exhibits", async({page = 1, sortBy='', limit = 4, contains='', material='', category=''}) => {
     const response = await fetch(`${BASE_URL}exhibits?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${contains}&material=${material}&category=${category}`);
     return response.json()
 })
@@ -15,12 +15,10 @@ export const createExhibit = createAsyncThunk("addExhibit", async(data) => {
     });
     return response.json();
 })
-export const update_getExhibit = createAsyncThunk("editExhibit", async({page = 1, sortBy, limit = 4, contains='', material, category, id}) => {
+export const update_getExhibit = createAsyncThunk("editExhibit", async({page = 1, sortBy, limit = 4, contains='', material, category, id, exhibitInfo}) => {
     await fetch(`${BASE_URL}exhibits/${id}`, {
         method: "PUT",
-        body: JSON.stringify({
-            isActive: false
-        }),
+        body: JSON.stringify(exhibitInfo),
         headers: {
             'Content-Type': 'application/json'
         }
@@ -28,6 +26,7 @@ export const update_getExhibit = createAsyncThunk("editExhibit", async({page = 1
     const response = await fetch(`${BASE_URL}exhibits?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${contains}&material=${material}&category=${category}`);
     return response.json();
 })
+
 export const deleteExhibit = createAsyncThunk("deleteExhibit", async (id) => {
     const response = await fetch(`${BASE_URL}exhibits/${id}`, {
         method: "DELETE",

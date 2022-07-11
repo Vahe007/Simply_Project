@@ -5,6 +5,7 @@ import materialsReducer from '../features/materials/materialsSlice.js'
 import exhibitsReducer from '../features/exhibits/exhibitsSlice'
 import snackbarReducer from '../features/snackbar/SnackbarSlice'
 import filteringFeaturesReducer from "../features/filteringFeatures/filteringFeaturesSlice";
+import imagesReducer from "../features/images/imagesSlice";
 
 const store = configureStore({
   reducer: {
@@ -13,7 +14,8 @@ const store = configureStore({
     materials: materialsReducer,
     exhibits: exhibitsReducer,
     snackbar: snackbarReducer,
-    filteringFeatures: filteringFeaturesReducer
+    filteringFeatures: filteringFeaturesReducer,
+    image: imagesReducer
   }
 })
 

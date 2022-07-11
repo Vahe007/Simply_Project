@@ -1,6 +1,6 @@
 import { prisma } from '../../services/Prisma.js'
 
-const { exhibit } = prisma
+const { exhibit, material } = prisma
 
 const exhibitObj = {
   select: {
@@ -79,11 +79,29 @@ export const getAllExhibitsDB = async (query) => {
 
   const filteredExhibits = {
     where: {
-      material: {
-        materialName: {
-          contains: material
+      // material: {
+        // materialName: {
+        //   contains: material
+        // }
+      // },
+
+      OR: [
+        {
+          material: {
+            materialName: {
+              contains: ''
+            }
+          }
+        },
+        {
+          material: {
+            materialName: {
+              equals: material
+            }
+          }
         }
-      },
+      ],
+
       category: {
         categoryName: {
           contains: category
@@ -122,7 +140,6 @@ export const getAllExhibitsDB = async (query) => {
       error: null,
     }
   } catch (error) {
-    console.log(error)
     return {
       data: null,
       error,
@@ -141,7 +158,6 @@ export const createExhibitDB = async (userId, sentData) => {
       error: null,
     }
   } catch (error) {
-    console.log(error)
     return {
       data: null,
       error,
@@ -170,11 +186,25 @@ export const deleteExhibitDB = async (id) => {
 
 export const updateExhibitDB = async (data, id) => {
   try {
+    const {materialName, ...exhibitInfo} = data;
+
     const updatedExhibit = await exhibit.update({
       where: {
         id: +id,
       },
-      data,
+      data: {
+        material: {
+          connectOrCreate: {
+            where: {
+              materialName
+            },
+            create: {
+              materialName
+            }
+          }
+        },
+        ...exhibitInfo
+      }
     })
 
     return {
@@ -182,6 +212,7 @@ export const updateExhibitDB = async (data, id) => {
       error: null,
     }
   } catch (error) {
+    console.log(error);
     return {
       data: null,
       error,

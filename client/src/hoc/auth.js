@@ -1,25 +1,35 @@
 import React, { createContext, useContext, useEffect } from "react";
 import { useState } from "react";
 import Cookies from 'js-cookie';
-import { useSelector } from "react-redux/es/exports";
+import { useDispatch, useSelector } from "react-redux";
+import { getMeCall } from "../features/userAccess/userAccessSlice";
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const token = Cookies.get("token");
-  
-  useEffect(() => {
-    
-    setUser(token);
-  }, [token])
+  const dispatch = useDispatch();
+  // const currentRoute = useSelector(getCurrentRoute);
 
-  const login = (user) => {
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    const id = Cookies.get("id");
+
+    token && id && dispatch(getMeCall({ id: +id, token }));
+  }, []);
+
+
+
+  const login = (user, cb) => {
     setUser(user);
+    cb();
   };
+
   const logout = () => {
     Cookies.remove("token");
-    setUser(false);
+    Cookies.remove("id");
+    setUser(null);
   };
 
   return (

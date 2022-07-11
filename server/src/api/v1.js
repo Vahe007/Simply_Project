@@ -5,6 +5,7 @@ import {materialsRoutes} from '../modules/materials/routes.js'
 import {imagesRoutes} from '../modules/images/routes.js'
 import {statusRoutes} from '../modules/statuses/routes.js'
 import {categoriesRoutes} from '../modules/categories/routes.js'
+import { contributorsRouter } from '../modules/contributors/routes.js'
 
 const router = Router()
 
@@ -14,5 +15,6 @@ router.use('/statuses', statusRoutes)
 router.use('/materials', materialsRoutes)
 router.use('/images', imagesRoutes)
 router.use('/categories', categoriesRoutes)
+router.use('/contributors', contributorsRouter)
 
 export {router as v1}
