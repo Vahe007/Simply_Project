@@ -12,9 +12,11 @@ function MainDialog(props) {
                 sx={{
                     paddingTop: '0px'
                 }}
+                onClose={onClose}
             >
                { !deleteId && 
                  <CloseIcon 
+                    fontSize="large"
                     onClick={onClose}
                 /> 
                 }

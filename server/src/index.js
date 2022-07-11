@@ -15,12 +15,9 @@ app.use((req, res, next) => {
 // handle errors
 // eslint-disable-next-line
 app.use((err, req, res, next) => {
-  console.log(err);
   const error = err.status ? err : internalServerErrorCreator()
   const status = err.status || 500
-
-  console.log(error.stack)
-
+  
   res.status(status).json(error)
 })
 

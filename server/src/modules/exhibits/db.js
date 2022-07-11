@@ -46,27 +46,27 @@ const exhibitObj = {
 }
 export const getAllExhibitsDB = async (query) => {
   const sortHandler = {
-    "ID": {
+    ID: {
       id: 'desc',
     },
     'Name(A-Z)': {
-        exhibitName: 'asc'
+      exhibitName: 'asc',
     },
     'Name(Z-A)': {
-        exhibitName: 'desc'
+      exhibitName: 'desc',
     },
     'FundNumber(A-Z)': {
       fundNumber: 'asc',
     },
     'FundNumber(Z-A)': {
-        fundNumber: 'desc',
+      fundNumber: 'desc',
     },
     'acquisitionPeriod(new to old)': {
-        acquisitionPeriod: 'asc'
+      acquisitionPeriod: 'asc',
     },
     'acquisitionPeriod(old to new)': {
-        acquisitionPeriod: 'desc'
-    }
+      acquisitionPeriod: 'desc',
+    },
   }
   const { page = 1, limit = 10, sortBy, contains = '', material = '', category = '' } = query
   // const count = await exhibit.count({
@@ -75,30 +75,30 @@ export const getAllExhibitsDB = async (query) => {
   //   },
   // })
 
-  const count = await exhibit.count();
+  const count = await exhibit.count()
 
   const filteredExhibits = {
     where: {
       material: {
         materialName: {
-          contains: material
-        }
+          contains: material,
+        },
       },
       category: {
         categoryName: {
-          contains: category
-        }
+          contains: category,
+        },
       },
-      OR: ['exhibitName', "description"].map((field) => {
+      OR: ['exhibitName', 'description'].map((field) => {
         return {
           [field]: {
-            contains
-          }
+            contains,
+          },
         }
-      })
-    }
+      }),
+    },
   }
-  const filteredCount = await exhibit.count(filteredExhibits);
+  const filteredCount = await exhibit.count(filteredExhibits)
 
   try {
     const exhibitsPerPage = await exhibit.findMany({
@@ -110,14 +110,14 @@ export const getAllExhibitsDB = async (query) => {
         contributors: true,
         material: true,
         images: true,
-        category: true
-      }
+        category: true,
+      },
     })
     return {
       data: {
         count,
         filteredCount,
-        exhibitsPerPage
+        exhibitsPerPage,
       },
       error: null,
     }
@@ -130,8 +130,26 @@ export const getAllExhibitsDB = async (query) => {
   }
 }
 
-export const createExhibitDB = async (userId, sentData) => {
-  sentData.creatorId = userId
+export const createExhibitDB = async (sentData) => {
+  const { existingMaterialID } = sentData
+  if (existingMaterialID !== -1) {
+    delete sentData.newMaterialName
+    sentData.material = {
+      connect: {
+        id: sentData.existingMaterialID,
+      },
+    }
+    delete sentData.existingMaterialID
+  } else {
+    delete sentData.existingMaterialID
+    sentData.material = {
+      create: {
+        materialName: sentData.newMaterialName,
+      },
+    }
+    delete sentData.newMaterialName
+  }
+
   try {
     const newExhibit = await exhibit.create({
       data: sentData,

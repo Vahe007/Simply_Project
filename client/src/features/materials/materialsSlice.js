@@ -14,7 +14,6 @@ const initialState = {
 export const selectMaterials = state => state.materials;
 
 export const getMaterials = createAsyncThunk("getAllMaterials", async ({isActive = ""}) => {
-    console.log(isActive);
     const response = await fetch(`${baseUrl}materials?isActive=${isActive}`);
 
     return response.json();
@@ -80,7 +79,7 @@ const materialsSlice = createSlice({
         },
 
         [getMaterials.fulfilled]: (state, action) => {
-            state.allMaterials = action.payload.data
+            state.allMaterials = action.payload.data;
             state.filteredMaterials = action.payload.data;
             state.loading = false;
         },

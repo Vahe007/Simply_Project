@@ -1,35 +1,105 @@
-import * as Yup from 'yup';
+import * as Yup from "yup";
 
 export const editUserSchema = Yup.object().shape({
-    firstName: Yup.string()
-      .min(2, 'Too Short!')
-      .max(50, 'Too Long!')
-      .required('Required'),
+  firstName: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
 
-    lastName: Yup.string()
-      .min(2, 'Too Short!')
-      .max(50, 'Too Long!')
-      .required('Required'),
+  lastName: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
 
-    email: Yup.string()
-      .email('Invalid email')
-      .required('Required'),
-
-    password: Yup.string()
-      .required('Required') 
-      .min(8, 'Password is too short - should be 8 chars minimum.')
-      .matches(/[a-zA-Z]/, 'Password can contain at least one lower case, one uppercase and one number.'),
-
-    phoneNumber: Yup.number()
-      .required('Required')
-      .integer()
-      .test('length', 'Must be exactly 9 numbers', val => String(val).length === 8),
-
-    // role: Yup.string().required('Required')        
+  email: Yup.string().email("Invalid email").required("Required"),
 
   password: Yup.string()
-    .required('Required') 
-    .min(8, 'Password is too short - should be 8 chars minimum.')
-    .matches(/[a-zA-Z]/, 'Password can contain at least one lower case, one uppercase and one number.')
+    .required("Required")
+    .min(8, "Password is too short - should be 8 chars minimum.")
+    .matches(
+      /[a-zA-Z]/,
+      "Password can contain at least one lower case, one uppercase and one number."
+    ),
+
+  phoneNumber: Yup.number()
+    .required("Required")
+    .integer()
+    .test(
+      "length",
+      "Must be exactly 9 numbers",
+      (val) => String(val).length === 8
+    ),
+
+  existingMaterialID: Yup.number(),
+
+  // role: Yup.string().required('Required')
+
+  password: Yup.string()
+    .required("Required")
+    .min(8, "Password is too short - should be 8 chars minimum.")
+    .matches(
+      /[a-zA-Z]/,
+      "Password can contain at least one lower case, one uppercase and one number."
+    ),
 });
 
+// exhibitName
+// placeOfOrigin
+// creationPeriod
+// acquisitionPeriod
+// width
+// height
+// length
+// diameter
+// description
+
+export const addExhibitSchema = Yup.object().shape({
+  fundNumber: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
+
+  exhibitName: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
+
+  placeOfOrigin: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
+
+  creationPeriod: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
+
+  width: Yup.number().positive().required("required"),
+
+  height: Yup.number().positive().required("required"),
+
+  length: Yup.number().positive().required("required"),
+
+  diameter: Yup.number().positive().required("required"),
+
+  description: Yup.string().min(2, "Too Short!").max(50, "Too Long!"),
+
+  newMaterialName: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
+
+  contributors: Yup.array().of(
+    Yup.object().shape({
+      contributorName: Yup.string().required("required"),
+      contributorSurname: Yup.string(),
+      contributorPhoneNumber: Yup.number()
+        .integer()
+        .test(
+          "length",
+          "Must be exactly 9 numbers",
+          (val) => String(val).length === 8
+        ),
+    })
+  ),
+});

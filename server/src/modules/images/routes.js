@@ -13,7 +13,7 @@ const router = Router();
 
 router.get('/active/:exhibitId', validate(getAllImagesByExhibitIdSchema), getActiveImagesByExhibitId)
 router.get('/:exhibitId', validate(getAllImagesByExhibitIdSchema), getAllImagesByExhibitId)
-router.post('/:exhibitId', validate(uploadImageSchema), uploadImage)
+router.post('/:exhibitId', validate(uploadImageSchema), upload.array("file", 12), uploadImage)
 router.put('/:imageRowId', validate(updateImageIsactiveSchema), updateImage)
 router.get('/:exhibitId/:imageName', validate(getStaticImageSchema), (req, res) => {
     const {exhibitId, imageName} = req.params

@@ -1,20 +1,12 @@
 import {responseDataCreator} from '../../helpers/common.js'
-import {createStatusDB, deleteStatusDB, getActiveStatusesDB, getAllStatusesDB, updateStatusDB,} from './db.js'
+import {createStatusDB, deleteStatusDB, getAllStatusesDB, updateStatusDB,} from './db.js'
 import {ERROR_MESSAGES} from "../../helpers/constants.js";
 
 export const getAllStatuses = async (req, res, next) => {
+    
     try {
-        const allStatuses = await getAllStatusesDB()
+        const allStatuses = await getAllStatusesDB(req.query)
         res.json(responseDataCreator(allStatuses))
-    } catch (error) {
-        next(error)
-    }
-}
-
-export const getActiveStatuses = async (req, res, next) => {
-    try {
-        const activeStatuses = await getActiveStatusesDB()
-        res.json(responseDataCreator(activeStatuses))
     } catch (error) {
         next(error)
     }

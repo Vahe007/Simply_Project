@@ -1,3 +1,4 @@
+
 export const JOI_VALIDATION_MESSAGES = {
     BASE_TYPE: ` should be a type of 'text'`,
     NOT_EMPTY: ` cannot be an empty`,
@@ -7,7 +8,7 @@ export const JOI_VALIDATION_MESSAGES = {
     SCHEMA_OBJECT: 'Schema is not an object',
     PHONE_NUMBER_PATTERN: `Phone number must have 9 digits.`
 }
-export const PUBLIC_FOLDER_PATH = './public/images/'
+export const PUBLIC_FOLDER_PATH = `./public/images/`
 
 export const ERROR_MESSAGES = {
     NOT_FOUND: 'Not Found',
@@ -16,7 +17,7 @@ export const ERROR_MESSAGES = {
     ITEMS_ARE_NOT_UNIQUE: 'items\' names must be unique',
     NOT_FOUND_RECORD: ' Such record not found',
     SUCH_USER_EXISTS: 'User with such email  is already registered',
-    NO_USER_FOUND: 'No user fount with such email',
+    NO_USER_FOUND: 'No user found with such email',
 }
 
 export const MIDDLEWARE_MESSAGES = {

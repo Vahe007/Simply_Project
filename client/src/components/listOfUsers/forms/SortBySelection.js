@@ -5,8 +5,10 @@ import Select from '@mui/material/Select';
 import { useMemo } from 'react';
 import {v4 as uuid} from 'uuid';
 import { getQueries } from '../dialogs/updateDialog/helpers';
+import { useCustomSearchParams } from '../SearchParamsContext';
 
-function SortBySelection ({searchParams, setSearchParams}) {
+function SortBySelection () {
+    const { searchParams, setSearchParams } = useCustomSearchParams();
     const options =  useMemo(() =>  ['name [A-Z]', 'name [Z-A]', 'created date (new to old)', 'created date (old to new)', 'updated date (new to old)', 'updated date (old to new)'], []);
 
     const onChange = (e) => {

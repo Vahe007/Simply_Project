@@ -3,9 +3,8 @@ import ButtonMUI from './ButtonMUI';
 import { classes } from '../../styles/usersListStyles';
 import { useState } from 'react';
 
-function AddUser({searchParams, setSearchParams}) {
+function AddUser() {
     const [addUserData, setAddUserData] = useState(null)
-
     const ButtonMUIAttributes = {
         color: "primary" ,
         variant: "contained" ,
@@ -25,8 +24,6 @@ function AddUser({searchParams, setSearchParams}) {
                     addUserData && 
                     <AddUserDialog 
                         setAddUserData={setAddUserData}
-                        searchParams={searchParams}
-                        setSearchParams={setSearchParams}
                     />
                     }    
             </>

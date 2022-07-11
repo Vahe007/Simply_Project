@@ -7,8 +7,10 @@ import Content from "./Content";
 import { setSnackbar } from "../../../../features/snackbar/SnackbarSlice";
 import { useEffect, useState } from "react";
 import { getQueries } from "../updateDialog/helpers";
+import { useCustomSearchParams } from "../../SearchParamsContext";
 
-const AddUserDialog = ({setAddUserData, searchParams, setSearchParams}) => {
+const AddUserDialog = ({setAddUserData}) => {
+    const { searchParams, setSearchParams } = useCustomSearchParams();
     const dispatch = useDispatch(); 
     const users = useSelector(selectUsers);
     const [isFirstTime, setIsFirstTime] = useState(true)

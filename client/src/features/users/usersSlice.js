@@ -124,7 +124,6 @@ export const usersSlice = createSlice({
     },
 
     [getUsersPerPage.fulfilled]: (state, action) => {
-      console.log(action.payload);
       const { data } = action.payload;
       const { usersPerPage: actionUsersPerPage, count: actionCount } = data;
       [state.loading, state.usersPerPage, state.count] = [

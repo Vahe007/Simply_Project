@@ -3,8 +3,10 @@ import UsersPerPageSelection from "./forms/UsersPerPageSelection";
 import { Pagination } from '@mui/material';
 import {useSelector} from 'react-redux';
 import { selectUsers } from "../../features/users/usersSlice";
+import { useCustomSearchParams } from "./SearchParamsContext";
 
-function UsersListFooter({searchParams, setSearchParams}) {
+function UsersListFooter() {
+    const { searchParams, setSearchParams } = useCustomSearchParams();
     const { countAfterSearch } = useSelector(selectUsers);
     const limit = searchParams.get('limit');
     
@@ -23,13 +25,11 @@ function UsersListFooter({searchParams, setSearchParams}) {
             <Pagination {...paginationAttributes} />
 
             <SortBySelection
-            searchParams={searchParams} 
-            setSearchParams={setSearchParams}
+           
             />
 
             <UsersPerPageSelection
-            searchParams={searchParams} 
-            setSearchParams={setSearchParams}
+           
             />         
         </>
         

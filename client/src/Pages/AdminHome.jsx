@@ -18,24 +18,27 @@ function AdminHome() {
         {
             name: "Users",
             path: "users",
+            id: 1,
         },
 
         {
             name: "Materials",
             path: "allmaterials",
+            id: 2
         },
 
     ]
     return (
         <>
-                
-                <div className={classes.header}>
+
+        <>
+                 <div className={classes.header}>
                     {
                         options
-                            .map(({name, path, variant}) => {
+                            .map(({name, path, id, variant}) => {
                                 const label = {
                                     className: classes.buttonHeader,
-                                    key: uuid(),
+                                    key: id,
                                     variant,
                                     onClick: () => {
                                         navigate(path)
@@ -44,8 +47,16 @@ function AdminHome() {
                                 return <Button{...label}> {name} </Button>
                             })
                     }
-            
                 </div>
+                <Button 
+                    onClick={() => {
+                        navigate("addExhibit");
+                    }}
+                    variant="contained"
+                >Add exhibit</Button>
+        </>
+                
+               
             
                 <Outlet />
 
