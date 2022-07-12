@@ -143,7 +143,13 @@ export const getAllExhibitsDB = async (query) => {
 }
 
 export const createExhibitDB = async (sentData) => {
-  const { materialName, userId, contributors, ...exhibitInfo } = sentData
+  const { materialName, categoryName = "cat", statusName = "stat", userId, contributors, checkedContributors, ...exhibitInfo } = sentData
+  console.log('-------------------------------');
+
+  console.log(contributors);
+
+  console.log('------------------------------------');
+
   try {
     const newExhibit = await exhibit.create({
       data: {
@@ -157,36 +163,81 @@ export const createExhibitDB = async (sentData) => {
             },
           },
         },
-        // creator: {
-        //   connect: {
-        //     id: userId,
-        //   },
-        // },
-        creatorId: userId,
-        // contributor: {
 
-        // },
+        category: {
+          connectOrCreate: {
+            where: {
+              categoryName,
+            },
+            create: {
+              categoryName,
+            },
+          },
+        },
+
+        status: {
+          connectOrCreate: {
+            where: {
+              statusName,
+            },
+            create: {
+              statusName,
+            },
+          },
+        },
+
+        creator: {
+          connect: {
+            id: userId,
+          },
+        },
+        
+        contributors: {
+          create: [{
+            contributorId: 1,
+            contributor: {
+              connectOrCreate: contributors.map(({ contributorName, contributorSurname, contributorPhoneNumber }) => ({
+                where: {
+                  contributorName,
+                  // contributorSurname,
+                  // contributorPhoneNumber
+                },
+                create: {
+                  contributorName,
+                  contributorSurname,
+                  contributorPhoneNumber
+                }
+              
+              })),
+            }
+
+          }],
+
+        },
+
         ...exhibitInfo,
-      },
+      }
     })
 
-    // await prisma.contributorsOfExhibits.createMany({
-    //   data: contributors.map(c => ({
-    //     contributorId: c,
-    //     exhibitId:newExhibit.id
-    //   }))
+    //when creating a new exhibit
+    // const con = await prisma.contributorsOfExhibits.createMany({
+    //   data: checkedContributors.map((id) => {
+    //     return {
+    //       contributorId: id,
+    //       exhibitId: newExhibit.id
+    //     }
+    //   })
     // })
 
-    if (contributors.length) {
-      const newContributor = awai
-    }
-    console.log(newExhibit)
+
+
+
     return {
       data: newExhibit,
       error: null,
     }
   } catch (error) {
-    console.log(error)
+    console.log("error", error);
     return {
       data: null,
       error,
