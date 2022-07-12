@@ -38,8 +38,8 @@ model Exhibit {
   length            Int?
   diameter          Int?
   weight            Int?
-  statusId          Int
-  status            Status                   @relation(fields: [statusId], references: [id])
+  statusId          Int?
+  status            Status?                  @relation(fields: [statusId], references: [id])
   images            Image[]
   recoveries        Recovery[]
   exhibitions       Exhibition[]
@@ -47,8 +47,8 @@ model Exhibit {
   creatorId         Int
   creator           User                     @relation("creator", fields: [creatorId], references: [id], onDelete: Cascade)
   updater           User?                    @relation("updater", fields: [updaterId], references: [id], onDelete: Cascade)
-  categoryId        Int
-  category          Category                 @relation(fields: [categoryId], references: [id])
+  categoryId        Int?
+  category          Category?                @relation(fields: [categoryId], references: [id])
   description       String?                  @db.Text
   isActive          Boolean                  @default(true)
   createdAt         DateTime                 @default(now())

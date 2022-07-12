@@ -44,7 +44,6 @@ const inputAllProps = (field, formik, isVisible, changeVisibility, message) => {
 function Form({type, initialValues, fields, validationSchema, headTitle, btnTitle, links, getUser}) {
   const [isVisible, setVisibility] = useState(false);
   const message = useSelector(getMessage);
-  console.log(message);
   const dispatch = useDispatch();
   const onSubmit = (values) => {
     dispatch(getUser(values));

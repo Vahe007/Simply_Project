@@ -9,18 +9,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { getExhibitsPerPage } from "../features/exhibits/exhibitsSlice";
 import ExhibitsList from "../components/exhibitsList";
 import { updateRoute } from "../features/userAccess/userAccessSlice";
+import { Button } from "@mui/material";
+import {  useNavigate } from "react-router-dom";
 
 const Employee = () => {
   const auth = useAuth();
+  const navigate = useNavigate();
   const [a, setA] = useState("");
   const handleChange = ({target: {value}}) => {
     auth.logout();
   };
-
-
-  const dispatch = useDispatch();
-
-
+  console.log(auth);
 
     return (
       <>
@@ -33,6 +32,9 @@ const Employee = () => {
           >
             <MenuItem value={true}>Logout</MenuItem>
           </Select>
+          <Button onClick={() => {
+            navigate('/addexhibit');
+          }}>Add Exhibit</Button>
         </div>
         <ExhibitsList />
       </>

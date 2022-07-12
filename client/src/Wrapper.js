@@ -15,6 +15,7 @@ import ExhibitView from "./Pages/ExhibitView.jsx";
 import UsersPagination from "./components/UsersPagination";
 import Materials from "./components/Materials/Materials";
 import Navbar from "./components/Navbar";
+import AddExhibit from "./components/exhibit/AddExhibit";
 
 const requireAuth = ["/users/admin", "/users/guest", "/users/employee"];
 
@@ -23,21 +24,14 @@ function Wrapper() {
   const userInfo = useSelector(getUserInfo);
   const isLoading = useSelector(getLoading);
   const location = useLocation();
-  const [stateToken, setStateToken] = useState(Cookies.get('token'));
-  const token = Cookies.get('token');
+  const [stateToken, setStateToken] = useState(Cookies.get("token"));
 
   useEffect(() => {
     const token = Cookies.get("token");
     const id = Cookies.get("id");
 
-    stateToken && id && dispatch(getMeCall({ id: +id, token }));
+    token && id && dispatch(getMeCall({ id: +id, token }));
   }, []);
-
-  useEffect(() => {
-    if (!Cookies.get('token')) {
-      setStateToken(null);
-    }
-  }, [Cookies.get("token")])
 
   if (isLoading) {
     return <LinearProgress />;
@@ -62,14 +56,23 @@ function Wrapper() {
             <Route path="users" element={<UsersPagination />} />
             <Route path="materials" element={<Materials />} />
           </Route>
-          <Route pth="exhibit-view" element={<ExhibitView />} />
           <Route path="*" element={<Navigate to="main/users" />} />
         </Routes>
       </>
     );
   }
+
+  if (userInfo.role === "EMPLOYEE") {
+    return (
+      <Routes>
+        <Route path="exhibit-view" element={<ExhibitView />} />
+        <Route path="main" element={<Profile role={userInfo.role} />} />
+        <Route path="addexhibit" element={<AddExhibit id={userInfo.id} />} />
+
+        <Route path="*" element={<Navigate to="main" />} />
+      </Routes>
+    );
+  }
 }
 
 export default Wrapper;
-
-// element={<Profile role={userInfo.role} />}

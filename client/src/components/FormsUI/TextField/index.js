@@ -9,6 +9,7 @@ const TextFieldWrapper = (props) => {
     value: formik.values[name],
     onBlur: formik.handleBlur,
     touched: formik.errors[name],
+    onChange: formik.handleChange,
     fullWidth: true,
     variant: "outlined",
     ...otherProps,

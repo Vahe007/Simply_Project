@@ -113,7 +113,7 @@ const materialsSlice = createSlice({
       ) {
         state.error = {
           isError: true,
-          message: "user Already Exists",
+          message: "material Already Exists",
         };
       } else {
         state.error = {

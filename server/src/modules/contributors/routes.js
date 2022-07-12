@@ -1,12 +1,12 @@
-import {Router} from 'express'
-import {validate} from '../../helpers/common.js'
-import {authMiddleware} from '../../middlewares/authMiddleware.js'
-import {rolesMiddleware} from '../../middlewares/rolesMiddleware.js'
+import { Router } from 'express'
+import { validate } from '../../helpers/common.js'
+import { authMiddleware } from '../../middlewares/authMiddleware.js'
+import { rolesMiddleware } from '../../middlewares/rolesMiddleware.js'
 import {
-    getAllContributors,
-    createContributors,
-    deleteContributor,
-    getContributorById
+  getAllContributors,
+  createContributors,
+  deleteContributor,
+  getContributorById,
 } from './services.js'
 
 const router = Router()
@@ -16,11 +16,7 @@ router.get('/:id', getContributorById)
 router.post('/', createContributors)
 router.put('/:id', deleteContributor)
 
-
-export {router as contributorsRouter}
-
-
-
+export { router as contributorsRouter }
 
 // router.get('/', rolesMiddleware(['ADMIN']), getAllExhibits)
 // router.get('/active', getActiveExhibits)
