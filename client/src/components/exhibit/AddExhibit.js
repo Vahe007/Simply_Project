@@ -32,6 +32,7 @@ import {
   getContributors,
   selectContributors,
 } from "../../features/contributors/contributorsSlice";
+import Dropzone from "../Dropzone/App";
 
 const AddExhibitForm = ({ userId }) => {
   const {
@@ -423,6 +424,7 @@ const AddExhibitForm = ({ userId }) => {
             </LocalizationProvider>
           </div>
 
+          <Dropzone />
           <div className={submitBtn}>
             <Button variant="contained" fullWidth={false} type="submit">
               Submit

@@ -11,13 +11,13 @@ export const validate = (schema) => {
 
   return async (req, res, next) => {
     const { params, body } = req
-
+    //.replace(/\\/g, '/')
     try {
       schema.params && (await schema.params.validateAsync(params))
       schema.body && (await schema.body.validateAsync(body))
       return next()
     } catch (error) {
-      console.log(error)
+      console.log('asfsafasafs')
       next(badRequestErrorCreator(error.details))
     }
   }
@@ -36,6 +36,7 @@ export const generateAccessToken = (id, roles) => {
 }
 
 const isImage = (_, file, cb) => {
+  console.log('isImage', file)
   if (file.mimetype.startsWith('image')) {
     cb(null, true)
   } else {
@@ -45,8 +46,7 @@ const isImage = (_, file, cb) => {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const { exhibitId } = req.params
-    const dir = `${PUBLIC_FOLDER_PATH}${exhibitId}`
+    const dir = `${PUBLIC_FOLDER_PATH}`
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir)
     }
