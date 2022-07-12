@@ -61,6 +61,11 @@ const AddExhibitForm = ({ userId }) => {
   const { contributors } = useSelector(selectContributors);
 
   const [checkedContributorsIds, setCheckedContributorsIds] = useState([]);
+  const handleSelect = (event) => {
+    setCheckedContributorsIds(event.target.value)
+  }
+
+
 
   const [datetimeValue, setDatetimeValue] = useState(
     new Date("2014-08-18T21:11:54")
@@ -69,12 +74,18 @@ const AddExhibitForm = ({ userId }) => {
     dispatch(getMaterials({ isActive: true }));
     dispatch(getContributors());
   }, []);
+
+
+
+
+
   const formik = useFormik({
     initialValues: {
       fundNumber: "",
       exhibitName: "",
       materialName: "",
-      contributors: [],
+      contributors: checkedContributorsIds,
+      checkedContributors: [],
       placeOfOrigin: "",
       creationPeriod: "",
       acquisitionPeriod: "",
@@ -98,7 +109,6 @@ const AddExhibitForm = ({ userId }) => {
       );
     },
   });
-  console.log(contributors);
   const onDatetimeChange = (newValue) => {
     setDatetimeValue(newValue);
   };
@@ -243,18 +253,20 @@ const AddExhibitForm = ({ userId }) => {
                     labelId="demo-multiple-checkbox-label"
                     id="demo-multiple-checkbox"
                     multiple
-                    value={checkedContributorsIds}
-                    onChange={({ target: { value } }) => {
-                      console.log(value);
-                    }}
                     input={<OutlinedInput label="Tag" />}
+                    renderValue={(selected) => selected.join(', ')}
+                    name="contributors"
+                    onChange={formik.handleChange}
+                    value={formik.values.contributors}
+                    // value={checkedContributorsIds}
+                    // onChange={handleSelect}
                   >
-                    {contributors.map((contributor) => {
+                    {contributors.map(({id, contributorName, contributorSurname, contributorPhoneNumber}) => {
                       return (
-                        <MenuItem key={contributor.id} value={contributor}>
-                          <Checkbox checked={checkedContributorsIds} />
+                        <MenuItem key={id} value={{contributorName, contributorSurname, contributorPhoneNumber}}>
+                          <Checkbox checked={formik.values.checkedContributors.indexOf(id) > -1 } />
                           <ListItemText
-                            primary={`${contributor.contributorName} ${contributor.contributorSurname}`}
+                            primary={`${contributorName} ${contributorSurname}`}
                           />
                         </MenuItem>
                       );

@@ -35,6 +35,11 @@ export default {
       weight: Joi.number().integer(),
       statusId: Joi.number().integer(),
       description: Joi.string().min(0).max(200),
+      // contributors: Joi.array().items({
+      //   contributorName: Joi.string(),
+      //   contributorSurname: Joi.string(),
+      //   contributorPhoneNumber: Joi.number().integer().positive(),
+      // }),
       contributors: Joi.any(),
       material: Joi.any(),
       status: Joi.any(),

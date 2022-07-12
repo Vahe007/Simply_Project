@@ -109,8 +109,8 @@ model Contributor {
 
 model ContributorsOfExhibits {
   id            Int         @id @default(autoincrement())
-  contributorId Int
-  contributor   Contributor @relation(fields: [contributorId], references: [id])
+  contributorId Int?
+  contributor   Contributor? @relation(fields: [contributorId], references: [id])
   exhibitId     Int
   exhibit       Exhibit     @relation(fields: [exhibitId], references: [id])
   isActive      Boolean     @default(true)
