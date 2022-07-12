@@ -7,7 +7,6 @@ export const uploadImageDB = async (data) => {
   try {
     const files = await image.createMany({
       data,
-      
     })
     console.log(files)
     return {

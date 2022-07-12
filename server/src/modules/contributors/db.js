@@ -6,7 +6,7 @@ export const getAllContributorsDB = async () => {
     try {
         const contributors = await contributor.findMany({
             include: {
-                exhibits: true
+                exhibits: true,
             }
         })
         return {
@@ -27,6 +27,9 @@ export const getContributorByIdDB = async (id) => {
         const foundContributor = await contributor.findUnique({
             where: {
                 id
+            },
+            include: {
+                exhibits: true
             }
         })
         return {
