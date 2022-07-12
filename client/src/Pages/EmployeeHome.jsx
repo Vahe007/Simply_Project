@@ -19,9 +19,6 @@ const Employee = () => {
 
 
   const dispatch = useDispatch();
-
-
-
     return (
       <>
         {/* <Header /> */}

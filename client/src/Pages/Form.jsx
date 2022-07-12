@@ -21,30 +21,29 @@ const theme = createTheme();
 
 
 const addVisibilityIcon = (field, isVisible, changeVisibility) => {
-    if (field === "password") {
-      return {
-        type: isVisible ? "text" : "password",
-        InputProps: InputProps(isVisible, changeVisibility)
-      }
+  if (field === "password") {
+    return {
+      type: isVisible ? "text" : "password",
+      InputProps: InputProps(isVisible, changeVisibility)
     }
-    return null
+  }
+  return null
 }
 const inputAllProps = (field, formik, isVisible, changeVisibility, message) => {
-    return {
-        name: field,
-        label: `${field.charAt(0).toUpperCase()}${field.slice(1)}`,
-        margin: 'normal',
-        onChange: formik.handleChange,
-        message,
-        ...addVisibilityIcon(field, isVisible, changeVisibility),
-    }
+  return {
+    name: field,
+    label: `${field.charAt(0).toUpperCase()}${field.slice(1)}`,
+    margin: 'normal',
+    onChange: formik.handleChange,
+    message,
+    ...addVisibilityIcon(field, isVisible, changeVisibility),
+  }
 }
 
 
-function Form({type, initialValues, fields, validationSchema, headTitle, btnTitle, links, getUser}) {
+function Form({ type, initialValues, fields, validationSchema, headTitle, btnTitle, links, getUser }) {
   const [isVisible, setVisibility] = useState(false);
   const message = useSelector(getMessage);
-  console.log(message);
   const dispatch = useDispatch();
   const onSubmit = (values) => {
     dispatch(getUser(values));
@@ -101,9 +100,12 @@ function Form({type, initialValues, fields, validationSchema, headTitle, btnTitl
             <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 1 }}>
               {fields.map((field, index) => {
                 return (
-                  <TextField key={index} formik={formik} {...inputAllProps(field, formik, isVisible, changeVisibility, message)}/>
+                  <TextField key={index} formik={formik} {...inputAllProps(field, formik, isVisible, changeVisibility, message)} />
                 );
               })}
+              <Typography sx={{ color: 'red', textAlign: 'center' }}>
+                {message}
+              </Typography>
               <Button fullWidth={true} type="submit" sx={{ mt: "15px" }}>
                 {btnTitle}
               </Button>

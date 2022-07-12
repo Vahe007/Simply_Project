@@ -15,6 +15,7 @@ import ExhibitView from "./Pages/ExhibitView.jsx";
 import UsersPagination from "./components/UsersPagination";
 import Materials from "./components/Materials/Materials";
 import Navbar from "./components/Navbar";
+import AddExhibit from "./components/exhibit/AddExhibit";
 
 const requireAuth = ["/users/admin", "/users/guest", "/users/employee"];
 
@@ -23,27 +24,23 @@ function Wrapper() {
   const userInfo = useSelector(getUserInfo);
   const isLoading = useSelector(getLoading);
   const location = useLocation();
-  const [stateToken, setStateToken] = useState(Cookies.get('token'));
   const token = Cookies.get('token');
 
+  const { role } = userInfo;
+
   useEffect(() => {
-    const token = Cookies.get("token");
+    // const token = Cookies.get("token");
     const id = Cookies.get("id");
 
-    stateToken && id && dispatch(getMeCall({ id: +id, token }));
+    token && id && dispatch(getMeCall({ id: +id, token }));
   }, []);
 
-  useEffect(() => {
-    if (!Cookies.get('token')) {
-      setStateToken(null);
-    }
-  }, [Cookies.get("token")])
 
   if (isLoading) {
     return <LinearProgress />;
   }
 
-  if (!Object.keys(userInfo).length && !stateToken) {
+  if (!Object.keys(userInfo).length || !token) {
     return (
       <Routes>
         <Route path="form" element={<Form />} />
@@ -53,7 +50,7 @@ function Wrapper() {
       </Routes>
     );
   }
-  if (userInfo.role === "ADMIN") {
+  if (role === "ADMIN" && token) {
     return (
       <>
         <Navbar />
@@ -62,12 +59,24 @@ function Wrapper() {
             <Route path="users" element={<UsersPagination />} />
             <Route path="materials" element={<Materials />} />
           </Route>
-          <Route pth="exhibit-view" element={<ExhibitView />} />
           <Route path="*" element={<Navigate to="main/users" />} />
         </Routes>
       </>
     );
   }
+
+    return (
+      <>
+        <Routes>
+          <Route path="main" element={<Profile role={userInfo.role} />} />
+          <Route path="exhibit-view" element={<ExhibitView />} />
+          <Route path="exhibit-create" element={<AddExhibit />} />
+          <Route path="*" element={<Navigate to="main" />} />
+        </Routes>
+      </>
+    );
+  
+
 }
 
 export default Wrapper;

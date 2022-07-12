@@ -23,7 +23,6 @@ function Navbar() {
     setAnchorEl(event.currentTarget);
   };
   const handleLogout = () => {
-    console.log('okokookko');
     Cookies.remove('token');
     Cookies.remove('id');
     navigate('/login');
