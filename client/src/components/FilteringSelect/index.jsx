@@ -21,12 +21,16 @@ const FilteringSelect = ({
   options = [],
   setSearchParams,
   searchParams,
-  label = '',
+  label,
   styles,
 }) => {
+
   const handleChange = ({ target: { value } }) => {
-      setSearchParams({ ...Object.fromEntries([...searchParams]), [label]: value, page: 1 });
-  };
+    value ? searchParams.set(label, value) : searchParams.delete(label);
+    searchParams.set('page', 1);
+    setSearchParams(searchParams);
+  }
+
   return (
     <FormControl sx={{ m: 1, minWidth: 120 }}>
       <InputLabel id="demo-simple-select-helper-label">{name}</InputLabel>

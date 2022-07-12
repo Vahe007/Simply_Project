@@ -20,15 +20,11 @@ const MainSelectMUI = ({
 }) => {
 
   const handleChange = ({target: {value}}) => {
-    if (value === "") {
-      searchParams.delete(label);
-      setSearchParams(searchParams);
-    }
-    else  {
-      searchParams.set(label, value);
-      setSearchParams(searchParams);
-    }
+    value ? searchParams.set(label, value) : searchParams.delete(label);
+    searchParams.set('page', 1);
+    setSearchParams(searchParams);
   };
+  
   return (
     <FormControl variant={variant} sx={{ m: 1, minWidth: 120 }}>
       <InputLabel id="demo-simple-select-label">{name}</InputLabel>

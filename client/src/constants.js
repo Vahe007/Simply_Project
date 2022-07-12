@@ -1,8 +1,8 @@
 export const BASE_URL = "http://localhost:5000/api/v1/";
 export const LIMIT = {
-  4: 4,
-  8: 8,
-  12: 12,
+  3: 3,
+  5: 5,
+  10: 10,
 };
 export const SORTBY = {
   "ID": "ID",
