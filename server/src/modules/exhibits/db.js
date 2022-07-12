@@ -1,6 +1,6 @@
 import { prisma } from '../../services/Prisma.js'
 
-const { exhibit, material } = prisma
+const { exhibit, contributor } = prisma
 
 const exhibitObj = {
   select: {
@@ -80,26 +80,26 @@ export const getAllExhibitsDB = async (query) => {
   const filteredExhibits = {
     where: {
       // material: {
-        // materialName: {
-        //   contains: material
-        // }
+      // materialName: {
+      //   contains: material
+      // }
       // },
 
       OR: [
         {
           material: {
             materialName: {
-              contains: ''
-            }
-          }
+              contains: '',
+            },
+          },
         },
         {
           material: {
             materialName: {
-              equals: material
-            }
-          }
-        }
+              equals: material,
+            },
+          },
+        },
       ],
 
       category: {
@@ -148,34 +148,50 @@ export const getAllExhibitsDB = async (query) => {
 }
 
 export const createExhibitDB = async (sentData) => {
-  const { existingMaterialID } = sentData
-  if (existingMaterialID !== -1) {
-    delete sentData.newMaterialName
-    sentData.material = {
-      connect: {
-        id: sentData.existingMaterialID,
-      },
-    }
-    delete sentData.existingMaterialID
-  } else {
-    delete sentData.existingMaterialID
-    sentData.material = {
-      create: {
-        materialName: sentData.newMaterialName,
-      },
-    }
-    delete sentData.newMaterialName
-  }
-
+  const { materialName, userId, contributors, ...exhibitInfo } = sentData
   try {
     const newExhibit = await exhibit.create({
-      data: sentData,
+      data: {
+        material: {
+          connectOrCreate: {
+            where: {
+              materialName,
+            },
+            create: {
+              materialName,
+            },
+          },
+        },
+        // creator: {
+        //   connect: {
+        //     id: userId,
+        //   },
+        // },
+        creatorId: userId,
+        // contributor: {
+
+        // },
+        ...exhibitInfo,
+      },
     })
+
+    // await prisma.contributorsOfExhibits.createMany({
+    //   data: contributors.map(c => ({
+    //     contributorId: c,
+    //     exhibitId:newExhibit.id
+    //   }))
+    // })
+
+    if (contributors.length) {
+      const newContributor = awai
+    }
+    console.log(newExhibit)
     return {
       data: newExhibit,
       error: null,
     }
   } catch (error) {
+    console.log(error)
     return {
       data: null,
       error,
@@ -204,7 +220,7 @@ export const deleteExhibitDB = async (id) => {
 
 export const updateExhibitDB = async (data, id) => {
   try {
-    const {materialName, ...exhibitInfo} = data;
+    const { materialName, ...exhibitInfo } = data
 
     const updatedExhibit = await exhibit.update({
       where: {
@@ -214,15 +230,15 @@ export const updateExhibitDB = async (data, id) => {
         material: {
           connectOrCreate: {
             where: {
-              materialName
+              materialName,
             },
             create: {
-              materialName
-            }
-          }
+              materialName,
+            },
+          },
         },
-        ...exhibitInfo
-      }
+        ...exhibitInfo,
+      },
     })
 
     return {
@@ -230,7 +246,7 @@ export const updateExhibitDB = async (data, id) => {
       error: null,
     }
   } catch (error) {
-    console.log(error);
+    console.log(error)
     return {
       data: null,
       error,

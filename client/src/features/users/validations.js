@@ -24,13 +24,12 @@ export const editUserSchema = Yup.object().shape({
   phoneNumber: Yup.number()
     .required("Required")
     .integer()
+    .positive()
     .test(
       "length",
       "Must be exactly 9 numbers",
       (val) => String(val).length === 8
     ),
-
-  existingMaterialID: Yup.number(),
 
   // role: Yup.string().required('Required')
 
@@ -84,7 +83,7 @@ export const addExhibitSchema = Yup.object().shape({
 
   description: Yup.string().min(2, "Too Short!").max(50, "Too Long!"),
 
-  newMaterialName: Yup.string()
+  materialName: Yup.string()
     .min(2, "Too Short!")
     .max(50, "Too Long!")
     .required("Required"),
@@ -95,6 +94,7 @@ export const addExhibitSchema = Yup.object().shape({
       contributorSurname: Yup.string(),
       contributorPhoneNumber: Yup.number()
         .integer()
+        .positive()
         .test(
           "length",
           "Must be exactly 9 numbers",

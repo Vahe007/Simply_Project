@@ -56,7 +56,9 @@ const ExhibitView = () => {
   })
 
   return (
-    <Paper >
+    <div>
+      <Button>Add exhibit</Button>
+ <Paper >
       <div style={{ width: 300, marginBottom: '20px' }}>
         <Box component='form' onSubmit={formik.handleSubmit}>
           {stringFields.map((field, index) => {
@@ -92,6 +94,8 @@ const ExhibitView = () => {
       })}</div> */}
     </Paper>
 
+    </div>
+   
   )
 
 }

@@ -3,7 +3,16 @@ import { addExhibitSchema } from "../../features/users/validations";
 import TextFieldWrapper from "../FormsUI/TextField";
 import { classes } from "../../styles/AddExhibitFormStyle";
 import _ from "lodash";
-import { Button, TextField } from "@material-ui/core";
+import {
+  Button,
+  Checkbox,
+  FormControl,
+  ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  TextField,
+} from "@material-ui/core";
 import { createExhibit } from "../../features/exhibits/exhibitsSlice";
 import { useDispatch } from "react-redux";
 import { DateTimePicker } from "@mui/x-date-pickers";
@@ -19,8 +28,12 @@ import { Stack } from "@mui/material";
 import { Autocomplete } from "@mui/material";
 import { FormikProvider, FieldArray } from "formik";
 import CloseIcon from "@mui/icons-material/Close";
+import {
+  getContributors,
+  selectContributors,
+} from "../../features/contributors/contributorsSlice";
 
-const AddExhibitForm = () => {
+const AddExhibitForm = ({ userId }) => {
   const {
     mainContainer,
     formContainer,
@@ -44,20 +57,22 @@ const AddExhibitForm = () => {
   } = classes;
   const dispatch = useDispatch();
   const { filteredMaterials } = useSelector(selectMaterials);
+  const { contributors } = useSelector(selectContributors);
+
+  const [checkedContributorsIds, setCheckedContributorsIds] = useState([]);
+
   const [datetimeValue, setDatetimeValue] = useState(
     new Date("2014-08-18T21:11:54")
   );
-
   useEffect(() => {
     dispatch(getMaterials({ isActive: true }));
+    dispatch(getContributors());
   }, []);
-
   const formik = useFormik({
     initialValues: {
       fundNumber: "",
       exhibitName: "",
-      existingMaterialID: -1,
-      newMaterialName: "",
+      materialName: "",
       contributors: [],
       placeOfOrigin: "",
       creationPeriod: "",
@@ -66,17 +81,6 @@ const AddExhibitForm = () => {
       height: "",
       length: "",
       diameter: "",
-      creator: {
-        connect: {
-          id: "",
-        },
-      },
-
-      updater: {
-        connect: {
-          id: "",
-        },
-      },
       description: "",
     },
 
@@ -85,10 +89,15 @@ const AddExhibitForm = () => {
     onSubmit: (values) => {
       console.log(values);
       values.acquisitionPeriod = datetimeValue;
-      dispatch(createExhibit(values));
+      dispatch(
+        createExhibit({
+          ...values,
+          userId,
+        })
+      );
     },
   });
-
+  console.log(contributors);
   const onDatetimeChange = (newValue) => {
     setDatetimeValue(newValue);
   };
@@ -228,6 +237,29 @@ const AddExhibitForm = () => {
 
             {
               <div className={contributorInputContainer}>
+                <FormControl sx={{ m: 1, width: 300 }}>
+                  <Select
+                    labelId="demo-multiple-checkbox-label"
+                    id="demo-multiple-checkbox"
+                    multiple
+                    value={checkedContributorsIds}
+                    onChange={({ target: { value } }) => {
+                      console.log(value);
+                    }}
+                    input={<OutlinedInput label="Tag" />}
+                  >
+                    {contributors.map((contributor) => {
+                      return (
+                        <MenuItem key={contributor.id} value={contributor}>
+                          <Checkbox checked={checkedContributorsIds} />
+                          <ListItemText
+                            primary={`${contributor.contributorName} ${contributor.contributorSurname}`}
+                          />
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
                 <FieldArray name="contributors">
                   {(fieldArrayProps) => {
                     const { push, remove, form } = fieldArrayProps;
@@ -261,7 +293,7 @@ const AddExhibitForm = () => {
                               <TextFieldWrapper
                                 size="small"
                                 name={`contributors[${index}].contributorName`}
-                                value={contributor.contributorName}
+                                value={[contributor.contributorName]}
                                 error={
                                   !!touched?.contributors?.[index]
                                     ?.contributorName &&
@@ -351,25 +383,20 @@ const AddExhibitForm = () => {
               <Stack spacing={2} sx={{ width: 300 }}>
                 <Autocomplete
                   freeSolo
-                  id="existingMaterialID"
+                  id=""
                   disableClearable
                   options={filteredMaterials.map(
                     (material) => material.materialName
                   )}
                   onChange={(e, value) => {
-                    const id = filteredMaterials.find(
-                      (material) => material.materialName === value
-                    ).id;
-                    formik.setFieldValue("existingMaterialID", id);
-                    formik.setFieldValue("newMaterialName", "");
+                    formik.setFieldValue("materialName", value);
                   }}
                   renderInput={(params) => (
                     <TextFieldWrapper
                       {...params}
                       label="Select/Add Material"
                       onChange={(e) => {
-                        formik.setFieldValue("existingMaterialID", -1);
-                        formik.setFieldValue("newMaterialName", e.target.value);
+                        formik.setFieldValue("materialName", e.target.value);
                       }}
                       onBlur={formik.handleBlur}
                       InputProps={{
@@ -407,8 +434,8 @@ const AddExhibitForm = () => {
   );
 };
 
-function AddExhibit() {
-  return <AddExhibitForm />;
+function AddExhibit({ id }) {
+  return <AddExhibitForm userId={id} />;
 }
 export default AddExhibit;
 
