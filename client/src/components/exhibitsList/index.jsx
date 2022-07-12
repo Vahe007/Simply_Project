@@ -136,7 +136,7 @@ const ExhibitsList = () => {
     const { id, exhibitName, contributors, material, category, images, isActive } = exhibit;
     return {
       id,
-      image: (images.length > 0) && <img style={{ width: 80 }} src={`${BASE_URL}images/${images[0].path}`} />,
+      image:  (!!images.length) && <img style={{width: 80, height: 80}} src={`${BASE_URL}images/${id}/${images[0].name}`}/> ,
       exhibitName,
       material: material.materialName,
       category: category.categoryName,

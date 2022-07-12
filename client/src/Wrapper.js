@@ -35,7 +35,6 @@ function Wrapper() {
     token && id && dispatch(getMeCall({ id: +id, token }));
   }, []);
 
-
   if (isLoading) {
     return <LinearProgress />;
   }
@@ -65,20 +64,17 @@ function Wrapper() {
     );
   }
 
+  if (userInfo.role === "EMPLOYEE") {
     return (
-      <>
-        <Routes>
-          <Route path="main" element={<Profile role={userInfo.role} />} />
-          <Route path="exhibit-view" element={<ExhibitView />} />
-          <Route path="exhibit-create" element={<AddExhibit />} />
-          <Route path="*" element={<Navigate to="main" />} />
-        </Routes>
-      </>
-    );
-  
+      <Routes>
+        <Route path="exhibit-view" element={<ExhibitView />} />
+        <Route path="main" element={<Profile role={userInfo.role} />} />
+        <Route path="addexhibit" element={<AddExhibit id={userInfo.id} />} />
 
+        <Route path="*" element={<Navigate to="main" />} />
+      </Routes>
+    );
+  }
 }
 
 export default Wrapper;
-
-// element={<Profile role={userInfo.role} />}
