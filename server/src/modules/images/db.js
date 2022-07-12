@@ -1,9 +1,24 @@
 import { prisma } from '../../services/Prisma.js'
 
 const { image } = prisma
-
+export const getAllImagesDB = async () => {
+  try {
+    const data = await image.findMany()
+    return {
+      data,
+      error: null,
+    }
+  } catch (error) {
+    console.log(error)
+    return {
+      data: null,
+      error,
+    }
+  }
+}
 export const uploadImageDB = async (data) => {
   const imagePaths = data.map((z) => z.path)
+  console.log(data)
   try {
     const files = await image.createMany({
       data,
@@ -14,7 +29,10 @@ export const uploadImageDB = async (data) => {
       imagePaths,
       error: null,
     }
+
+    console.log(files)
   } catch (error) {
+    console.log(error)
     return {
       data: null,
       error,

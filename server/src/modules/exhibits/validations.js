@@ -44,9 +44,9 @@ export default {
       material: Joi.any(),
       status: Joi.any(),
       categoryId: Joi.number().integer(),
-      userId: Joi.number().required(),
+      userId: Joi.number(),
       category: Joi.any(),
-      checkedContributors: Joi.any(),
+      images: Joi.any(),
     }),
   },
   updateExhibitValidation: {

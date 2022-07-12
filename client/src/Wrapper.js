@@ -24,7 +24,7 @@ function Wrapper() {
   const userInfo = useSelector(getUserInfo);
   const isLoading = useSelector(getLoading);
   const location = useLocation();
-  const token = Cookies.get('token');
+  const token = Cookies.get("token");
 
   const { role } = userInfo;
 
