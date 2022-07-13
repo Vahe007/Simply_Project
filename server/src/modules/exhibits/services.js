@@ -30,7 +30,6 @@ export const createExhibit = async (req, res, next) => {
     const newExhibit = await createExhibitDB(req.body)
     res.json(responseDataCreator(newExhibit))
   } catch (error) {
-    console.log('createExhibitError-----------')
     next(error)
   }
 }

@@ -30,9 +30,7 @@ router.get(
 )
 
 router.get('/:imageName', (req, res) => {
-  console.log('hoo')
   const { imageName } = req.params
-  console.log(imageName)
 
   res.sendFile(imageName, { root: `./public/images` })
 })

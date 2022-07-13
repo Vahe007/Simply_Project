@@ -1,6 +1,6 @@
 import { prisma } from '../../services/Prisma.js'
 
-const { exhibit, contributor } = prisma
+const { exhibit, image } = prisma
 
 const exhibitObj = {
   select: {
@@ -76,8 +76,8 @@ export const getAllExhibitsDB = async (query) => {
     where: {
       material: {
         materialName: {
-          contains: material
-        }
+          contains: material,
+        },
       },
 
       // OR: [
@@ -143,14 +143,24 @@ export const getAllExhibitsDB = async (query) => {
 }
 
 export const createExhibitDB = async (sentData) => {
-  const { materialName, categoryName = "cat", statusName = "stat", userId, contributors, checkedContributors, ...exhibitInfo } = sentData
-  console.log('-------------------------------');
-
-  console.log(contributors);
-
-  console.log('------------------------------------');
+  const {
+    materialName,
+    categoryName = 'cat',
+    statusName = 'stat',
+    userId,
+    contributors,
+    checkedContributors,
+    ...exhibitInfo
+  } = sentData
 
   try {
+    const getnewImages = await image.findMany({
+      where: {
+        itemId: null,
+      },
+    })
+    const imgIds = getnewImages.map((img) => ({ id: img.id }))
+    console.log(imgIds)
     const newExhibit = await exhibit.create({
       data: {
         material: {
@@ -191,32 +201,13 @@ export const createExhibitDB = async (sentData) => {
             id: userId,
           },
         },
-        
-        contributors: {
-          create: [{
-            contributorId: 1,
-            contributor: {
-              connectOrCreate: contributors.map(({ contributorName, contributorSurname, contributorPhoneNumber }) => ({
-                where: {
-                  contributorName,
-                  // contributorSurname,
-                  // contributorPhoneNumber
-                },
-                create: {
-                  contributorName,
-                  contributorSurname,
-                  contributorPhoneNumber
-                }
-              
-              })),
-            }
 
-          }],
-
-        },
+        // image: {
+        //   connect: imgIds,
+        // },
 
         ...exhibitInfo,
-      }
+      },
     })
 
     //when creating a new exhibit
@@ -229,15 +220,11 @@ export const createExhibitDB = async (sentData) => {
     //   })
     // })
 
-
-
-
     return {
       data: newExhibit,
       error: null,
     }
   } catch (error) {
-    console.log("error", error);
     return {
       data: null,
       error,

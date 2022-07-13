@@ -9,7 +9,6 @@ export const getAllImagesDB = async () => {
       error: null,
     }
   } catch (error) {
-    console.log(error)
     return {
       data: null,
       error,
@@ -18,21 +17,16 @@ export const getAllImagesDB = async () => {
 }
 export const uploadImageDB = async (data) => {
   const imagePaths = data.map((z) => z.path)
-  console.log(data)
   try {
     const files = await image.createMany({
       data,
     })
-    console.log(files)
     return {
       data: files,
       imagePaths,
       error: null,
     }
-
-    console.log(files)
   } catch (error) {
-    console.log(error)
     return {
       data: null,
       error,
@@ -54,11 +48,9 @@ export const getImagesByExhibitIdlDB = async ({ exhibitId, isActive }) => {
   }
 
   try {
-    console.log('whereObj', whereObj)
     const images = await image.findMany({
       where: whereObj,
     })
-    console.log(images)
 
     return {
       data: images,

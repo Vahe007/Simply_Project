@@ -30,10 +30,10 @@ CREATE TABLE `Exhibit` (
     `length` INTEGER NULL,
     `diameter` INTEGER NULL,
     `weight` INTEGER NULL,
-    `statusId` INTEGER NOT NULL,
+    `statusId` INTEGER NULL,
     `updaterId` INTEGER NULL,
     `creatorId` INTEGER NOT NULL,
-    `categoryId` INTEGER NOT NULL,
+    `categoryId` INTEGER NULL,
     `description` TEXT NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -47,11 +47,12 @@ CREATE TABLE `Image` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
     `path` VARCHAR(255) NOT NULL,
-    `itemId` INTEGER NOT NULL,
+    `itemId` INTEGER NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
+    UNIQUE INDEX `Image_itemId_key`(`itemId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -109,7 +110,7 @@ CREATE TABLE `Contributor` (
 -- CreateTable
 CREATE TABLE `ContributorsOfExhibits` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `contributorId` INTEGER NOT NULL,
+    `contributorId` INTEGER NULL,
     `exhibitId` INTEGER NOT NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -126,7 +127,7 @@ CREATE TABLE `Exhibition` (
     `place` VARCHAR(255) NOT NULL,
     `headline` VARCHAR(255) NOT NULL,
     `marks` VARCHAR(255) NULL,
-    `itemId` INTEGER NOT NULL,
+    `itemId` INTEGER NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -153,16 +154,16 @@ ALTER TABLE `Exhibit` ADD CONSTRAINT `Exhibit_creatorId_fkey` FOREIGN KEY (`crea
 ALTER TABLE `Exhibit` ADD CONSTRAINT `Exhibit_updaterId_fkey` FOREIGN KEY (`updaterId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Exhibit` ADD CONSTRAINT `Exhibit_statusId_fkey` FOREIGN KEY (`statusId`) REFERENCES `Status`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Exhibit` ADD CONSTRAINT `Exhibit_statusId_fkey` FOREIGN KEY (`statusId`) REFERENCES `Status`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Exhibit` ADD CONSTRAINT `Exhibit_materialId_fkey` FOREIGN KEY (`materialId`) REFERENCES `Material`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Exhibit` ADD CONSTRAINT `Exhibit_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `Category`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Exhibit` ADD CONSTRAINT `Exhibit_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `Category`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Image` ADD CONSTRAINT `Image_itemId_fkey` FOREIGN KEY (`itemId`) REFERENCES `Exhibit`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Image` ADD CONSTRAINT `Image_itemId_fkey` FOREIGN KEY (`itemId`) REFERENCES `Exhibit`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Recovery` ADD CONSTRAINT `Recovery_exhibitId_fkey` FOREIGN KEY (`exhibitId`) REFERENCES `Exhibit`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -171,7 +172,7 @@ ALTER TABLE `Recovery` ADD CONSTRAINT `Recovery_exhibitId_fkey` FOREIGN KEY (`ex
 ALTER TABLE `ContributorsOfExhibits` ADD CONSTRAINT `ContributorsOfExhibits_exhibitId_fkey` FOREIGN KEY (`exhibitId`) REFERENCES `Exhibit`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `ContributorsOfExhibits` ADD CONSTRAINT `ContributorsOfExhibits_contributorId_fkey` FOREIGN KEY (`contributorId`) REFERENCES `Contributor`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `ContributorsOfExhibits` ADD CONSTRAINT `ContributorsOfExhibits_contributorId_fkey` FOREIGN KEY (`contributorId`) REFERENCES `Contributor`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Exhibition` ADD CONSTRAINT `Exhibition_itemId_fkey` FOREIGN KEY (`itemId`) REFERENCES `Exhibit`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Exhibition` ADD CONSTRAINT `Exhibition_itemId_fkey` FOREIGN KEY (`itemId`) REFERENCES `Exhibit`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

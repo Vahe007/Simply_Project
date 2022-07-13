@@ -28,11 +28,11 @@ export const uploadImage = async (req, res, next) => {
       path: file.path.replace('public', `${baseUrl}`).replace(/\\/g, '/'),
     }
   })
-  console.log(data)
   try {
     const file = await uploadImageDB(data)
     res.json(responseDataCreator(file))
   } catch (error) {
+    console.log(error);
     next(error)
   }
 }
@@ -63,7 +63,6 @@ export const getActiveImagesByExhibitId = async (req, res, next) => {
 export const updateImage = async (req, res, next) => {
   const { imageRowId } = req.params
   const { isActive } = req.body
-  console.log(imageRowId)
   try {
     const images = await updateImageIsactiveDB(imageRowId, isActive)
     res.json(responseDataCreator(images))

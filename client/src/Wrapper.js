@@ -64,7 +64,7 @@ function Wrapper() {
     );
   }
 
-  if (userInfo.role === "EMPLOYEE") {
+  if (role === "EMPLOYEE") {
     return (
       <Routes>
         <Route path="exhibit-view" element={<ExhibitView />} />

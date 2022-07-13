@@ -17,7 +17,6 @@ export const validate = (schema) => {
       schema.body && (await schema.body.validateAsync(body))
       return next()
     } catch (error) {
-      console.log('asfsafasafs')
       next(badRequestErrorCreator(error.details))
     }
   }
