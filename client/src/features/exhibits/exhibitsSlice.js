@@ -24,7 +24,6 @@ export const update_getExhibit = createAsyncThunk("editExhibit", async({page = 1
         }
     });
     const response = await fetch(`${BASE_URL}exhibits?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${contains}&material=${material}&category=${category}`);
-    console.log('data', await response.json());
     return response.json();
 })
 
