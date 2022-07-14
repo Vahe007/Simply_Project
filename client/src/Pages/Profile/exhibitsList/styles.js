@@ -6,7 +6,6 @@ import {createUseStyles} from 'react-jss'
 export const useStyles = createUseStyles({
   controlBar: {
     margin: {
-
       top: 50
     },
     '& span': {

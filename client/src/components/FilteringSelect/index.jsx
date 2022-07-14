@@ -14,7 +14,6 @@ import { getExhibitsPerPage } from "../../features/exhibits/exhibitsSlice";
 
 
 const FilteringSelect = ({
-  limit,
   filteredCount,
   queries,
   name,
@@ -25,15 +24,13 @@ const FilteringSelect = ({
   label,
   styles,
 }) => {
+
   const handleChange = ({ target: { value } }) => {
-    // if (value === "") {
-    //   searchParams.delete(label);
-    //   setSearchParams(searchParams);
-    // }
-    // else  {
-      setSearchParams({ ...Object.fromEntries([...searchParams]), [label]: value, page: 1 });
-    // }
-  };
+    value ? searchParams.set(label, value) : searchParams.delete(label);
+    searchParams.set('page', 1);
+    setSearchParams(searchParams);
+  }
+
   return (
     <FormControl sx={{ m: 1, minWidth: 120 }}>
       <InputLabel id="demo-simple-select-helper-label">{name}</InputLabel>
@@ -50,9 +47,6 @@ const FilteringSelect = ({
           return (
             <MenuItem key={uuid()} value={option[`${label}Name`]}>
               {option[`${label}Name`]}
-              {/* {`${materialName.slice(0, 1).toUpperCase()}${materialName.slice(
-                1
-              )}`} */}
             </MenuItem>
           );
         })}

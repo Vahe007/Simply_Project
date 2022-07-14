@@ -2,15 +2,18 @@ import { editUserSchema } from "../../../../features/users/validations";
 import MainDialog from "../helpers/MainDialog";
 import { Formik, Form, useFormik  } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { createUser, getUsersPerPage, selectUsers } from "../../../../features/users/usersSlice";
-import { useUsersContext } from "../../../../features/users/UsersContextProvider";
+import { createAndGetUsers, selectUsers, setErrorToNull } from "../../../../features/users/usersSlice";
 import Content from "./Content";
 import { setSnackbar } from "../../../../features/snackbar/SnackbarSlice";
+import { useEffect, useState } from "react";
+import { getQueries } from "../updateDialog/helpers";
+import { useCustomSearchParams } from "../../SearchParamsContext";
 
 const AddUserDialog = ({setAddUserData}) => {
-    const {page, limit, sortBy, contains: searchInputValue} = useUsersContext();
+    const { searchParams, setSearchParams } = useCustomSearchParams();
     const dispatch = useDispatch(); 
-    const {error } = useSelector(selectUsers);
+    const users = useSelector(selectUsers);
+    const [isFirstTime, setIsFirstTime] = useState(true)
 
     const initialInputValues = {
         firstName: '',
@@ -21,48 +24,57 @@ const AddUserDialog = ({setAddUserData}) => {
         role: ''
     }
 
-    const onSubmit = (values) => {
-        dispatch(createUser(values));
-        
-        setTimeout(() => {
-            dispatch(getUsersPerPage({page, limit, sortBy, contains: searchInputValue || ""}))
-        }, 0)
-
-        if(!error) {
+    useEffect(() => {
+        if (isFirstTime) {
+            setIsFirstTime(false)
+            return
+        }
+        console.log(users.error);
+        if (!users.error.isError) {
+            console.log(users.error)
             dispatch(setSnackbar({
                 snackbarOpen: true,
                 snackbarType: "success",
                 snackbarMessage: "User successfully added"
             }))
+            onClose();
         }
-       
-        
-        onClose()
-    
+    }, [users.error])
+
+    const onSubmit = (values) => {
+
+        dispatch(createAndGetUsers({data: values, queries: getQueries(searchParams)}));        
     }
 
     const onClose = () => {
         setAddUserData(null)
     }
 
-    const formik = useFormik({
-        initialValues: initialInputValues,
-        validationSchema: editUserSchema,
-        onSubmit: onSubmit
-    })
+    // const formik = useFormik({
+    //     initialValues: initialInputValues,
+    //     validationSchema: editUserSchema,
+    //     onSubmit: onSubmit
+    // })
 
     return (
         <MainDialog
             title="Add User"
-            content= {<Formik
+            content= {
+                        <Formik
                             onSubmit={onSubmit}
                             initialValues={initialInputValues}
                             validationSchema={editUserSchema}
                         >
-                            <Form>
-                                <Content />
-                            </Form>     
-                        </Formik>}
+                            {
+                                ({setFieldError}) => (
+                                    <Form>
+                                        <Content setFieldError={setFieldError}/>
+                                    </Form> 
+                                )
+                            }
+                           
+                        </Formik>
+                    }
             onClose={onClose}            
         />
     )

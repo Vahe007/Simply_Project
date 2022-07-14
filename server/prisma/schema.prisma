@@ -23,7 +23,6 @@ model User {
   updatedAt       DateTime  @default(now()) @updatedAt
 }
 
-
 model Exhibit {
   id                Int                      @id @default(autoincrement())
   fundNumber        String                   @db.VarChar(255)
@@ -39,8 +38,8 @@ model Exhibit {
   length            Int?
   diameter          Int?
   weight            Int?
-  statusId          Int
-  status            Status                   @relation(fields: [statusId], references: [id])
+  statusId          Int?
+  status            Status?                  @relation(fields: [statusId], references: [id])
   images            Image[]
   recoveries        Recovery[]
   exhibitions       Exhibition[]
@@ -48,8 +47,8 @@ model Exhibit {
   creatorId         Int
   creator           User                     @relation("creator", fields: [creatorId], references: [id], onDelete: Cascade)
   updater           User?                    @relation("updater", fields: [updaterId], references: [id], onDelete: Cascade)
-  categoryId        Int
-  category          Category                 @relation(fields: [categoryId], references: [id])
+  categoryId        Int?
+  category          Category?                @relation(fields: [categoryId], references: [id])
   description       String?                  @db.Text
   isActive          Boolean                  @default(true)
   createdAt         DateTime                 @default(now())
@@ -60,8 +59,8 @@ model Image {
   id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(255)
   path      String   @db.VarChar(255)
-  itemId    Int
-  exhibit   Exhibit  @relation(fields: [itemId], references: [id])
+  itemId    Int?
+  exhibit   Exhibit? @relation(fields: [itemId], references: [id])
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -110,13 +109,13 @@ model Contributor {
 
 model ContributorsOfExhibits {
   id            Int         @id @default(autoincrement())
-  contributorId Int
-  contributor   Contributor @relation(fields: [contributorId], references: [id])
+  contributorId Int?
+  contributor   Contributor? @relation(fields: [contributorId], references: [id])
   exhibitId     Int
   exhibit       Exhibit     @relation(fields: [exhibitId], references: [id])
-  isActive      Boolean                @default(true)
-  createdAt     DateTime               @default(now())
-  updatedAt     DateTime               @updatedAt
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model Exhibition {
@@ -126,8 +125,8 @@ model Exhibition {
   place     String   @db.VarChar(255)
   headline  String   @db.VarChar(255)
   marks     String?  @db.VarChar(255)
-  exhibit   Exhibit  @relation(fields: [itemId], references: [id])
-  itemId    Int
+  exhibit   Exhibit? @relation(fields: [itemId], references: [id])
+  itemId    Int?
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -140,10 +139,10 @@ enum Role {
 }
 
 model Category {
-  id            Int       @id @default(autoincrement())
-  categoryName  String    @unique @db.VarChar(255)
-  exhibit       Exhibit[]
-  isActive      Boolean                @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           Int       @id @default(autoincrement())
+  categoryName String    @unique @db.VarChar(255)
+  exhibit      Exhibit[]
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }

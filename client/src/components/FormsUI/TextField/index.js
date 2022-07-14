@@ -2,28 +2,25 @@ import React from "react";
 import { TextField } from "@mui/material";
 import { useField } from "formik";
 
-
 const TextFieldWrapper = (props) => {
-    const { name, ...otherProps } = props;
-    // const [ field, meta ] = useField(name);
+  const { name, formik, ...otherProps } = props;
+  const configTextField = {
+    name,
+    value: formik.values[name],
+    onBlur: formik.handleBlur,
+    touched: formik.errors[name],
+    onChange: formik.handleChange,
+    fullWidth: true,
+    variant: "outlined",
+    ...otherProps,
+  };
 
-    const configTextField = {
-        // ...field,
-        name,
-        ...otherProps,
-        fullWidth: true,
-        variant: 'outlined'
-    };
+  if (formik.touched[name] && formik.errors[name]) {
+    configTextField.error = true;
+    configTextField.helperText = formik.errors[name];
+  }
 
-    // if (meta && meta.touched && meta.error) {
-    //     configTextField.error = true;
-    //     configTextField.helperText = meta.error;
-    // }
-
-    return (
-        <TextField 
-        {...configTextField} />
-    )
-}
+  return <TextField {...configTextField} />;
+};
 
 export default TextFieldWrapper;

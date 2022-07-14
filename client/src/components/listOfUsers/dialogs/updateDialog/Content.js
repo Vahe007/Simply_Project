@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Grid, InputLabel, MenuItem } from "@mui/material";
 import React from "react";
 import Select from "../../FormsUI/Select";
 import MainDialog from "../helpers/MainDialog";
 import TextField from "../../FormsUI/TextField";
 import Button from "../../FormsUI/Button";
+import { selectUsers } from "../../../../features/users/usersSlice";
+import {useSelector} from 'react-redux';
 
-function Content({user, helperText}) {
-    const disabled = () => {
+function Content({ helperText,setFieldError}) {
+    const {error} = useSelector(selectUsers);
 
-    }
+    useEffect(() => {
+        if(error && error.message === 'Email is already registered') {
+            setFieldError("email", error.message);
+        }
+        console.log(error);
+    }, [error])
+
 
     return (
         <>
@@ -49,32 +57,3 @@ function Content({user, helperText}) {
 }
 
 export default Content;
-
-// Object.entries(inputValues).slice(1, -1).map(([inputName, inputValue], index) => {
-//     if(inputName === 'role') {
-//             return  <FormControl key={index} sx={{width: 140}}>
-//                             <InputLabel id="demo-simple-select-label">Role</InputLabel>
-//                                 <Select
-//                                     labelId="demo-simple-select-label"
-//                                     id="demo-simple-select"
-//                                     value={inputValue}
-//                                     label="Role"
-//                                     onChange={onRoleChange}
-//                                 >
-//                                     <MenuItem value={"EMPLOYEE"}>EMPLOYEE</MenuItem>
-//                                     <MenuItem value={"GUEST"}>GUEST</MenuItem>
-//                                     </Select> 
-//                     </FormControl>
-//         }
-
-//     return <TextField 
-//                 key={index}
-//                 className="textField" 
-//                 value={inputValue} 
-//                 id={inputName}
-//                 name={inputName}
-//                 onChange={onInputChange} 
-//                 label={inputName} 
-//                 variant="outlined"
-//             />
-// })

@@ -15,23 +15,16 @@ const MainSelectMUI = ({
   options = {},
   setSearchParams,
   searchParams,
-  label,
+  label='',
   styles,
 }) => {
-    const dispatch = useDispatch();
 
   const handleChange = ({target: {value}}) => {
-    // searchParams.delete(label);
-    // value ? setSearchParams({...params, [label]: value}) : setSearchParams(searchParams);
-
-    if (value === "") {
-      searchParams.delete(label);
-      setSearchParams(searchParams);
-    }
-    else  {
-      setSearchParams({...Object.fromEntries([...searchParams]), [label]: value})
-    }
+    value ? searchParams.set(label, value) : searchParams.delete(label);
+    searchParams.set('page', 1);
+    setSearchParams(searchParams);
   };
+  
   return (
     <FormControl variant={variant} sx={{ m: 1, minWidth: 120 }}>
       <InputLabel id="demo-simple-select-label">{name}</InputLabel>

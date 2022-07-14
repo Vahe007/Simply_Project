@@ -10,9 +10,9 @@ import MainTable from "../listOfUsers/MainTable";
 import CheckIcon from '@mui/icons-material/Check';
 import { Button } from "@material-ui/core";
 
-export default function ListMaterials() {
+export default function ListMaterials({searchParams, setSearchParams}) {
   const dispatch = useDispatch();
-  const materials = useSelector(selectMaterials);
+  const {filteredMaterials} = useSelector(selectMaterials);
   const [inputValues, setInputValues] = useState({});
   const [showEditIds, setShowEditIds] = useState([]);
 
@@ -45,6 +45,7 @@ export default function ListMaterials() {
         newData: {
           isActive: e.target.checked,
         },
+        isActive: searchParams.get('isActive')
       })
     );
 
@@ -99,7 +100,7 @@ export default function ListMaterials() {
     }, 0);
   };
 
-  const materialsCount = materials.reduce(
+  const materialsCount = filteredMaterials.reduce(
     (acc, material) => {
       if (material.isActive) {
         acc.actives += 1;
@@ -115,7 +116,7 @@ export default function ListMaterials() {
     }
   );
 
-  const data = materials.map((material, index) => {
+  const data = filteredMaterials.map((material, index) => {
     const materialClone = { ...material };
     const inputValue = inputValues[materialClone.id] !== undefined ? inputValues[materialClone.id] : materialClone.materialName;
     const createdAtFullDate = new Date(materialClone.createdAt).toDateString();
@@ -146,7 +147,7 @@ export default function ListMaterials() {
         onChange={(e) => {
           onCheckChange(e, materialClone.id);
         }}
-        checked={materials[index].isActive}
+        checked={filteredMaterials[index].isActive}
         inputProps={{ "aria-labelledby": "" }}
       />
     );
@@ -194,7 +195,6 @@ export default function ListMaterials() {
           "Created At",
           "Updated At",
           "Number of Exhibits",
-          ,
           "Edit",
           "Activate/Deactivate",
         ]}

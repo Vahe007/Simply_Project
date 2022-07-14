@@ -2,7 +2,7 @@ import { Button } from "@mui/material"
 import AddDialog from "./AddDialog";
 import { useMaterialsContext } from "./MaterialsContextProvider";
 
-function MaterialButtons() {
+function MaterialButtons({searchParams, setSearchParams}) {
     const {showDialog, setShowDialog} = useMaterialsContext();
 
     const btnAttributes = {
@@ -12,7 +12,10 @@ function MaterialButtons() {
     }
 
     return <div>
-                {showDialog && <AddDialog />}
+                {showDialog && <AddDialog 
+                                    searchParams={searchParams}
+                                    setSearchParams={setSearchParams}
+                                />}
                 <Button {...btnAttributes} > Add Material </Button>
            </div>
 }

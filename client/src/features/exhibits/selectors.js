@@ -9,3 +9,7 @@ export const getExhibitsCount = (state) => {
 export const getFilteredCount = (state) => {
     return state.exhibits.filteredCount;
 }
+
+export const getLoading = (state) => {
+    return state.exhibits.loading;
+}

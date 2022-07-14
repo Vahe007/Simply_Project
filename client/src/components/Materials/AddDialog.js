@@ -1,36 +1,42 @@
 import { Form, Formik } from "formik";
-import { useDispatch } from "react-redux";
-import { createMaterial, getMaterials } from "../../features/materials/materialsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { createAndGetMaterials, selectMaterials } from "../../features/materials/materialsSlice";
 import { setSnackbar } from "../../features/snackbar/SnackbarSlice";
 import MainDialog from "../listOfUsers/dialogs/helpers/MainDialog";
 import Content from "./Content";
 import { useMaterialsContext } from "./MaterialsContextProvider";
 import { addMaterialSchema } from "./validations";
+import { useEffect, useState } from "react";
 
-function AddDialog() {
+function AddDialog({searchParams}) {
     const {setShowDialog } = useMaterialsContext();
-
+    const materials = useSelector(selectMaterials);
+    const [isFirstTime, setIsFirstTime] = useState(true)
     const dispatch = useDispatch();
-
-    const onSubmit = (data) => {
-        const {materialNames} = data;
-        dispatch(createMaterial(materialNames))
-
-        setShowDialog(false);
-
-        const quantity = materialNames.length
-
-        const message = `${quantity} material${quantity === 1 ? '' : 's'} added`
+    console.log(materials);
     
-        dispatch(setSnackbar({
-            snackbarOpen: true,
-            snackbarType: "success",
-            snackbarMessage: message
-        }))
-        
-        setTimeout(() => {
-            dispatch(getMaterials())
-        })
+    useEffect(() => {
+        if (isFirstTime) {
+            setIsFirstTime(false)
+            return
+        }
+
+        if(!materials.error.isError) {
+            const message = `materials added`
+            dispatch(setSnackbar({
+                snackbarOpen: true,
+                snackbarType: "success",
+                snackbarMessage: message
+            }))
+            setShowDialog(false);
+
+        }
+    }, [materials.error])
+
+    
+    const onSubmit = (data) => {
+        const {materialNames} = data;     
+        dispatch(createAndGetMaterials({data: materialNames, isActive: searchParams.get('isActive')}))
     }
 
     return <>
@@ -38,19 +44,23 @@ function AddDialog() {
     <MainDialog 
         title="Add Material"
         onClose= {() => setShowDialog(false)}
-        content={  <Formik
+        content={  
+                    <Formik
                         onSubmit={onSubmit}
                         validationSchema={addMaterialSchema}
                         initialValues={{
                             materialNames: ['']
                         }}
                     >
-                        <Form>
-                            <Content />
-                        </Form>
-
-                   </Formik> 
-                   }
+                    {
+                        ({setFieldError}) => (
+                            <Form>
+                                <Content setFieldError={setFieldError}/>
+                            </Form>
+                        )
+                    }
+                    </Formik> 
+                }
     />
 </>
 }

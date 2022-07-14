@@ -6,11 +6,16 @@ const initialState = {
   count: 1,
   countAfterSearch: 1,
   loading: false,
-  error: null,
+  error: {
+    isError: false,
+    message: ""
+  }
 };
 export const selectUsers = (state) => state.users;
 
-export const createUser = createAsyncThunk("addUser", async (data) => {
+export const createAndGetUsers = createAsyncThunk("addUser", async ({data, queries}) => {
+  const {page, limit, sortBy, contains, isActive} = queries;
+
   const response = await fetch(`${baseUrl}users`, {
     method: "POST",
     body: JSON.stringify(data),
@@ -18,36 +23,33 @@ export const createUser = createAsyncThunk("addUser", async (data) => {
       "Content-Type": "application/json",
     },
   });
-  return response.json();
+
+  const response2 = await fetch(
+    `${baseUrl}users?page=${page}&sortBy=${
+      sortBy || ""
+    }&limit=${limit}&contains=${contains || ""}&isActive=${isActive || ""}`
+  );
+
+  return {
+    updateResponse: await response.json(),
+    getResponse: await response2.json()
+  };
 });
 
 export const getUsersPerPage = createAsyncThunk("users", async (queries) => {
-  const { page, sortBy = "", limit, contains } = queries;
+  const { page, sortBy = "", limit, contains = "", isActive="" } = queries;
+  console.log();
   const response = await fetch(
     `${baseUrl}users?page=${page}&sortBy=${
       sortBy || ""
-    }&limit=${limit}&contains=${contains || ""}`
+    }&limit=${limit}&contains=${contains || ""}&isActive=${isActive || ""}`
   );
   return response.json();
 });
 
-export const getActiveUsers = createAsyncThunk(
-  "activeUsers",
-  async (queries) => {
-    console.log(queries);
-    const { page, sortBy = "", limit, contains } = queries;
-    const response = await fetch(
-      `${baseUrl}users/active?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${
-        contains || ""
-      }`
-    );
-    return response.json();
-  }
-);
-
 export const updateAndGetUsers = createAsyncThunk("updateAndGetUsers",async ({ id, newData, queries }) => {
   console.log(queries);
-    const {page, limit, sortBy, contains} = queries;
+    const {page, limit, sortBy, contains, isActive} = queries;
     const response = await fetch(`${baseUrl}users/${id}`, {
       method: "PUT",
       body: JSON.stringify(newData),
@@ -57,9 +59,9 @@ export const updateAndGetUsers = createAsyncThunk("updateAndGetUsers",async ({ i
     });
 
     const response2 = await fetch(
-      `${baseUrl}users/active?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${
+      `${baseUrl}users?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${
         contains || ""
-      }`
+      }&isActive=${isActive}`
     );
 
     return response2.json();
@@ -85,24 +87,35 @@ export const deleteUser = createAsyncThunk("deleteUser", async (id) => {
 export const usersSlice = createSlice({
   name: "users",
   initialState,
-  reducers: {},
+  reducers: {
+  },
   extraReducers: {
-    [createUser.pending]: (state) => {
+    [createAndGetUsers.pending]: (state) => {
       state.loading = true;
     },
 
-    [createUser.fulfilled]: (state, { payload }) => {
-      const { error } = payload;
-      if (error) {
-        alert("hii");
-        error.code === "P2002" && (state.error = "Email is already registered");
+    [createAndGetUsers.fulfilled]: (state, { payload }) => {
+      console.log(payload);
+      const { error } = payload.updateResponse;
+      if (error && error.code === "P2002") {
+        state.error = {
+          isError: true,
+          message:"Email is already registered"
+        };
+      } else {
+        state.error = {
+          isError: false,
+          message: ""
+        };
       }
-
       state.loading = false;
-      console.log(state.error);
+      state.usersPerPage = payload.getResponse.data.usersPerPage
+      state.count = payload.getResponse.data.count
+      state.countAfterSearch = payload.getResponse.data.countAfterSearch;
+
     },
 
-    [createUser.rejected]: ({ loading }, action) => {
+    [createAndGetUsers.rejected]: ({ loading }, action) => {
       loading = false;
     },
 
@@ -125,25 +138,6 @@ export const usersSlice = createSlice({
       state.loading = false;
     },
 
-    [getActiveUsers.pending]: ({ loading }) => {
-      loading = true;
-    },
-
-    [getActiveUsers.fulfilled]: (state, action) => {
-      const { data } = action.payload;
-      const { usersPerPage: actionUsersPerPage, count: actionCount } = data;
-      [state.loading, state.usersPerPage, state.count] = [
-        false,
-        actionUsersPerPage,
-        actionCount,
-      ];
-      state.countAfterSearch = action.payload.data.countAfterSearch;
-    },
-
-    [getActiveUsers.rejected]: (state) => {
-      state.loading = false;
-    },
-
     [updateAndGetUsers.pending]: (state) => {
       state.loading = true;
       
@@ -151,6 +145,18 @@ export const usersSlice = createSlice({
 
     [updateAndGetUsers.fulfilled]: (state, action) => {
       console.log(action);
+      const { error } = action.payload;
+      if (error && error.code === "P2002") {
+        state.error = {
+          isError: true,
+          message:"Email is already registered"
+        };
+      } else {
+        state.error = {
+          isError: false,
+          message: ""
+        };
+      }
       state.usersPerPage = action.payload.data.usersPerPage
       state.loading = false;
     },
@@ -186,5 +192,7 @@ export const usersSlice = createSlice({
     },
   },
 });
+
+export const {setErrorToNull} = usersSlice.actions;
 
 export default usersSlice.reducer;

@@ -6,7 +6,6 @@ import FormControl from '@mui/material/FormControl';
 
 export default function MainRadioButtons(props) {
   const { handleChange, labels, values, defaultValue } = props;
-
   return (
     <div>
         <FormControl>

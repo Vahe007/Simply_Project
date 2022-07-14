@@ -1,12 +1,10 @@
 import AddUserDialog from './dialogs/addDialog/AddUserDialog';
 import ButtonMUI from './ButtonMUI';
-import { useUsersContext } from '../../features/users/UsersContextProvider';
 import { classes } from '../../styles/usersListStyles';
 import { useState } from 'react';
 
 function AddUser() {
     const [addUserData, setAddUserData] = useState(null)
-
     const ButtonMUIAttributes = {
         color: "primary" ,
         variant: "contained" ,
@@ -25,7 +23,7 @@ function AddUser() {
                     {
                     addUserData && 
                     <AddUserDialog 
-                    setAddUserData={setAddUserData}
+                        setAddUserData={setAddUserData}
                     />
                     }    
             </>

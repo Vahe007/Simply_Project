@@ -14,7 +14,7 @@ export const internalServerErrorCreator = () => {
 }
 
 export const badRequestErrorCreator = (details) => {
-    const error = new Error(ERROR_MESSAGES.BAD_REQUEST)
+    const error = new Error(ERROR_MESSAGES.BAD_REQUEST);
     error.status = 400
     error.details = details
 

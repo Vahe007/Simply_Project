@@ -2,8 +2,20 @@ import TextField from "../../FormsUI/TextField/index.js";
 import Select from "../../FormsUI/Select/index.js"
 import Button from "../../FormsUI/Button/index.js";
 import { Grid } from "@mui/material";
+import { selectUsers } from "../../../../features/users/usersSlice.js";
+import {useSelector} from 'react-redux';
+import { useEffect } from "react";
 
-function Content() {
+function Content({setFieldError}) {
+    const {error} = useSelector(selectUsers)
+
+    useEffect(() => {
+        if(error && error.message === 'Email is already registered') {
+            setFieldError("email", error.message);
+        }
+        console.log(error);
+    }, [error])
+
     return (
         <>
             <Grid container spacing={4}>
