@@ -13,7 +13,10 @@ import {
   Select,
   TextField,
 } from "@material-ui/core";
-import { createExhibit } from "../../features/exhibits/exhibitsSlice";
+import {
+  createExhibit,
+  update_getExhibit,
+} from "../../features/exhibits/exhibitsSlice";
 import { useDispatch } from "react-redux";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { useEffect, useState } from "react";
@@ -33,9 +36,12 @@ import {
   selectContributors,
 } from "../../features/contributors/contributorsSlice";
 import Dropzone from "../Dropzone/App";
+import { useExhibit } from "../../features/exhibits/ExhibitsContextProvider";
 import { set } from "date-fns/esm";
 
 const AddExhibitForm = ({ userId }) => {
+  const { exhibit } = useExhibit();
+
   const {
     mainContainer,
     formContainer,
@@ -60,28 +66,47 @@ const AddExhibitForm = ({ userId }) => {
   const dispatch = useDispatch();
   const { filteredMaterials } = useSelector(selectMaterials);
   const { contributors } = useSelector(selectContributors);
-
-  const [checkedContributors, setCheckedContributors] = useState([]);
-
-
+  const [checkedContributorsIds, setCheckedContributorsIds] = useState([]);
+  const handleSelect = (event) => {
+    setCheckedContributorsIds(event.target.value);
+  };
+  const [selectedContributorName, setSelectedContributorName] = useState([]);
+  const [selectedContribursIds, setSelectedContribursIds] = useState([]);
+  console.log(selectedContribursIds);
   const [datetimeValue, setDatetimeValue] = useState(
     new Date("2014-08-18T21:11:54")
   );
+
   useEffect(() => {
     dispatch(getMaterials({ isActive: true }));
     dispatch(getContributors());
   }, []);
-
-
-
-
-
-  const formik = useFormik({
-    initialValues: {
+  console.log(contributors);
+  let initialValues;
+  if (exhibit) {
+    initialValues = {
+      fundNumber: exhibit.fundNumber,
+      exhibitName: exhibit.exhibitName,
+      materialName: exhibit.material.materialName,
+      contributorIds: checkedContributorsIds,
+      newContributors: [],
+      checkedContributors: [],
+      placeOfOrigin: exhibit.placeOfOrigin,
+      creationPeriod: exhibit.creationPeriod,
+      acquisitionPeriod: exhibit.acquisitionPeriod,
+      width: exhibit.width,
+      height: exhibit.height,
+      length: exhibit.length,
+      diameter: exhibit.diameter,
+      description: exhibit.description,
+      contributors: [],
+    };
+  } else {
+    initialValues = {
       fundNumber: "",
       exhibitName: "",
       materialName: "",
-      contributors: [],
+      newContributors: [],
       placeOfOrigin: "",
       creationPeriod: "",
       acquisitionPeriod: "",
@@ -90,50 +115,29 @@ const AddExhibitForm = ({ userId }) => {
       length: "",
       diameter: "",
       description: "",
-    },
+    };
+  }
+  const formik = useFormik({
+    initialValues,
 
     validationSchema: addExhibitSchema,
 
     onSubmit: (values) => {
       console.log(values);
       values.acquisitionPeriod = datetimeValue;
-      dispatch(
-        createExhibit({
-          ...values,
-          userId,
-        })
-      );
+      if (!exhibit) {
+        dispatch(
+          createExhibit({
+            ...values,
+            userId,
+          })
+        );
+      } else {
+        dispatch(update_getExhibit({ id: exhibit.id, exhibitInfo: values }));
+      }
     },
   });
-
-  const handleCheck = (selected) => {
-    const stringContributors = checkedContributors.map((contributor) => (
-      JSON.stringify(contributor)
-    ))
-
-    const stringContributor = JSON.stringify(selected);
-    return (stringContributors.indexOf(stringContributor) > -1)
-  }
-  const handleSelectChange = ({ target: { value } }) => {
-    const stringContributors = checkedContributors.map((contributor) => (
-      JSON.stringify(contributor)
-    ))
-    const stringNewVal = value.map((contributor) => (
-      JSON.stringify(contributor)
-    ))
-    if (stringContributors === stringNewVal) {
-      value.pop();
-      // const newCheckedContributors = checkedContributors.filter((checkedContributor) => {
-      //   return (JSON.stringify(checkedContributor) !== JSON.stringify(value));
-      // })
-      setCheckedContributors(value);
-    }
-    else {
-      setCheckedContributors(value);
-    }
-  }
-
-
+  console.log(formik.values.newContributors);
 
   const onDatetimeChange = (newValue) => {
     setDatetimeValue(newValue);
@@ -273,40 +277,92 @@ const AddExhibitForm = ({ userId }) => {
             </div>
 
             {
-              <div className={contributorInputContainer} style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div
+                className={contributorInputContainer}
+                style={{ display: "flex", justifyContent: "space-between" }}
+              >
                 <FormControl sx={{ m: 1, width: 300 }}>
                   <Select
                     labelId="demo-multiple-checkbox-label"
                     id="demo-multiple-checkbox"
                     multiple
                     input={<OutlinedInput label="Tag" />}
-                    renderValue={(selected) => {
-                      selected.map((s) => {
-                        return `${s.contributorName} ${s.contributorSurname}`
-                      })
-                    }}
-                    value={checkedContributors}
-                    onChange={handleSelectChange}
-                    sx={{ width: "300px" }}
-                  >
+                    renderValue={(selected) => selected.join(", ")}
+                    name="contributors"
+                    onChange={(e) => {
+                      const {
+                        target: { value },
+                      } = e;
+                      const newContributor = `${value.at(-1).contributorName} ${
+                        value.at(-1).contributorSurname
+                      }`;
 
-                    {contributors.map(({ id, contributorName, contributorSurname, contributorPhoneNumber }) => {
-                      return (
-                        <MenuItem key={id} value={{ contributorName, contributorSurname, contributorPhoneNumber }}>
-                          <Checkbox checked={handleCheck({ contributorName, contributorSurname, contributorPhoneNumber })} />
-                          <ListItemText
-                            primary={`${contributorName} ${contributorSurname}`}
-                          />
-                        </MenuItem>
-                      );
-                    })}
+                      if (selectedContribursIds.includes(value.at(-1).id)) {
+                        let cloneIds = [...selectedContribursIds];
+                        let cloneNames = [...selectedContributorName];
+                        cloneIds.splice(
+                          selectedContribursIds.indexOf(value.at(-1).id),
+                          1
+                        );
+                        cloneNames.splice(
+                          cloneNames.indexOf(
+                            `${value.at(-1).contributorName} ${
+                              value.at(-1).contributorSurname
+                            }}`,
+                            1
+                          )
+                        );
+                        setSelectedContribursIds(cloneIds);
+                        setSelectedContributorName(cloneNames);
+                      } else {
+                        setSelectedContributorName([
+                          ...selectedContributorName,
+                          newContributor,
+                        ]);
+                        setSelectedContribursIds([
+                          ...selectedContribursIds,
+                          value.at(-1).id,
+                        ]);
+                      }
+                    }}
+                    value={selectedContributorName}
+                    // value={checkedContributorsIds}
+                    // onChange={handleSelect}
+                  >
+                    {contributors.map(
+                      ({
+                        id,
+                        contributorName,
+                        contributorSurname,
+                        contributorPhoneNumber,
+                      }) => {
+                        return (
+                          <MenuItem
+                            key={id}
+                            value={{
+                              contributorName,
+                              contributorSurname,
+                              contributorPhoneNumber,
+                              id,
+                            }}
+                          >
+                            <Checkbox
+                              checked={selectedContribursIds.includes(id)}
+                            />
+                            <ListItemText
+                              primary={`${contributorName} ${contributorSurname}`}
+                            />
+                          </MenuItem>
+                        );
+                      }
+                    )}
                   </Select>
                 </FormControl>
-                <FieldArray name="contributors">
+                <FieldArray name="newContributors">
                   {(fieldArrayProps) => {
                     const { push, remove, form } = fieldArrayProps;
                     const { values, errors, touched } = form;
-                    const { contributors } = values;
+                    const { newContributors } = values;
                     return (
                       <div>
                         <Button
@@ -326,7 +382,7 @@ const AddExhibitForm = ({ userId }) => {
                         >
                           ADD A Contributor
                         </Button>
-                        {contributors.map((contributor, index) => {
+                        {newContributors.map((contributor, index) => {
                           return (
                             <div
                               className={classes.contributorInputContainer}
@@ -334,44 +390,45 @@ const AddExhibitForm = ({ userId }) => {
                             >
                               <TextFieldWrapper
                                 size="small"
-                                name={`contributors[${index}].contributorName`}
+                                name={`newContributors[${index}].contributorName`}
                                 value={[contributor.contributorName]}
                                 error={
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorName &&
-                                  !!errors?.contributors?.[index]
+                                  !!errors?.newContributors?.[index]
                                     ?.contributorName
                                 }
                                 touched={String(
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorName
                                 )}
                                 helperText={
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorName &&
-                                  errors?.contributors?.[index]?.contributorName
+                                  errors?.newContributors?.[index]
+                                    ?.contributorName
                                 }
                                 placeholder="Name"
                                 formik={formik}
                               />
                               <TextFieldWrapper
                                 size="small"
-                                name={`contributors[${index}].contributorSurname`}
-                                value={contributor.contributorSurname}
+                                name={`newContributors[${index}].contributorSurname`}
+                                value={newContributors.contributorSurname}
                                 error={
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorSurname &&
-                                  !!errors?.contributors?.[index]
+                                  !!errors?.newContributors?.[index]
                                     ?.contributorSurname
                                 }
                                 touched={String(
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorSurname
                                 )}
                                 helperText={
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorSurname &&
-                                  errors?.contributors?.[index]
+                                  errors?.newContributors?.[index]
                                     ?.contributorSurname
                                 }
                                 placeholder="Surname"
@@ -379,22 +436,22 @@ const AddExhibitForm = ({ userId }) => {
                               />
                               <TextFieldWrapper
                                 size="small"
-                                name={`contributors[${index}].contributorPhoneNumber`}
+                                name={`newContributors[${index}].contributorPhoneNumber`}
                                 value={contributor.contributorPhoneNumber}
                                 error={
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorPhoneNumber &&
-                                  !!errors?.contributors?.[index]
+                                  !!errors?.newContributors?.[index]
                                     ?.contributorPhoneNumber
                                 }
                                 touched={String(
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorPhoneNumber
                                 )}
                                 helperText={
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorPhoneNumber &&
-                                  errors?.contributors?.[index]
+                                  errors?.newContributors?.[index]
                                     ?.contributorPhoneNumber
                                 }
                                 placeholder="Phone Number"
@@ -454,7 +511,9 @@ const AddExhibitForm = ({ userId }) => {
           </div>
 
           <div className={labelTextFieldWrapper}>
-            <label className={labelField}>"Aquistion Period"</label>
+            <div className={materialTitle}>
+              <b>Aquistion Period</b>
+            </div>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePicker
                 label="Date&Time picker"
@@ -478,7 +537,25 @@ const AddExhibitForm = ({ userId }) => {
 };
 
 function AddExhibit({ id }) {
-  return <AddExhibitForm userId={id} />;
+  return (
+    <AddExhibitForm
+      userId={id}
+      initialValues={{
+        fundNumber: "",
+        exhibitName: "",
+        materialName: "",
+        checkedContributors: [],
+        placeOfOrigin: "",
+        creationPeriod: "",
+        acquisitionPeriod: "",
+        width: "",
+        height: "",
+        length: "",
+        diameter: "",
+        description: "",
+      }}
+    />
+  );
 }
 export default AddExhibit;
 

@@ -17,7 +17,7 @@ export const validate = (schema) => {
       schema.body && (await schema.body.validateAsync(body))
       return next()
     } catch (error) {
-      console.log('asfsafasafs')
+      console.log(error)
       next(badRequestErrorCreator(error.details))
     }
   }
@@ -36,7 +36,6 @@ export const generateAccessToken = (id, roles) => {
 }
 
 const isImage = (_, file, cb) => {
-  console.log('isImage', file)
   if (file.mimetype.startsWith('image')) {
     cb(null, true)
   } else {

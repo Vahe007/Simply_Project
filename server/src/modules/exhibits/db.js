@@ -1,6 +1,6 @@
 import { prisma } from '../../services/Prisma.js'
 
-const { exhibit, contributor } = prisma
+const { exhibit, image } = prisma
 
 const exhibitObj = {
   select: {
@@ -76,8 +76,8 @@ export const getAllExhibitsDB = async (query) => {
     where: {
       material: {
         materialName: {
-          contains: material
-        }
+          contains: material,
+        },
       },
 
       // OR: [
@@ -155,6 +155,16 @@ export const createExhibitDB = async (sentData) => {
 
 
   try {
+    const getnewImages = await image.findMany({
+      where: {
+        itemId: null,
+      },
+    })
+    const imgIds = getnewImages.map((img) => ({ id: img.id }))
+    console.log('------------------------')
+    console.log(imgIds)
+    console.log('------------------------')
+
     const newExhibit = await exhibit.create({
       data: {
         material: {
@@ -206,27 +216,22 @@ export const createExhibitDB = async (sentData) => {
           
         },
 
+        images: {
+          connect: imgIds,
+        },
         // contributors: {
-        //   create: [{
+        //   create: {
         //     contributor: {
-        //       connectOrCreate: contributors.map(({ contributorName, contributorSurname, contributorPhoneNumber }) => ({
-        //         where: {
-        //           contributorName,
-        //           // contributorSurname,
-        //           // contributorPhoneNumber
-        //         },
-        //         create: {
-        //           contributorName,
-        //           contributorSurname,
-        //           contributorPhoneNumber
-        //         }
-        //       })),
-        //     }
-        //   }],
+        //       create: {
+        //         contributorName: 'hagop',
+        //         contributorSurname: 'berberian',
+        //         contributorPhoneNumber: '094113934',
+        //       },
+        //     },
+        //   },
         // },
-
         ...exhibitInfo,
-      }
+      },
     })
 
 
@@ -269,7 +274,7 @@ export const createExhibitDB = async (sentData) => {
       error: null,
     }
   } catch (error) {
-    console.log("error", error);
+    console.log(error)
     return {
       data: null,
       error,
@@ -297,8 +302,16 @@ export const deleteExhibitDB = async (id) => {
 }
 
 export const updateExhibitDB = async (data, id) => {
+  console.log(id)
   try {
-    const { materialName, ...exhibitInfo } = data;
+    const getnewImages = await image.findMany({
+      where: {
+        itemId: null,
+      },
+    })
+    const imgIds = getnewImages.map((img) => ({ id: img.id }))
+    const { materialName, contributors, checkedContributors, ...exhibitInfo } = data
+
     const updatedExhibit = await exhibit.update({
       where: {
         id,
@@ -314,7 +327,10 @@ export const updateExhibitDB = async (data, id) => {
             },
           },
         },
-        ...exhibitInfo
+        ...exhibitInfo,
+        images: {
+          connect: imgIds,
+        },
       },
     })
 

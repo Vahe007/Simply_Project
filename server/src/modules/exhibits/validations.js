@@ -47,6 +47,7 @@ export default {
       userId: Joi.number(),
       category: Joi.any(),
       images: Joi.any(),
+      checkedContributors: Joi.any(),
     }),
   },
   updateExhibitValidation: {
@@ -67,8 +68,10 @@ export default {
       weight: Joi.number().integer(),
       statusId: Joi.number().integer(),
       categoryId: Joi.number().integer(),
-      description: Joi.string().min(3).max(200),
+      description: Joi.string().min(0).max(200),
       materialName: Joi.string(),
+      checkedContributors: Joi.any(),
+      contributors: Joi.any(),
     }),
   },
   deleteExhibitValidation: {

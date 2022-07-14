@@ -20,7 +20,7 @@ export const getAllImages = async (req, res, next) => {
 export const uploadImage = async (req, res, next) => {
   const { exhibitId } = req.params
   const { files } = req
-
+  console.log(files)
   const baseUrl = 'http://localhost:5000/api/v1/'
   const data = files.map((file) => {
     return {
@@ -28,7 +28,6 @@ export const uploadImage = async (req, res, next) => {
       path: file.path.replace('public', `${baseUrl}`).replace(/\\/g, '/'),
     }
   })
-  console.log(data)
   try {
     const file = await uploadImageDB(data)
     res.json(responseDataCreator(file))
@@ -63,7 +62,6 @@ export const getActiveImagesByExhibitId = async (req, res, next) => {
 export const updateImage = async (req, res, next) => {
   const { imageRowId } = req.params
   const { isActive } = req.body
-  console.log(imageRowId)
   try {
     const images = await updateImageIsactiveDB(imageRowId, isActive)
     res.json(responseDataCreator(images))

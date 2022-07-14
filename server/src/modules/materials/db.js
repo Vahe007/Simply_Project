@@ -26,7 +26,6 @@ export const getAllMaterialsDB = async (query) => {
             error: null,
         }
     } catch (error) {
-        console.log(error);
         return {
             data: null,
             error,
@@ -87,7 +86,6 @@ export const updateMaterialDB = async (data, id) => {
         }
 
     } catch (error) {
-        console.log('eddvervferwwerwef');
         return {
             data: null,
             error

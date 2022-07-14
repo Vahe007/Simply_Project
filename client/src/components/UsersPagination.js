@@ -17,6 +17,7 @@ function UsersPagination() {
     const queries = {
       page: 1,
       limit: 10,
+      isActive: searchParams.get("isActive"),
     };
     setSearchParams(queries);
   }, []);

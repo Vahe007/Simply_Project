@@ -6,7 +6,6 @@ import MainRadioButtons from './MainRadioButtons';
 export default function RadioButtons({searchParams, setSearchParams}) {
     const dispatch = useDispatch();
     const handleChange = (e, value) => {
-        alert('asfsafsafsa')
         // if(value === 'activeUsers') {
         //     alert('vvv')
         // }

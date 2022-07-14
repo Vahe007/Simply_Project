@@ -17,4 +17,6 @@ export default {
       imageRowId: Joi.number().integer().required(),
     }),
   },
+
+  
 }

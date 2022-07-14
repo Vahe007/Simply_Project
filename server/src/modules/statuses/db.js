@@ -22,7 +22,6 @@ export const getAllStatusesDB = async ({ isActive }) => {
       error: null,
     }
   } catch (error) {
-    console.log(error)
     return {
       data: null,
       error,

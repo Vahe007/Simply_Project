@@ -7,20 +7,24 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useSelector, useDispatch } from "react-redux";
 import { getExhibitsPerPage } from "../features/exhibits/exhibitsSlice";
-import ExhibitsList from "../components/ExhibitsList";
+// import ExhibitsList from "../components/ExhibitsList";
 import { updateRoute } from "../features/userAccess/userAccessSlice";
 import { Button } from "@mui/material";
 import {  useNavigate } from "react-router-dom";
-import ExhibitsPagination from "../components/ExhibitsList/ExhibitsPagination";
+import { useExhibit } from "../features/exhibits/ExhibitsContextProvider";
+import ExhibitsPagination from "../components/exhibitsList/ExhibitsPagination";
 
 const Employee = () => {
   const auth = useAuth();
   const navigate = useNavigate();
   const [a, setA] = useState("");
+  const exhibit = useExhibit();
   const handleChange = ({target: {value}}) => {
     auth.logout();
   };
-  console.log(auth);
+  useEffect(() => {
+    exhibit.setExhibit(null);
+  }, [])
 
     return (
       <>
