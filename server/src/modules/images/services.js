@@ -20,7 +20,7 @@ export const getAllImages = async (req, res, next) => {
 export const uploadImage = async (req, res, next) => {
   const { exhibitId } = req.params
   const { files } = req
-
+  console.log(files)
   const baseUrl = 'http://localhost:5000/api/v1/'
   const data = files.map((file) => {
     return {
@@ -32,7 +32,6 @@ export const uploadImage = async (req, res, next) => {
     const file = await uploadImageDB(data)
     res.json(responseDataCreator(file))
   } catch (error) {
-    console.log(error);
     next(error)
   }
 }

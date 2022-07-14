@@ -45,7 +45,6 @@ const ExhibitsList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const exhibit = useExhibit();
-
   useEffect(() => {
     dispatch(getMaterials());
     dispatch(getCategories());
@@ -136,7 +135,7 @@ const ExhibitsList = () => {
     const { id, exhibitName, contributors, material, category, images, isActive } = exhibit;
     return {
       id,
-      image:  (!!images.length) && <img style={{width: 80, height: 80}} src={`${BASE_URL}images/${id}/${images[0].name}`}/> ,
+      image:  (!!images.length) && <img style={{width: 80, height: 80}} src={`${BASE_URL}images/${images[0].name}`}/> ,
       exhibitName,
       material: material.materialName,
       category: category.categoryName,

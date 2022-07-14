@@ -16,9 +16,7 @@ const searchHandler = (contains) => {
     }).flat()
 }
 
-console.log(searchHandler());
 export const getAllUsersDB = async (query) => {
-    console.log(query);
     if(query.isActive === 'true') {
         query.isActive = true;
     } else if(query.isActive === 'false') {

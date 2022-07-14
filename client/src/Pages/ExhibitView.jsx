@@ -17,6 +17,7 @@ import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { styled } from '@mui/material/styles';
 import Stack from '@mui/material/Stack';
+import AddExhibit from '../components/exhibit/AddExhibit';
 
 const Input = styled('input')({
   display: 'none',
@@ -26,12 +27,12 @@ const stringFields = [
   'fundNumber', 'exhibitName', 'placeOfOrigin', 'creationPeriod', 'description'
 ];
 
-const ExhibitView = () => {
-  const { exhibit } = useExhibit();
+const ExhibitView = ({id: userId}) => {
+  console.log(userId);
+  const exhibit = useExhibit();
+  console.log(exhibit);
   const dispatch = useDispatch();
   const [uploadedImages, setUploadedImages] = useState([]);
-
-
 
   const data = stringFields.map((field, index) => {
     return [field, exhibit[field]];
@@ -92,8 +93,8 @@ const ExhibitView = () => {
       {/* <div>{exhibit.images.map((image, i) => {
         return <img key={i} style={{ width: '80px', height: '80px' }} src={`${BASE_URL}images/${image.path}`} />
       })}</div> */}
-    </Paper>
-
+      </Paper>
+      <AddExhibit />
     </div>
    
   )

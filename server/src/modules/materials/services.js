@@ -3,7 +3,6 @@ import {createMaterialDB, deleteMaterialDB, getAllMaterialsDB, updateMaterialDB}
 import {ERROR_MESSAGES} from "../../helpers/constants.js";
 
 export const getAllMaterials = async (req, res, next) => {
-    console.log(req.query);
     try {
         const materials = await getAllMaterialsDB(req.query);
         res.json(responseDataCreator(materials));
@@ -43,10 +42,8 @@ export const deleteMaterial = async (req, res, next) => {
 
 export const updateMaterials = async (req, res, next) => {
     const { materialIds } = req.params;
-    console.log(req.params);
     const {isActive} = req.body;
     const materialIdsArr = materialIds.split(',').map(id => +id);
-    console.log(materialIdsArr);
     try {
         const material = await updateManyMaterialsDB({
             ids: materialIdsArr,

@@ -29,7 +29,7 @@ router.put('/:id', validate(updateExhibitValidation), updateExhibit)
 //Only for developers
 router.delete('/:id', validate(deleteExhibitValidation), deleteExhibit)
 export { router as exhibitsRoutes }
-
+  
 // router.get('/', rolesMiddleware(['ADMIN']), getAllExhibits)
 // router.get('/active', getActiveExhibits)
 // router.get('/:id', validate(getExhibitByIdValidation), getExhibitById)

@@ -6,12 +6,12 @@ jss.setup(preset());
 const styles = {
   ul: {
     listStyleType: "none",
-    padding: 0
+    padding: 0,
   },
 
   li: {
     display: "flex",
-    justifyContent: "space-around"
+    justifyContent: "space-around",
   },
 
   liSpan: {
@@ -21,22 +21,27 @@ const styles = {
 
   searchContainer: {
     marginBottom: "20px",
-    textAlign: "center"
+    textAlign: "center",
   },
 
   usersListContainer: {
     maxWidth: "calc(100% - 100px)",
-    margin: "auto"
+    margin: "auto",
   },
 
   root: {
-    width: '100%',
-    overflowX: 'auto',
+    width: "100%",
+    overflowX: "auto",
   },
   table: {
     minWidth: 700,
   },
-
+  textField: {
+    margin: "7px 0px !important",
+  },
+  submitBtn: {
+    marginTop: "30px !important",
+  },
 };
 
 export const { classes } = jss.createStyleSheet(styles).attach();

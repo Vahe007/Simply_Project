@@ -20,7 +20,9 @@ export const uploadImageDB = async (data) => {
   try {
     const files = await image.createMany({
       data,
+      skipDuplicates: true,
     })
+    console.log(files)
     return {
       data: files,
       imagePaths,

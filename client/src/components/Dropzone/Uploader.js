@@ -25,6 +25,7 @@ export const Dropzone = (props) => {
     let formData = new FormData();
     const { files } = e.target;
     lodash.forEach(e.target.files, (file) => {
+      console.log(file);
       formData.append("file", file);
     });
     setUploading(true);
@@ -35,7 +36,6 @@ export const Dropzone = (props) => {
     }).catch((error) => {
       setError(error.details);
     });
-    console.log(response.data);
     setProgress(0);
     setUploading(false);
     setUploadedImages([...uploadedImages, ...response?.data?.imagePaths]);

@@ -160,7 +160,10 @@ export const createExhibitDB = async (sentData) => {
       },
     })
     const imgIds = getnewImages.map((img) => ({ id: img.id }))
+    console.log('------------------------')
     console.log(imgIds)
+    console.log('------------------------')
+
     const newExhibit = await exhibit.create({
       data: {
         material: {
@@ -202,13 +205,25 @@ export const createExhibitDB = async (sentData) => {
           },
         },
 
-        // image: {
-        //   connect: imgIds,
+        images: {
+          connect: imgIds,
+        },
+        // contributors: {
+        //   create: {
+        //     contributor: {
+        //       create: {
+        //         contributorName: 'hagop',
+        //         contributorSurname: 'berberian',
+        //         contributorPhoneNumber: '094113934',
+        //       },
+        //     },
+        //   },
         // },
-
         ...exhibitInfo,
       },
     })
+
+    console.log(newExhibit)
 
     //when creating a new exhibit
     // const con = await prisma.contributorsOfExhibits.createMany({
@@ -225,6 +240,7 @@ export const createExhibitDB = async (sentData) => {
       error: null,
     }
   } catch (error) {
+    console.log(error)
     return {
       data: null,
       error,
@@ -252,8 +268,15 @@ export const deleteExhibitDB = async (id) => {
 }
 
 export const updateExhibitDB = async (data, id) => {
+  console.log(id)
   try {
-    const { materialName, ...exhibitInfo } = data
+    const getnewImages = await image.findMany({
+      where: {
+        itemId: null,
+      },
+    })
+    const imgIds = getnewImages.map((img) => ({ id: img.id }))
+    const { materialName, contributors, checkedContributors, ...exhibitInfo } = data
 
     const updatedExhibit = await exhibit.update({
       where: {
@@ -271,6 +294,9 @@ export const updateExhibitDB = async (data, id) => {
           },
         },
         ...exhibitInfo,
+        images: {
+          connect: imgIds,
+        },
       },
     })
 

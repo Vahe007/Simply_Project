@@ -13,7 +13,10 @@ import {
   Select,
   TextField,
 } from "@material-ui/core";
-import { createExhibit } from "../../features/exhibits/exhibitsSlice";
+import {
+  createExhibit,
+  update_getExhibit,
+} from "../../features/exhibits/exhibitsSlice";
 import { useDispatch } from "react-redux";
 import { DateTimePicker } from "@mui/x-date-pickers";
 import { useEffect, useState } from "react";
@@ -33,8 +36,11 @@ import {
   selectContributors,
 } from "../../features/contributors/contributorsSlice";
 import Dropzone from "../Dropzone/App";
+import { useExhibit } from "../../features/exhibits/ExhibitsContextProvider";
 
 const AddExhibitForm = ({ userId }) => {
+  const { exhibit } = useExhibit();
+
   const {
     mainContainer,
     formContainer,
@@ -59,14 +65,13 @@ const AddExhibitForm = ({ userId }) => {
   const dispatch = useDispatch();
   const { filteredMaterials } = useSelector(selectMaterials);
   const { contributors } = useSelector(selectContributors);
-
   const [checkedContributorsIds, setCheckedContributorsIds] = useState([]);
   const handleSelect = (event) => {
-    setCheckedContributorsIds(event.target.value)
-  }
-
-
-
+    setCheckedContributorsIds(event.target.value);
+  };
+  const [selectedContributorName, setSelectedContributorName] = useState([]);
+  const [selectedContribursIds, setSelectedContribursIds] = useState([]);
+  console.log(selectedContribursIds);
   const [datetimeValue, setDatetimeValue] = useState(
     new Date("2014-08-18T21:11:54")
   );
@@ -75,12 +80,26 @@ const AddExhibitForm = ({ userId }) => {
     dispatch(getContributors());
   }, []);
 
-
-
-
-
-  const formik = useFormik({
-    initialValues: {
+  let initialValues;
+  if (exhibit) {
+    initialValues = {
+      fundNumber: exhibit.fundNumber,
+      exhibitName: exhibit.exhibitName,
+      materialName: exhibit.material.materialName,
+      contributorIds: checkedContributorsIds,
+      newContributors: selectedContributorName,
+      checkedContributors: [],
+      placeOfOrigin: exhibit.placeOfOrigin,
+      creationPeriod: exhibit.creationPeriod,
+      acquisitionPeriod: exhibit.acquisitionPeriod,
+      width: exhibit.width,
+      height: exhibit.height,
+      length: exhibit.length,
+      diameter: exhibit.diameter,
+      description: exhibit.description,
+    };
+  } else {
+    initialValues = {
       fundNumber: "",
       exhibitName: "",
       materialName: "",
@@ -94,19 +113,27 @@ const AddExhibitForm = ({ userId }) => {
       length: "",
       diameter: "",
       description: "",
-    },
+    };
+  }
+
+  const formik = useFormik({
+    initialValues,
 
     validationSchema: addExhibitSchema,
 
     onSubmit: (values) => {
-      console.log(values);
+      console.log(values );
       values.acquisitionPeriod = datetimeValue;
-      dispatch(
-        createExhibit({
-          ...values,
-          userId,
-        })
-      );
+      if (!exhibit) {
+        dispatch(
+          createExhibit({
+            ...values,
+            userId,
+          })
+        );
+      } else {
+        dispatch(update_getExhibit({ id: exhibit.id, exhibitInfo: values }));
+      }
     },
   });
   const onDatetimeChange = (newValue) => {
@@ -254,23 +281,75 @@ const AddExhibitForm = ({ userId }) => {
                     id="demo-multiple-checkbox"
                     multiple
                     input={<OutlinedInput label="Tag" />}
-                    renderValue={(selected) => selected.join(', ')}
+                    renderValue={(selected) => selected.join(", ")}
                     name="contributors"
-                    onChange={formik.handleChange}
-                    value={formik.values.contributors}
+                    onChange={(e) => {
+                      const {
+                        target: { value },
+                      } = e;
+                      const newContributor = `${value.at(-1).contributorName} ${
+                        value.at(-1).contributorSurname
+                      }`;
+
+                      if (selectedContribursIds.includes(value.at(-1).id)) {
+                        let cloneIds = [...selectedContribursIds];
+                        let cloneNames = [...selectedContributorName];
+                        cloneIds.splice(
+                          selectedContribursIds.indexOf(value.at(-1).id),
+                          1
+                        );
+                        cloneNames.splice(
+                          cloneNames.indexOf(
+                            `${value.at(-1).contributorName} ${
+                              value.at(-1).contributorSurname
+                            }}`,
+                            1
+                          )
+                        );
+                        setSelectedContribursIds(cloneIds);
+                        setSelectedContributorName(cloneNames);
+                      } else {
+                        setSelectedContributorName([
+                          ...selectedContributorName,
+                          newContributor,
+                        ]);
+                        setSelectedContribursIds([
+                          ...selectedContribursIds,
+                          value.at(-1).id,
+                        ]);
+                      }
+                    }}
+                    value={selectedContributorName}
                     // value={checkedContributorsIds}
                     // onChange={handleSelect}
                   >
-                    {contributors.map(({id, contributorName, contributorSurname, contributorPhoneNumber}) => {
-                      return (
-                        <MenuItem key={id} value={{contributorName, contributorSurname, contributorPhoneNumber}}>
-                          <Checkbox checked={formik.values.checkedContributors.indexOf(id) > -1 } />
-                          <ListItemText
-                            primary={`${contributorName} ${contributorSurname}`}
-                          />
-                        </MenuItem>
-                      );
-                    })}
+                    {contributors.map(
+                      ({
+                        id,
+                        contributorName,
+                        contributorSurname,
+                        contributorPhoneNumber,
+                      }) => {
+                        return (
+                          <MenuItem
+                            key={id}
+                            value={{
+                              contributorName,
+                              contributorSurname,
+                              contributorPhoneNumber,
+                              id,
+                            }}
+                          >
+                            <Checkbox
+                              checked={selectedContribursIds.includes(id)}
+                            />
+                            <ListItemText
+                              primary={`${contributorName} ${contributorSurname}`}
+                            />
+                          </MenuItem>
+                        );
+                      }
+                    )}
                   </Select>
                 </FormControl>
                 <FieldArray name="contributors">
@@ -425,7 +504,9 @@ const AddExhibitForm = ({ userId }) => {
           </div>
 
           <div className={labelTextFieldWrapper}>
-            <label className={labelField}>"Aquistion Period"</label>
+            <div className={materialTitle}>
+              <b>Aquistion Period</b>
+            </div>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePicker
                 label="Date&Time picker"
@@ -449,7 +530,25 @@ const AddExhibitForm = ({ userId }) => {
 };
 
 function AddExhibit({ id }) {
-  return <AddExhibitForm userId={id} />;
+  return (
+    <AddExhibitForm
+      userId={id}
+      initialValues={{
+        fundNumber: "",
+        exhibitName: "",
+        materialName: "",
+        checkedContributors: [],
+        placeOfOrigin: "",
+        creationPeriod: "",
+        acquisitionPeriod: "",
+        width: "",
+        height: "",
+        length: "",
+        diameter: "",
+        description: "",
+      }}
+    />
+  );
 }
 export default AddExhibit;
 

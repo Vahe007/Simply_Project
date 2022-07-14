@@ -67,7 +67,7 @@ function Wrapper() {
   if (role === "EMPLOYEE") {
     return (
       <Routes>
-        <Route path="exhibit-view" element={<ExhibitView />} />
+        <Route path="exhibit-view" element={<AddExhibit id={userInfo.id} />} />
         <Route path="main" element={<Profile role={userInfo.role} />} />
         <Route path="addexhibit" element={<AddExhibit id={userInfo.id} />} />
 

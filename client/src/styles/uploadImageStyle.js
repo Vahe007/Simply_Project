@@ -14,6 +14,9 @@ const styles = {
     margin: "0 auto",
     opacity: 0,
     height: "100%",
+    "&:hover": {
+      cursor: "pointer",
+    },
   },
 
   uploadIcon: {
@@ -68,6 +71,9 @@ const styles = {
     position: "absolute",
     right: 0,
     backgroundColor: "yellow",
+    "&:hover": {
+      cursor: "pointer",
+    },
   },
 };
 

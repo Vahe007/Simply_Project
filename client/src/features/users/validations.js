@@ -91,7 +91,7 @@ export const addExhibitSchema = Yup.object().shape({
   contributors: Yup.array().of(
     Yup.object().shape({
       contributorName: Yup.string().required("required"),
-      contributorSurname: Yup.string(),
+      contributorSurname: Yup.string().required("required"),
       contributorPhoneNumber: Yup.number()
         .integer()
         .positive()

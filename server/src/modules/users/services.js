@@ -9,12 +9,10 @@ import {
 } from './db.js'
 
 export const getAllUsers = async ({ query, body }, res, next) => {
-  console.log(body)
   try {
     const users = await getAllUsersDB(query)
     res.status(200).json(responseDataCreator(users))
   } catch (error) {
-    console.log('hoo')
     next(error)
   }
 }
@@ -23,9 +21,6 @@ export const getUserById = async (req, res, next) => {
   try {
     const { id } = req.params
     const user = await getUserByIdDB(+id)
-    console.log('-------------------')
-
-    console.log(user)
 
     res.status(200).json(responseDataCreator(user))
   } catch (error) {

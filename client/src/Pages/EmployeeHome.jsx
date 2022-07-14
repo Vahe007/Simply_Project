@@ -11,15 +11,19 @@ import ExhibitsList from "../components/exhibitsList";
 import { updateRoute } from "../features/userAccess/userAccessSlice";
 import { Button } from "@mui/material";
 import {  useNavigate } from "react-router-dom";
+import { useExhibit } from "../features/exhibits/ExhibitsContextProvider";
 
 const Employee = () => {
   const auth = useAuth();
   const navigate = useNavigate();
   const [a, setA] = useState("");
+  const exhibit = useExhibit();
   const handleChange = ({target: {value}}) => {
     auth.logout();
   };
-  console.log(auth);
+  useEffect(() => {
+    exhibit.setExhibit(null);
+  }, [])
 
     return (
       <>
