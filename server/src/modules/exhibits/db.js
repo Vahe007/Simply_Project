@@ -145,7 +145,7 @@ export const getAllExhibitsDB = async (query) => {
 }
 
 export const createExhibitDB = async (sentData) => {
-  const { materialName, categoryName = "cat", statusName = "stat", userId, contributors: conValues, ...exhibitInfo } = sentData
+  const { materialName, categoryName = "cat", statusName = "stat", userId, newContributors, existingContributorsIds,  ...exhibitInfo } = sentData
   console.log('-------------------------------');
 
   console.log("contributors", conValues);
@@ -179,6 +179,15 @@ export const createExhibitDB = async (sentData) => {
           },
         },
 
+        contributors: {
+          create: {
+            contributor: {
+              connect: existingContributorsIds.map(id => ({id})),
+              create: newContributors
+            }
+          }
+        },
+
         status: {
           connectOrCreate: {
             where: {
@@ -194,6 +203,7 @@ export const createExhibitDB = async (sentData) => {
           connect: {
             id: userId,
           },
+          
         },
 
         // contributors: {
@@ -223,14 +233,7 @@ export const createExhibitDB = async (sentData) => {
 
 
 
-    conValues.map(async ({ contributorName, contributorSurname, contributorPhoneNumber }) => {
-      const foundContributor = await prisma.contributor.findFirst({
-        where: {
-          contributorName,
-          contributorSurname,
-          contributorPhoneNumber
-        }
-      })
+    conIds.map(async (conId) => {
 
       if (foundContributor) {
         const coe = await prisma.contributorsOfExhibits.create({

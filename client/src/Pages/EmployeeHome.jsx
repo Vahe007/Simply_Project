@@ -7,10 +7,11 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useSelector, useDispatch } from "react-redux";
 import { getExhibitsPerPage } from "../features/exhibits/exhibitsSlice";
-import ExhibitsList from "../components/exhibitsList";
+import ExhibitsList from "../components/ExhibitsList";
 import { updateRoute } from "../features/userAccess/userAccessSlice";
 import { Button } from "@mui/material";
 import {  useNavigate } from "react-router-dom";
+import ExhibitsPagination from "../components/ExhibitsList/ExhibitsPagination";
 
 const Employee = () => {
   const auth = useAuth();
@@ -36,7 +37,8 @@ const Employee = () => {
             navigate('/addexhibit');
           }}>Add Exhibit</Button>
         </div>
-        <ExhibitsList />
+        <ExhibitsPagination />
+        {/* <ExhibitsList /> */}
       </>
     );
 };

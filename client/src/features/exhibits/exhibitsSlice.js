@@ -15,7 +15,7 @@ export const createExhibit = createAsyncThunk("addExhibit", async(data) => {
     });
     return response.json();
 })
-export const update_getExhibit = createAsyncThunk("editExhibit", async({page = 1, sortBy='', limit = 4, contains='', material='', category='', id, exhibitInfo}) => {
+export const update_getExhibit = createAsyncThunk("editExhibit", async({page = 1, sortBy='', limit = 5, contains='', material='', category='', id, exhibitInfo}) => {
     await fetch(`${BASE_URL}exhibits/${id}`, {
         method: "PUT",
         body: JSON.stringify(exhibitInfo),

@@ -9,9 +9,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import MainSelectMUI from "../../components/MainSelectMUI";
+import MainSelectMUI from "../MainSelectMUI";
 import { LIMIT, SORTBY } from "../../constants";
-import Search from "../../components/Search";
+import Search from "../Search";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import {
   getMaterials,
@@ -21,10 +21,10 @@ import {
   getAllCategories,
   getAllMaterials,
 } from "../../features/filteringFeatures/selectors";
-import FilteringSelect from "../../components/FilteringSelect/index.jsx";
+import FilteringSelect from "../FilteringSelect/index.jsx";
 import Box from "@mui/material/Box";
-import MainTable from "../../components/listOfUsers/MainTable";
-import Button from "../../components/FormsUI/Button";
+import MainTable from "../listOfUsers/MainTable";
+import Button from "../FormsUI/Button";
 import { LinearProgress, Switch } from "@material-ui/core";
 import { BASE_URL } from "../../constants";
 import { update_getExhibit } from "../../features/exhibits/exhibitsSlice";
