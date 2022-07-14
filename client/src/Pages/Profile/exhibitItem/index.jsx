@@ -22,6 +22,8 @@ import { BASE_URL } from "../../../constants";
 import { useEffect } from "react";
 import { getImage } from "../../../features/images/imagesSlice";
 
+
+
 const ExhibitItem = ({ exhibit, searchParams }) => {
   const [expand, setExpand] = useState(false);
   const [open, setOpen] = useState(false);

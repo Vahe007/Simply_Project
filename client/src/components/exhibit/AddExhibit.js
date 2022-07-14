@@ -37,6 +37,7 @@ import {
 } from "../../features/contributors/contributorsSlice";
 import Dropzone from "../Dropzone/App";
 import { useExhibit } from "../../features/exhibits/ExhibitsContextProvider";
+import { set } from "date-fns/esm";
 
 const AddExhibitForm = ({ userId }) => {
   const { exhibit } = useExhibit();
@@ -103,8 +104,7 @@ const AddExhibitForm = ({ userId }) => {
       fundNumber: "",
       exhibitName: "",
       materialName: "",
-      contributors: checkedContributorsIds,
-      checkedContributors: [],
+      contributors: [],
       placeOfOrigin: "",
       creationPeriod: "",
       acquisitionPeriod: "",
@@ -136,6 +136,9 @@ const AddExhibitForm = ({ userId }) => {
       }
     },
   });
+
+
+
   const onDatetimeChange = (newValue) => {
     setDatetimeValue(newValue);
   };
@@ -274,7 +277,7 @@ const AddExhibitForm = ({ userId }) => {
             </div>
 
             {
-              <div className={contributorInputContainer}>
+              <div className={contributorInputContainer} style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <FormControl sx={{ m: 1, width: 300 }}>
                   <Select
                     labelId="demo-multiple-checkbox-label"

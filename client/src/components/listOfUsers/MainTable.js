@@ -10,13 +10,13 @@ import { v4 as uuid } from "uuid";
 import Collapse from "@mui/material/Collapse";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import { getTableRowUtilityClass } from "@mui/material";
 
 function MainTable(props) {
-  const { headRow, data } = props;
-  const {expand, setExpand} = useState(false);
+  const { headRow, data, ...otherProps } = props;
 
   return (
-    <Paper className={classes.root}>
+    <Paper {...otherProps} className={classes.root}>
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -29,38 +29,8 @@ function MainTable(props) {
         </TableHead>
         <TableBody >
           {data.map((row) => (
-            <TableRow onClick={() => console.log('ok')} key={row.id}>
-              {Object.values(row).map((value) => (
-                <TableCell key={uuid()} alight="left">
-                  {value}
-                </TableCell>
-              ))}
-            </TableRow>
+            <Row key={uuid()} row={row} />
           ))}
-
-          {/* <TableRow>
-            <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-              <Collapse in={expand} timeout="auto" unmountOnExit>
-                <Box sx={{ margin: 1 }}>
-                  <Typography variant="h6" gutterBottom component="div">
-                    History
-                  </Typography>
-                  <Table size="small" aria-label="purchases">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>CreatedAt</TableCell>
-                        <TableCell>UpdatedAt</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      <TableCell>{createdAt}</TableCell>
-                      <TableCell>{updatedAt}</TableCell>
-                    </TableBody>
-                  </Table>
-                </Box>
-              </Collapse>
-            </TableCell>
-          </TableRow> */}
         </TableBody>
       </Table>
     </Paper>
@@ -68,6 +38,62 @@ function MainTable(props) {
 }
 
 export default MainTable;
+
+
+
+
+
+
+
+function Row({ row }) {
+  const { history={}, ...remainingData } = row;
+
+  const [expand, setExpand] = useState(false);
+  return (
+    <>
+      <TableRow onClick={() => setExpand(!expand)} key={uuid()}>
+        {Object.values(remainingData).map((value) => (
+          <TableCell key={uuid()} alight="left">
+            {value}
+          </TableCell>
+        ))}
+      </TableRow>
+      {!!Object.keys(history).length &&
+        <TableRow>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+            <Collapse in={expand} timeout="auto" unmountOnExit>
+              <Box sx={{ margin: 1 }}>
+                <Typography variant="h6" gutterBottom component="div">
+                  History
+                </Typography>
+                <Table size="small" aria-label="purchases">
+                  <TableHead>
+                    <TableRow>
+                      {history.headRows.map((headRow) => (
+                        <TableCell key={uuid()}>{headRow}</TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {history.data.map((row) => (
+                      <TableRow key={uuid()}>
+                        {Object.values(row).map((value) => (
+                          <TableCell key={uuid()}>{value}</TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Box>
+            </Collapse>
+          </TableCell>
+        </TableRow>
+      }
+    </>
+
+  )
+
+}
 
 
 

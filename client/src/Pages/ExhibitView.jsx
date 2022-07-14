@@ -47,8 +47,8 @@ const ExhibitView = ({id: userId}) => {
     console.log(values);
     dispatch(update_getExhibit({ exhibitInfo: values, id: exhibit.id }))
   }
-  const onUploadImage = ({target: {value, files}}) => {
-    console.log(files[0])    
+  const onUploadImage = ({ target: { value, files } }) => {
+    console.log(files[0])
     setUploadedImages([...uploadedImages, value]);
   }
   const formik = useFormik({
@@ -59,44 +59,44 @@ const ExhibitView = ({id: userId}) => {
   return (
     <div>
       <Button>Add exhibit</Button>
- <Paper >
-      <div style={{ width: 300, marginBottom: '20px' }}>
-        <Box component='form' onSubmit={formik.handleSubmit}>
-          {stringFields.map((field, index) => {
-            return <TextField formik={formik} key={index} name={field} label={field}  />
-          })}
-          <TextField formik={formik} name='materialName' value={formik.values.materialName} onChange={formik.handleChange} />
-
-
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <label htmlFor="icon-button-file">
-              <Input accept="image/*" id="icon-button-file" onChange={onUploadImage} type="file" />
-              <IconButton color="primary" aria-label="upload picture" component="span">
-                <PhotoCamera />
-              </IconButton>
-            </label>
-          </Stack>
-
-          <Button fullWidth={true} type="submit" sx={{ mt: "15px" }}>
-            Save Changes
-          </Button>
-
-
-          <div>
-            {uploadedImages}
-            {!!uploadedImages?.length && uploadedImages.map((uploadedImage, index) => {
-              return <img key={index} src={uploadedImage} />
+      <Paper >
+        <div style={{ width: 300, marginBottom: '20px' }}>
+          <Box component='form' onSubmit={formik.handleSubmit}>
+            {stringFields.map((field, index) => {
+              return <TextField formik={formik} key={index} name={field} label={field} />
             })}
-          </div>
-        </Box>
-      </div>
-      {/* <div>{exhibit.images.map((image, i) => {
+            <TextField formik={formik} name='materialName' value={formik.values.materialName} onChange={formik.handleChange} />
+
+
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <label htmlFor="icon-button-file">
+                <Input accept="image/*" id="icon-button-file" onChange={onUploadImage} type="file" />
+                <IconButton color="primary" aria-label="upload picture" component="span">
+                  <PhotoCamera />
+                </IconButton>
+              </label>
+            </Stack>
+
+            <Button fullWidth={true} type="submit" sx={{ mt: "15px" }}>
+              Save Changes
+            </Button>
+
+
+            <div>
+              {uploadedImages}
+              {!!uploadedImages?.length && uploadedImages.map((uploadedImage, index) => {
+                return <img key={index} src={uploadedImage} />
+              })}
+            </div>
+          </Box>
+        </div>
+        {/* <div>{exhibit.images.map((image, i) => {
         return <img key={i} style={{ width: '80px', height: '80px' }} src={`${BASE_URL}images/${image.path}`} />
       })}</div> */}
       </Paper>
       <AddExhibit />
     </div>
-   
+
   )
 
 }

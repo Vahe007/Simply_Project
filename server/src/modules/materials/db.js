@@ -1,12 +1,12 @@
-import {prisma} from "../../services/Prisma.js";
-import {ERROR_MESSAGES} from "../../helpers/constants.js";
+import { prisma } from "../../services/Prisma.js";
+import { ERROR_MESSAGES } from "../../helpers/constants.js";
 
-const {material} = prisma;
+const { material } = prisma;
 
 export const getAllMaterialsDB = async (query) => {
-    if(query.isActive === 'true') {
+    if (query.isActive === 'true') {
         query.isActive = true;
-    } else if(query.isActive === 'false') {
+    } else if (query.isActive === 'false') {
         query.isActive = false;
     } else {
         query.isActive = undefined;
@@ -37,7 +37,7 @@ export const getAllMaterialsDB = async (query) => {
 export const createMaterialDB = async (data) => {
     try {
         const newMaterials = await material.createMany({
-            data: data.map(value => ({materialName: value}))
+            data: data.map(value => ({ materialName: value }))
         })
         return {
             data: newMaterials,
@@ -55,7 +55,7 @@ export const deleteMaterialDB = async (id) => {
     try {
         const deletedMaterial = await material.delete({
             where: {
-                id: +id,
+                id,
             },
         })
         return {

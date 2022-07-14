@@ -9,10 +9,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import MainSelectMUI from "../../components/MainSelectMUI";
+import MainSelectMUI from "../MainSelectMUI";
 import { LIMIT, SORTBY } from "../../constants";
-import Search from "../../components/Search";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import Search from "../Search";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import {
   getMaterials,
   getCategories,
@@ -21,17 +21,16 @@ import {
   getAllCategories,
   getAllMaterials,
 } from "../../features/filteringFeatures/selectors";
-import FilteringSelect from "../../components/FilteringSelect/index.jsx";
+import FilteringSelect from "../FilteringSelect/index.jsx";
 import Box from "@mui/material/Box";
-import MainTable from "../../components/listOfUsers/MainTable";
-import Button from "../../components/FormsUI/Button";
+import MainTable from "../listOfUsers/MainTable";
+import Button from "../FormsUI/Button";
 import { LinearProgress, Switch } from "@material-ui/core";
 import { BASE_URL } from "../../constants";
 import { update_getExhibit } from "../../features/exhibits/exhibitsSlice";
 import { debounce } from "../../helpers/common";
 import { useExhibit } from "../../features/exhibits/ExhibitsContextProvider";
 import { getQueries, getExhbitQueries } from "../listOfUsers/dialogs/updateDialog/helpers";
-
 
 const headRow = ['ID', 'Image', 'ExhibitName', 'Material', 'Category', 'View', 'Activate/Disactivate'];
 
@@ -46,14 +45,13 @@ const ExhibitsList = () => {
   const dispatch = useDispatch();
   const exhibit = useExhibit();
   useEffect(() => {
+    // setSearchParams(getExhbitQueries(searchParams));
     dispatch(getMaterials());
     dispatch(getCategories());
-
-    setSearchParams(getExhbitQueries(searchParams));
   }, []);
 
   useEffect(() => {
-    dispatch(getExhibitsPerPage(Object.fromEntries([...searchParams])));
+    dispatch(getExhibitsPerPage(getExhbitQueries(searchParams)));
   }, [searchParams]);
 
   const handlePagination = (_, page) => {
@@ -62,8 +60,9 @@ const ExhibitsList = () => {
   };
 
   const handleSearch = ({ target: { value } }) => {
-    value ? searchParams.set("contains", value) : searchParams.delete("contains");;
-    setSearchParams(searchParams)
+    value ? searchParams.set("contains", value) : searchParams.delete("contains");
+    searchParams.set('page', 1);
+    setSearchParams(searchParams);
   };
 
   const handleSearchDebounce = debounce(handleSearch, 500);
@@ -72,7 +71,7 @@ const ExhibitsList = () => {
     page: +searchParams.get('page') || 1,
     onChange: handlePagination,
     color: "primary",
-    count: Math.ceil(filteredCount / (searchParams.get('limit') || 4)),
+    count: Math.ceil(filteredCount / (searchParams.get('limit') || 5)),
     sx: {
       display: "flex",
       justifyContent: "center",
@@ -114,11 +113,12 @@ const ExhibitsList = () => {
     filteredCount,
   };
 
-  const onSwitchChange = (id, isActive) => {
+  const onSwitchChange = (id, isActive, materialName) => {
     dispatch(
       update_getExhibit({
         id,
         exhibitInfo: {
+          materialName,
           isActive: !isActive
         },
         ...getExhbitQueries(searchParams),
@@ -132,7 +132,7 @@ const ExhibitsList = () => {
 
 
   const data = exhibitsPerPage.map((exhibit) => {
-    const { id, exhibitName, contributors, material, category, images, isActive } = exhibit;
+    const { id, exhibitName, contributors, material, category, images, isActive, creator, updater, createdAt, updatedAt } = exhibit;
     return {
       id,
       image:  (!!images.length) && <img style={{width: 80, height: 80}} src={`${BASE_URL}images/${images[0].name}`}/> ,
@@ -140,40 +140,45 @@ const ExhibitsList = () => {
       material: material.materialName,
       category: category.categoryName,
       btn: <Button onClick={() => viewExhibit(exhibit)}>View</Button>,
-      switch: <Switch color="primary" checked={isActive} onChange={() => onSwitchChange(id, isActive)} />
+      switch: <Switch color="primary" checked={isActive} onChange={() => onSwitchChange(id, isActive, material.materialName)} />,
+      history: {
+        headRows: ["Creator", "Updater", "CreatedAt", "UpdatedAt"],
+        data: [{
+          creator: `${creator.firstName} ${creator.lastName}`,
+          updater: !!updater && `${updater?.firstName} ${updater?.lastName}`,
+          createdAt,
+          updatedAt
+        }]
+      }
     }
   })
-  const collapsedData = []
-
-
-  if (loading) {
-    return <LinearProgress />
-  }
 
   return (
     <>
-      <div style={{ margin: '10px 40px' }}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          <Search onChange={handleSearchDebounce} />
-          <div>
-            <FilteringSelect {...materialsSelectAttributes} />
-            <FilteringSelect {...categoriesSelectAttributes} />
-          </div>
-        </Box>
+        <div style={{ margin: '10px 40px' }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Search onChange={handleSearchDebounce} />
+            <div>
+              <FilteringSelect {...materialsSelectAttributes} />
+              <FilteringSelect {...categoriesSelectAttributes} />
+            </div>
+          </Box>
 
-        <MainTable headRow={headRow} data={data} />
+          {loading && <LinearProgress />}
+          <MainTable style={{ opacity: loading ? 0.7 : 1 }} headRow={headRow} data={data} />
 
-        <Stack sx={{ mt: "50px" }} spacing={2}>
-          <Pagination {...paginationAttributes} />
-        </Stack>
-        <MainSelectMUI {...sortSelectAttributes} />
-        <MainSelectMUI {...limitSelectAttributes} />
-      </div>
+
+          <Stack sx={{ mt: "50px" }} spacing={2}>
+            <Pagination {...paginationAttributes} />
+          </Stack>
+          <MainSelectMUI {...sortSelectAttributes} />
+          <MainSelectMUI {...limitSelectAttributes} />
+        </div>
 
     </>
   );
