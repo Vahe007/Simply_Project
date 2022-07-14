@@ -76,11 +76,12 @@ const AddExhibitForm = ({ userId }) => {
   const [datetimeValue, setDatetimeValue] = useState(
     new Date("2014-08-18T21:11:54")
   );
+
   useEffect(() => {
     dispatch(getMaterials({ isActive: true }));
     dispatch(getContributors());
   }, []);
-
+  console.log(contributors);
   let initialValues;
   if (exhibit) {
     initialValues = {
@@ -88,7 +89,7 @@ const AddExhibitForm = ({ userId }) => {
       exhibitName: exhibit.exhibitName,
       materialName: exhibit.material.materialName,
       contributorIds: checkedContributorsIds,
-      newContributors: selectedContributorName,
+      newContributors: [],
       checkedContributors: [],
       placeOfOrigin: exhibit.placeOfOrigin,
       creationPeriod: exhibit.creationPeriod,
@@ -98,13 +99,14 @@ const AddExhibitForm = ({ userId }) => {
       length: exhibit.length,
       diameter: exhibit.diameter,
       description: exhibit.description,
+      contributors: [],
     };
   } else {
     initialValues = {
       fundNumber: "",
       exhibitName: "",
       materialName: "",
-      contributors: [],
+      newContributors: [],
       placeOfOrigin: "",
       creationPeriod: "",
       acquisitionPeriod: "",
@@ -115,14 +117,13 @@ const AddExhibitForm = ({ userId }) => {
       description: "",
     };
   }
-
   const formik = useFormik({
     initialValues,
 
     validationSchema: addExhibitSchema,
 
     onSubmit: (values) => {
-      console.log(values );
+      console.log(values);
       values.acquisitionPeriod = datetimeValue;
       if (!exhibit) {
         dispatch(
@@ -136,8 +137,7 @@ const AddExhibitForm = ({ userId }) => {
       }
     },
   });
-
-
+  console.log(formik.values.newContributors);
 
   const onDatetimeChange = (newValue) => {
     setDatetimeValue(newValue);
@@ -277,7 +277,10 @@ const AddExhibitForm = ({ userId }) => {
             </div>
 
             {
-              <div className={contributorInputContainer} style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div
+                className={contributorInputContainer}
+                style={{ display: "flex", justifyContent: "space-between" }}
+              >
                 <FormControl sx={{ m: 1, width: 300 }}>
                   <Select
                     labelId="demo-multiple-checkbox-label"
@@ -355,11 +358,11 @@ const AddExhibitForm = ({ userId }) => {
                     )}
                   </Select>
                 </FormControl>
-                <FieldArray name="contributors">
+                <FieldArray name="newContributors">
                   {(fieldArrayProps) => {
                     const { push, remove, form } = fieldArrayProps;
                     const { values, errors, touched } = form;
-                    const { contributors } = values;
+                    const { newContributors } = values;
                     return (
                       <div>
                         <Button
@@ -379,7 +382,7 @@ const AddExhibitForm = ({ userId }) => {
                         >
                           ADD A Contributor
                         </Button>
-                        {contributors.map((contributor, index) => {
+                        {newContributors.map((contributor, index) => {
                           return (
                             <div
                               className={classes.contributorInputContainer}
@@ -387,44 +390,45 @@ const AddExhibitForm = ({ userId }) => {
                             >
                               <TextFieldWrapper
                                 size="small"
-                                name={`contributors[${index}].contributorName`}
+                                name={`newContributors[${index}].contributorName`}
                                 value={[contributor.contributorName]}
                                 error={
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorName &&
-                                  !!errors?.contributors?.[index]
+                                  !!errors?.newContributors?.[index]
                                     ?.contributorName
                                 }
                                 touched={String(
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorName
                                 )}
                                 helperText={
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorName &&
-                                  errors?.contributors?.[index]?.contributorName
+                                  errors?.newContributors?.[index]
+                                    ?.contributorName
                                 }
                                 placeholder="Name"
                                 formik={formik}
                               />
                               <TextFieldWrapper
                                 size="small"
-                                name={`contributors[${index}].contributorSurname`}
-                                value={contributor.contributorSurname}
+                                name={`newContributors[${index}].contributorSurname`}
+                                value={newContributors.contributorSurname}
                                 error={
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorSurname &&
-                                  !!errors?.contributors?.[index]
+                                  !!errors?.newContributors?.[index]
                                     ?.contributorSurname
                                 }
                                 touched={String(
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorSurname
                                 )}
                                 helperText={
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorSurname &&
-                                  errors?.contributors?.[index]
+                                  errors?.newContributors?.[index]
                                     ?.contributorSurname
                                 }
                                 placeholder="Surname"
@@ -432,22 +436,22 @@ const AddExhibitForm = ({ userId }) => {
                               />
                               <TextFieldWrapper
                                 size="small"
-                                name={`contributors[${index}].contributorPhoneNumber`}
+                                name={`newContributors[${index}].contributorPhoneNumber`}
                                 value={contributor.contributorPhoneNumber}
                                 error={
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorPhoneNumber &&
-                                  !!errors?.contributors?.[index]
+                                  !!errors?.newContributors?.[index]
                                     ?.contributorPhoneNumber
                                 }
                                 touched={String(
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorPhoneNumber
                                 )}
                                 helperText={
-                                  !!touched?.contributors?.[index]
+                                  !!touched?.newContributors?.[index]
                                     ?.contributorPhoneNumber &&
-                                  errors?.contributors?.[index]
+                                  errors?.newContributors?.[index]
                                     ?.contributorPhoneNumber
                                 }
                                 placeholder="Phone Number"

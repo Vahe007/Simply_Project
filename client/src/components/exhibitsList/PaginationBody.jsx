@@ -42,7 +42,7 @@ const PaginationBody = () => {
         const { id, exhibitName, contributors, material, category, images, isActive, creator, updater, createdAt, updatedAt } = exhibit;
         return {
             id,
-            image: (!!images.length) && <img style={{ width: 80, height: 80 }} src={`${BASE_URL}images/${id}/${images[0].name}`} />,
+            image: (!!images.length) && <img style={{ width: 80, height: 80 }} src={`${BASE_URL}images/${images[0].name}`} />,
             exhibitName,
             material: material.materialName,
             category: category.categoryName,

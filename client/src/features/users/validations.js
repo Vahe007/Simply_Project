@@ -88,7 +88,7 @@ export const addExhibitSchema = Yup.object().shape({
     .max(50, "Too Long!")
     .required("Required"),
 
-  contributors: Yup.array().of(
+  newContributors: Yup.array().of(
     Yup.object().shape({
       contributorName: Yup.string().required("required"),
       contributorSurname: Yup.string().required("required"),
