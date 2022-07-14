@@ -108,9 +108,9 @@ export const getUserByIdDB = async (id) => {
         }
       })
       
-      const {isActive} = userData;
+      // const {isActive} = userData;
 
-      if(userData && isActive) {
+      if(userData) {
         const userPassExcluded = exclude(userData, ['password']);
         const {id, role} = userPassExcluded;
         const token = generateAccessToken(id, role);

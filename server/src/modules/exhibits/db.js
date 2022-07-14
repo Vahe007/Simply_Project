@@ -124,6 +124,8 @@ export const getAllExhibitsDB = async (query) => {
         material: true,
         images: true,
         category: true,
+        creator: true,
+        updater: true
       },
     })
     return {
@@ -143,12 +145,14 @@ export const getAllExhibitsDB = async (query) => {
 }
 
 export const createExhibitDB = async (sentData) => {
-  const { materialName, categoryName = "cat", statusName = "stat", userId, contributors, checkedContributors, ...exhibitInfo } = sentData
+  const { materialName, categoryName = "cat", statusName = "stat", userId, newContributors, existingContributorsIds,  ...exhibitInfo } = sentData
   console.log('-------------------------------');
 
-  console.log(contributors);
+  console.log("contributors", conValues);
 
   console.log('------------------------------------');
+
+
 
   try {
     const newExhibit = await exhibit.create({
@@ -175,6 +179,15 @@ export const createExhibitDB = async (sentData) => {
           },
         },
 
+        contributors: {
+          create: {
+            contributor: {
+              connect: existingContributorsIds.map(id => ({id})),
+              create: newContributors
+            }
+          }
+        },
+
         status: {
           connectOrCreate: {
             where: {
@@ -190,47 +203,66 @@ export const createExhibitDB = async (sentData) => {
           connect: {
             id: userId,
           },
+          
         },
-        
-        contributors: {
-          create: [{
-            contributorId: 1,
-            contributor: {
-              connectOrCreate: contributors.map(({ contributorName, contributorSurname, contributorPhoneNumber }) => ({
-                where: {
-                  contributorName,
-                  // contributorSurname,
-                  // contributorPhoneNumber
-                },
-                create: {
-                  contributorName,
-                  contributorSurname,
-                  contributorPhoneNumber
-                }
-              
-              })),
-            }
 
-          }],
-
-        },
+        // contributors: {
+        //   create: [{
+        //     contributor: {
+        //       connectOrCreate: contributors.map(({ contributorName, contributorSurname, contributorPhoneNumber }) => ({
+        //         where: {
+        //           contributorName,
+        //           // contributorSurname,
+        //           // contributorPhoneNumber
+        //         },
+        //         create: {
+        //           contributorName,
+        //           contributorSurname,
+        //           contributorPhoneNumber
+        //         }
+        //       })),
+        //     }
+        //   }],
+        // },
 
         ...exhibitInfo,
       }
     })
 
-    //when creating a new exhibit
-    // const con = await prisma.contributorsOfExhibits.createMany({
-    //   data: checkedContributors.map((id) => {
-    //     return {
-    //       contributorId: id,
-    //       exhibitId: newExhibit.id
-    //     }
-    //   })
-    // })
 
 
 
+
+    conIds.map(async (conId) => {
+
+      if (foundContributor) {
+        const coe = await prisma.contributorsOfExhibits.create({
+          data: {
+            contributorId: foundContributor.id,
+            exhibitId: newExhibit.id
+          }
+        })
+        console.log('middleTable', coe);
+      }
+
+      else {
+        const newContributor = await prisma.contributor.create({
+          data: {
+            contributorName,
+            contributorSurname,
+            contributorPhoneNumber
+          }
+        })
+        console.log("newContributor", newContributor);
+        const coe = await prisma.contributorsOfExhibits.create({
+          data: {
+            contributorId: newContributor.id,
+            exhibitId: newExhibit.id
+          }
+        })
+        console.log('middletable', coe);
+      }
+    })
 
     return {
       data: newExhibit,
@@ -266,11 +298,10 @@ export const deleteExhibitDB = async (id) => {
 
 export const updateExhibitDB = async (data, id) => {
   try {
-    const { materialName, ...exhibitInfo } = data
-
+    const { materialName, ...exhibitInfo } = data;
     const updatedExhibit = await exhibit.update({
       where: {
-        id: +id,
+        id,
       },
       data: {
         material: {
@@ -283,7 +314,7 @@ export const updateExhibitDB = async (data, id) => {
             },
           },
         },
-        ...exhibitInfo,
+        ...exhibitInfo
       },
     })
 

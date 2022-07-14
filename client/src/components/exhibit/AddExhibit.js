@@ -33,6 +33,7 @@ import {
   selectContributors,
 } from "../../features/contributors/contributorsSlice";
 import Dropzone from "../Dropzone/App";
+import { set } from "date-fns/esm";
 
 const AddExhibitForm = ({ userId }) => {
   const {
@@ -60,11 +61,7 @@ const AddExhibitForm = ({ userId }) => {
   const { filteredMaterials } = useSelector(selectMaterials);
   const { contributors } = useSelector(selectContributors);
 
-  const [checkedContributorsIds, setCheckedContributorsIds] = useState([]);
-  const handleSelect = (event) => {
-    setCheckedContributorsIds(event.target.value)
-  }
-
+  const [checkedContributors, setCheckedContributors] = useState([]);
 
 
   const [datetimeValue, setDatetimeValue] = useState(
@@ -84,8 +81,7 @@ const AddExhibitForm = ({ userId }) => {
       fundNumber: "",
       exhibitName: "",
       materialName: "",
-      contributors: checkedContributorsIds,
-      checkedContributors: [],
+      contributors: [],
       placeOfOrigin: "",
       creationPeriod: "",
       acquisitionPeriod: "",
@@ -109,6 +105,36 @@ const AddExhibitForm = ({ userId }) => {
       );
     },
   });
+
+  const handleCheck = (selected) => {
+    const stringContributors = checkedContributors.map((contributor) => (
+      JSON.stringify(contributor)
+    ))
+
+    const stringContributor = JSON.stringify(selected);
+    return (stringContributors.indexOf(stringContributor) > -1)
+  }
+  const handleSelectChange = ({ target: { value } }) => {
+    const stringContributors = checkedContributors.map((contributor) => (
+      JSON.stringify(contributor)
+    ))
+    const stringNewVal = value.map((contributor) => (
+      JSON.stringify(contributor)
+    ))
+    if (stringContributors === stringNewVal) {
+      value.pop();
+      // const newCheckedContributors = checkedContributors.filter((checkedContributor) => {
+      //   return (JSON.stringify(checkedContributor) !== JSON.stringify(value));
+      // })
+      setCheckedContributors(value);
+    }
+    else {
+      setCheckedContributors(value);
+    }
+  }
+
+
+
   const onDatetimeChange = (newValue) => {
     setDatetimeValue(newValue);
   };
@@ -247,24 +273,27 @@ const AddExhibitForm = ({ userId }) => {
             </div>
 
             {
-              <div className={contributorInputContainer}>
+              <div className={contributorInputContainer} style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <FormControl sx={{ m: 1, width: 300 }}>
                   <Select
                     labelId="demo-multiple-checkbox-label"
                     id="demo-multiple-checkbox"
                     multiple
                     input={<OutlinedInput label="Tag" />}
-                    renderValue={(selected) => selected.join(', ')}
-                    name="contributors"
-                    onChange={formik.handleChange}
-                    value={formik.values.contributors}
-                    // value={checkedContributorsIds}
-                    // onChange={handleSelect}
+                    renderValue={(selected) => {
+                      selected.map((s) => {
+                        return `${s.contributorName} ${s.contributorSurname}`
+                      })
+                    }}
+                    value={checkedContributors}
+                    onChange={handleSelectChange}
+                    sx={{ width: "300px" }}
                   >
-                    {contributors.map(({id, contributorName, contributorSurname, contributorPhoneNumber}) => {
+
+                    {contributors.map(({ id, contributorName, contributorSurname, contributorPhoneNumber }) => {
                       return (
-                        <MenuItem key={id} value={{contributorName, contributorSurname, contributorPhoneNumber}}>
-                          <Checkbox checked={formik.values.checkedContributors.indexOf(id) > -1 } />
+                        <MenuItem key={id} value={{ contributorName, contributorSurname, contributorPhoneNumber }}>
+                          <Checkbox checked={handleCheck({ contributorName, contributorSurname, contributorPhoneNumber })} />
                           <ListItemText
                             primary={`${contributorName} ${contributorSurname}`}
                           />

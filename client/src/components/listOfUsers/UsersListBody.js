@@ -42,7 +42,6 @@ const ListUsers = () => {
       role,
       isActive,
     } = user;
-    console.log(user);
     const newData = {
       firstName,
       lastName,
