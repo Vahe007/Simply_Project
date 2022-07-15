@@ -28,9 +28,7 @@ const stringFields = [
 ];
 
 const ExhibitView = ({id: userId}) => {
-  console.log(userId);
   const exhibit = useExhibit();
-  console.log(exhibit);
   const dispatch = useDispatch();
   const [uploadedImages, setUploadedImages] = useState([]);
 
@@ -44,11 +42,9 @@ const ExhibitView = ({id: userId}) => {
   }
 
   const onSubmit = (values) => {
-    console.log(values);
     dispatch(update_getExhibit({ exhibitInfo: values, id: exhibit.id }))
   }
   const onUploadImage = ({ target: { value, files } }) => {
-    console.log(files[0])
     setUploadedImages([...uploadedImages, value]);
   }
   const formik = useFormik({

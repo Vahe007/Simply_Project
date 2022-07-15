@@ -12,7 +12,7 @@ import { updateRoute } from "../features/userAccess/userAccessSlice";
 import { Button } from "@mui/material";
 import {  useNavigate } from "react-router-dom";
 import { useExhibit } from "../features/exhibits/ExhibitsContextProvider";
-import ExhibitsPagination from "../components/exhibitsList/ExhibitsPagination";
+import ExhibitsPagination from "../components/exhibit/exhibitsList/ExhibitsPagination";
 
 const Employee = () => {
   const auth = useAuth();

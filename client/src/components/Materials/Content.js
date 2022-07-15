@@ -9,12 +9,20 @@ import { useSelector } from "react-redux";
 import { useEffect } from "react";
 
 function Content({ setFieldError }) {
-  const { error } = useSelector(selectMaterials);
+  const { error, allMaterials } = useSelector(selectMaterials);
   useEffect(() => {
-    if (error && error.message === "Email is already registered") {
-      setFieldError("materialNames[1]", error.message);
+    if (error && error.code === "P2002") {
+      console.log(allMaterials);
+      allMaterials.some((material) => {});
+      const arr = allMaterials.map((material) =>
+        material.materialName.toLowerCase()
+      );
+      error.existingMaterials.forEach((el, i) => {
+        if (arr.includes(el)) {
+          setFieldError(`materialNames[${i}]`, error.message);
+        }
+      });
     }
-    console.log(error);
   }, [error]);
   return (
     <>
@@ -23,7 +31,7 @@ function Content({ setFieldError }) {
           const { push, remove, form } = fieldArrayProps;
           const { values } = form;
           const { materialNames } = values;
-
+          console.log(materialNames);
           return (
             <div>
               <AddCircleIcon fontSize="large" onClick={() => push("")} />
@@ -52,5 +60,3 @@ function Content({ setFieldError }) {
 }
 
 export default Content;
-
-

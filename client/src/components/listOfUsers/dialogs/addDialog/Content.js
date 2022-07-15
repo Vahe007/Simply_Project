@@ -14,7 +14,6 @@ function Content({ setFieldError }) {
     if (error && error.message === "Email is already registered") {
       setFieldError("email", error.message);
     }
-    console.log(error);
   }, [error]);
 
   return (

@@ -7,7 +7,6 @@ import { useCustomSearchParams } from "./SearchParamsContext";
 
 function UsersListFooter() {
   const { searchParams, setSearchParams } = useCustomSearchParams();
-  console.log(searchParams);
   const { countAfterSearch } = useSelector(selectUsers);
   const limit = searchParams.get("limit");
 

@@ -25,7 +25,6 @@ export const Dropzone = (props) => {
     let formData = new FormData();
     const { files } = e.target;
     lodash.forEach(e.target.files, (file) => {
-      console.log(file);
       formData.append("file", file);
     });
     setUploading(true);
@@ -33,9 +32,7 @@ export const Dropzone = (props) => {
       onUploadProgress: ({ loaded, total }) => {
         setProgress(((loaded / total) * 100).toFixed(2));
       },
-    }).catch((error) => {
-      setError(error.details);
-    });
+    })
     setProgress(0);
     setUploading(false);
     setUploadedImages([...uploadedImages, ...response?.data?.imagePaths]);
@@ -67,7 +64,7 @@ export const Dropzone = (props) => {
       </div>
       {isUploading && (
         <div>
-          <LinearProgress variant="determinate" value={progress} />
+          <LinearProgress variant="determinate" value={progress || 0} />
           {progress}%
         </div>
       )}
@@ -75,8 +72,12 @@ export const Dropzone = (props) => {
       <div className={classes.uploadedImagesContainer}>
         {!!uploadedImages?.length &&
           uploadedImages?.map((uploadedImage, index) => {
+            console.log(uploadedImages);
             return (
-              <div key={uploadedImage} className={classes.imageContainer}>
+              <div
+                key={`${uploadedImage}${index}`}
+                className={classes.imageContainer}
+              >
                 <div>
                   <CloseIcon
                     className={classes.closeBtn}

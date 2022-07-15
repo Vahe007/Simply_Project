@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { addExhibitSchema } from "../../features/users/validations";
+import {addExhibitSchema} from "../listOfUsers/validations.js"
 import TextFieldWrapper from "../FormsUI/TextField";
 import { classes } from "../../styles/AddExhibitFormStyle";
 import _ from "lodash";
@@ -38,124 +38,108 @@ import {
 import Dropzone from "../Dropzone/App";
 import { useExhibit } from "../../features/exhibits/ExhibitsContextProvider";
 import { set } from "date-fns/esm";
+import {
+  addExhibitInitialValues,
+  cloneArr,
+  getEditInitialValues,
+  initialStateOfIds,
+  initialStateOfNames,
+} from "./helpers";
 
 const AddExhibitForm = ({ userId }) => {
   const { exhibit } = useExhibit();
-
-  const {
-    mainContainer,
-    formContainer,
-    labelTextFieldWrapper,
-    labelField,
-    addExhibitTextField,
-    submitBtn,
-    exhibitMainInfo,
-    exhibitSizes,
-    exhibitDetailsTitle,
-    sizesTitle,
-    sizesContainer,
-    exhibitDetailsContainer,
-    materialContainer,
-    materialTitle,
-    textFieldClass,
-    descriptionTitle,
-    contributorsContainer,
-    contributorsTitle,
-    contributorInputContainer,
-  } = classes;
   const dispatch = useDispatch();
   const { filteredMaterials } = useSelector(selectMaterials);
   const { contributors } = useSelector(selectContributors);
-  const [checkedContributorsIds, setCheckedContributorsIds] = useState([]);
-  const handleSelect = (event) => {
-    setCheckedContributorsIds(event.target.value);
-  };
-  const [selectedContributorName, setSelectedContributorName] = useState([]);
-  const [selectedContribursIds, setSelectedContribursIds] = useState([]);
-  console.log(selectedContribursIds);
+  const [selectedContributorName, setSelectedContributorName] = useState(
+    initialStateOfNames(exhibit, contributors)
+  );
+  const [selectedContribursIds, setSelectedContribursIds] = useState(
+    initialStateOfIds(exhibit, contributors)
+  );
   const [datetimeValue, setDatetimeValue] = useState(
     new Date("2014-08-18T21:11:54")
   );
-
   useEffect(() => {
     dispatch(getMaterials({ isActive: true }));
     dispatch(getContributors());
   }, []);
-  console.log(contributors);
+
+  const onSelectChange = (event) => {
+    const {
+      target: { value },
+    } = event;
+    const lastSelectedId = value.at(-1).id;
+    const contributorFullName = `${value.at(-1).contributorName} ${
+      value.at(-1).contributorSurname
+    }`;
+    if (selectedContribursIds.includes(lastSelectedId)) {
+      setSelectedContribursIds(cloneArr(selectedContribursIds, lastSelectedId));
+      setSelectedContributorName(
+        cloneArr(selectedContributorName, contributorFullName)
+      );
+    } else {
+      setSelectedContributorName([
+        ...selectedContributorName,
+        contributorFullName,
+      ]);
+      setSelectedContribursIds([...selectedContribursIds, lastSelectedId]);
+    }
+  };
   let initialValues;
   if (exhibit) {
-    initialValues = {
-      fundNumber: exhibit.fundNumber,
-      exhibitName: exhibit.exhibitName,
-      materialName: exhibit.material.materialName,
-      contributorIds: checkedContributorsIds,
-      newContributors: [],
-      checkedContributors: [],
-      placeOfOrigin: exhibit.placeOfOrigin,
-      creationPeriod: exhibit.creationPeriod,
-      acquisitionPeriod: exhibit.acquisitionPeriod,
-      width: exhibit.width,
-      height: exhibit.height,
-      length: exhibit.length,
-      diameter: exhibit.diameter,
-      description: exhibit.description,
-      contributors: [],
-    };
+    initialValues = getEditInitialValues(exhibit);
   } else {
-    initialValues = {
-      fundNumber: "",
-      exhibitName: "",
-      materialName: "",
-      newContributors: [],
-      placeOfOrigin: "",
-      creationPeriod: "",
-      acquisitionPeriod: "",
-      width: "",
-      height: "",
-      length: "",
-      diameter: "",
-      description: "",
-    };
+    initialValues = addExhibitInitialValues;
   }
+
+  const onFormSubmit = (values) => {
+    values.acquisitionPeriod = datetimeValue;
+    values.existingContributorsIds = selectedContribursIds;
+    if (!exhibit) {
+      dispatch(
+        createExhibit({
+          ...values,
+          userId,
+        })
+      );
+    } else {
+      dispatch(update_getExhibit({ id: exhibit.id, exhibitInfo: values }));
+    }
+  };
   const formik = useFormik({
     initialValues,
-
     validationSchema: addExhibitSchema,
-
-    onSubmit: (values) => {
-      console.log(values);
-      values.acquisitionPeriod = datetimeValue;
-      if (!exhibit) {
-        dispatch(
-          createExhibit({
-            ...values,
-            userId,
-          })
-        );
-      } else {
-        dispatch(update_getExhibit({ id: exhibit.id, exhibitInfo: values }));
-      }
-    },
+    onSubmit: onFormSubmit,
   });
-  console.log(formik.values.newContributors);
+
+  const isDisabled = () => {
+    for (let key of Object.keys(formik.values)) {
+      if (formik.initialValues[key] !== formik.values[key]) {
+        return false;
+      }
+    }
+
+    return true;
+  };
 
   const onDatetimeChange = (newValue) => {
     setDatetimeValue(newValue);
   };
 
   return (
-    <div className={mainContainer}>
+    <div className={classes.mainContainer}>
       <FormikProvider value={formik}>
-        <form className={formContainer} onSubmit={formik.handleSubmit}>
-          <div className={exhibitDetailsContainer}>
-            <div className={exhibitDetailsTitle}>
+        <form className={classes.formContainer} onSubmit={formik.handleSubmit}>
+          <div className={classes.exhibitDetailsContainer}>
+            <div className={classes.title}>
               <b>Exhibit Details</b>
             </div>
-            <div className={exhibitMainInfo}>
-              <div className={labelTextFieldWrapper}>
+            <div className={classes.exhibitMainInfo}>
+              <div className={classes.labelTextFieldWrapper}>
                 <TextFieldWrapper
                   size="small"
-                  className={addExhibitTextField}
+                  className={classes.addExhibitTextField}
                   fullWidth={false}
                   name="exhibitName"
                   formik={formik}
@@ -163,10 +147,10 @@ const AddExhibitForm = ({ userId }) => {
                   sx={{ width: "300px" }}
                 />
               </div>
-              <div className={labelTextFieldWrapper}>
+              <div className={classes.labelTextFieldWrapper}>
                 <TextFieldWrapper
                   size="small"
-                  className={addExhibitTextField}
+                  className={classes.addExhibitTextField}
                   fullWidth={false}
                   name="fundNumber"
                   formik={formik}
@@ -174,10 +158,10 @@ const AddExhibitForm = ({ userId }) => {
                   sx={{ width: "300px" }}
                 />
               </div>
-              <div className={labelTextFieldWrapper}>
+              <div className={classes.labelTextFieldWrapper}>
                 <TextFieldWrapper
                   size="small"
-                  className={addExhibitTextField}
+                  className={classes.addExhibitTextField}
                   fullWidth={false}
                   name="placeOfOrigin"
                   formik={formik}
@@ -185,10 +169,10 @@ const AddExhibitForm = ({ userId }) => {
                   sx={{ width: "300px" }}
                 />
               </div>
-              <div className={labelTextFieldWrapper}>
+              <div className={classes.labelTextFieldWrapper}>
                 <TextFieldWrapper
                   size="small"
-                  className={addExhibitTextField}
+                  className={classes.addExhibitTextField}
                   fullWidth={false}
                   name="creationPeriod"
                   formik={formik}
@@ -198,15 +182,15 @@ const AddExhibitForm = ({ userId }) => {
               </div>
             </div>
           </div>
-          <div className={sizesContainer}>
-            <div className={sizesTitle}>
+          <div className={classes.sizesContainer}>
+            <div className={classes.title}>
               <b>Sizes</b>
             </div>
-            <div className={exhibitSizes}>
-              <div className={labelTextFieldWrapper}>
+            <div className={classes.exhibitSizes}>
+              <div className={classes.labelTextFieldWrapper}>
                 <TextFieldWrapper
                   size="small"
-                  className={textFieldClass}
+                  className={classes.textFieldClass}
                   fullWidth={false}
                   name="width"
                   type="number"
@@ -215,10 +199,10 @@ const AddExhibitForm = ({ userId }) => {
                   sx={{ width: "100px" }}
                 />
               </div>
-              <div className={labelTextFieldWrapper}>
+              <div className={classes.labelTextFieldWrapper}>
                 <TextFieldWrapper
                   size="small"
-                  className={textFieldClass}
+                  className={classes.textFieldClass}
                   fullWidth={false}
                   type="number"
                   name="height"
@@ -227,10 +211,10 @@ const AddExhibitForm = ({ userId }) => {
                   sx={{ width: "100px" }}
                 />
               </div>
-              <div className={labelTextFieldWrapper}>
+              <div className={classes.labelTextFieldWrapper}>
                 <TextFieldWrapper
                   size="small"
-                  className={textFieldClass}
+                  className={classes.textFieldClass}
                   fullWidth={false}
                   name="length"
                   type="number"
@@ -239,10 +223,10 @@ const AddExhibitForm = ({ userId }) => {
                   sx={{ width: "100px" }}
                 />
               </div>
-              <div className={labelTextFieldWrapper}>
+              <div className={classes.labelTextFieldWrapper}>
                 <TextFieldWrapper
                   size="small"
-                  className={textFieldClass}
+                  className={classes.textFieldClass}
                   fullWidth={true}
                   name="diameter"
                   type="number"
@@ -254,13 +238,13 @@ const AddExhibitForm = ({ userId }) => {
             </div>
           </div>
           <div className="descriptionContainer">
-            <div className={descriptionTitle}>
+            <div className={classes.title}>
               <b>Description</b>
             </div>
-            <div className={labelTextFieldWrapper}>
+            <div className={classes.labelTextFieldWrapper}>
               <TextFieldWrapper
                 size="small"
-                className={addExhibitTextField}
+                className={classes.addExhibitTextField}
                 fullWidth={false}
                 name="description"
                 multiline
@@ -271,16 +255,13 @@ const AddExhibitForm = ({ userId }) => {
               />
             </div>
           </div>
-          <div className={contributorsContainer}>
-            <div className={contributorsTitle}>
+          <div className={classes.contributorsContainer}>
+            <div className={classes.title}>
               <b>Contributors</b>
             </div>
 
             {
-              <div
-                className={contributorInputContainer}
-                style={{ display: "flex", justifyContent: "space-between" }}
-              >
+              <div className={classes.contributorFormContainer}>
                 <FormControl sx={{ m: 1, width: 300 }}>
                   <Select
                     labelId="demo-multiple-checkbox-label"
@@ -288,46 +269,10 @@ const AddExhibitForm = ({ userId }) => {
                     multiple
                     input={<OutlinedInput label="Tag" />}
                     renderValue={(selected) => selected.join(", ")}
-                    name="contributors"
-                    onChange={(e) => {
-                      const {
-                        target: { value },
-                      } = e;
-                      const newContributor = `${value.at(-1).contributorName} ${
-                        value.at(-1).contributorSurname
-                      }`;
-
-                      if (selectedContribursIds.includes(value.at(-1).id)) {
-                        let cloneIds = [...selectedContribursIds];
-                        let cloneNames = [...selectedContributorName];
-                        cloneIds.splice(
-                          selectedContribursIds.indexOf(value.at(-1).id),
-                          1
-                        );
-                        cloneNames.splice(
-                          cloneNames.indexOf(
-                            `${value.at(-1).contributorName} ${
-                              value.at(-1).contributorSurname
-                            }}`,
-                            1
-                          )
-                        );
-                        setSelectedContribursIds(cloneIds);
-                        setSelectedContributorName(cloneNames);
-                      } else {
-                        setSelectedContributorName([
-                          ...selectedContributorName,
-                          newContributor,
-                        ]);
-                        setSelectedContribursIds([
-                          ...selectedContribursIds,
-                          value.at(-1).id,
-                        ]);
-                      }
-                    }}
+                    name="existingContributorsIds"
+                    onChange={onSelectChange}
+                    sx={{ root: { width: "500px !important" } }}
                     value={selectedContributorName}
-                    // value={checkedContributorsIds}
-                    // onChange={handleSelect}
                   >
                     {contributors.map(
                       ({
@@ -391,6 +336,7 @@ const AddExhibitForm = ({ userId }) => {
                               <TextFieldWrapper
                                 size="small"
                                 name={`newContributors[${index}].contributorName`}
+                                fullWidth={false}
                                 value={[contributor.contributorName]}
                                 error={
                                   !!touched?.newContributors?.[index]
@@ -433,6 +379,7 @@ const AddExhibitForm = ({ userId }) => {
                                 }
                                 placeholder="Surname"
                                 formik={formik}
+                                fullWidth={false}
                               />
                               <TextFieldWrapper
                                 size="small"
@@ -456,10 +403,12 @@ const AddExhibitForm = ({ userId }) => {
                                 }
                                 placeholder="Phone Number"
                                 formik={formik}
+                                fullWidth={false}
                               />
                               <CloseIcon
                                 onClick={() => remove(index)}
                                 fontSize="large"
+                                className={classes.closeBtn}
                               >
                                 Delete
                               </CloseIcon>
@@ -474,11 +423,11 @@ const AddExhibitForm = ({ userId }) => {
             }
           </div>
 
-          <div className={materialContainer}>
-            <div className={materialTitle}>
+          <div className={classes.title}>
+            <div className={classes.title}>
               <b>Material</b>
             </div>
-            <div className={labelTextFieldWrapper}>
+            <div className={classes.labelTextFieldWrapper}>
               <Stack spacing={2} sx={{ width: 300 }}>
                 <Autocomplete
                   freeSolo
@@ -510,8 +459,8 @@ const AddExhibitForm = ({ userId }) => {
             </div>
           </div>
 
-          <div className={labelTextFieldWrapper}>
-            <div className={materialTitle}>
+          <div className={classes.labelTextFieldWrapper}>
+            <div className={classes.title}>
               <b>Aquistion Period</b>
             </div>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -525,8 +474,13 @@ const AddExhibitForm = ({ userId }) => {
           </div>
 
           <Dropzone />
-          <div className={submitBtn}>
-            <Button variant="contained" fullWidth={false} type="submit">
+          <div className={classes.submitBtn}>
+            <Button
+              variant="contained"
+              fullWidth={false}
+              type="submit"
+              disabled={isDisabled()}
+            >
               Submit
             </Button>
           </div>
@@ -537,102 +491,6 @@ const AddExhibitForm = ({ userId }) => {
 };
 
 function AddExhibit({ id }) {
-  return (
-    <AddExhibitForm
-      userId={id}
-      initialValues={{
-        fundNumber: "",
-        exhibitName: "",
-        materialName: "",
-        checkedContributors: [],
-        placeOfOrigin: "",
-        creationPeriod: "",
-        acquisitionPeriod: "",
-        width: "",
-        height: "",
-        length: "",
-        diameter: "",
-        description: "",
-      }}
-    />
-  );
+  return <AddExhibitForm userId={id} />;
 }
 export default AddExhibit;
-
-// {[
-//   "exhibitName",
-//   "fundNumber",
-//   "placeOfOrigin",
-//   "creationPeriod",
-//   "width",
-//   "height",
-//   "length",
-//   "diameter",
-//   "description",
-//   "material",
-//   "contributors",
-//   "status",
-//   "creator",
-//   "updater",
-//   "category",
-// ].map((field) => (
-//   <div key={field} className={classes.labelTextFieldWrapper}>
-//     <label className={classes.labelField}>{_.startCase(field)}</label>
-//     <TextFieldWrapper
-//       size="small"
-//       className={classes.addExhibitTextField}
-//       fullWidth={false}
-//       name={field}
-//       type={numberTypes.includes(field) ? "number" : "text"}
-//       formik={formik
-//       label={_.startCase(field)}
-//       inputProps={{ placeholder: field, id: field }}
-//       columns={3}
-//     />
-//   </div>
-// ))}
-// <div className={classes.labelTextFieldWrapper}>
-//   <label className={classes.labelField}>"Aquistion Period"</label>
-//   <LocalizationProvider dateAdapter={AdapterDateFns}>
-//     <DateTimePicker
-//       label="Date&Time picker "
-//       value={datetimeValue}
-//       onChange={onChange}
-//       renderInput={(params) => <TextField {...params} />}
-//     />
-//   </LocalizationProvider>
-// </div>
-
-// <div className={classes.submitBtn}>
-//   <Button variant="contained" fullWidth={false} type="submit">
-//     Submit
-//   </Button>
-// </div>
-// </form>
-// </div>
-
-// <Select
-// labelId="demo-simple-select-label"
-// id="demo-simple-select"
-// value={materialName.materialName}
-// label="materialName"
-// onChange={onMaterialNameChange}
-// onClick={onSelectClick}
-// >
-// {filteredMaterials.map((material) => {
-//   return (
-//     <MenuItem
-//       key={material.materialName}
-//       value={material.materialName}
-//     >
-//       {material.materialName}
-//     </MenuItem>
-//   );
-// })}
-// {materialTextField || (
-//   <MenuItem value="addMaterial">
-//     Add new Material
-//     <AddIcon />
-//   </MenuItem>
-// )}
-// </Select>

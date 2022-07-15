@@ -1,7 +1,7 @@
 import { Snackbar } from "@material-ui/core";
 import { Alert } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { selectSnackbar, setSnackbar } from "../../features/snackbar/SnackbarSlice";
+import { selectSnackbar, setSnackbar } from "../../redux/features/snackbar/SnackbarSlice";
 
 const CustomizedSnackbar = () => {
   const dispatch = useDispatch();

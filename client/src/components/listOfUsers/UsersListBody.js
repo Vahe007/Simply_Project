@@ -6,7 +6,7 @@ import {
   selectUsers,
   updateAndGetUsers,
 } from "../../features/users/usersSlice";
-import { setSnackbar } from "../../features/snackbar/SnackbarSlice";
+import { setSnackbar } from "../../redux/features/snackbar/SnackbarSlice";
 import { Switch } from "@material-ui/core";
 import ButtonMUI from "./ButtonMUI";
 import MainTable from "./MainTable";
@@ -22,12 +22,10 @@ const ListUsers = () => {
   const [deleteUserId, setDeleteUserId] = useState(null);
 
   const onEditClick = (e, user) => {
-    console.log(e.target.id);
     setEditUserData(user);
   };
 
   const onEditClose = (_, reason) => {
-    console.log(reason);
     setEditUserData(null);
   };
 

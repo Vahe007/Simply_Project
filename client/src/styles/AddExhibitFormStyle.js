@@ -41,15 +41,9 @@ const styles = {
     flexWrap: "wrap",
     gap: "20px",
   },
-  exhibitDetailsTitle: {
+  title: {
     marginBottom: "20px",
   },
-  sizesTitle: {
-    marginBottom: "20px",
-  },
-
-  materialContainer: { marginBottom: "20px" },
-  materialTitle: { marginBottom: "20px" },
 
   textFieldClass: {
     "& .MuiOutlinedInput-input": {
@@ -59,28 +53,37 @@ const styles = {
     },
   },
 
-  descriptionTitle: {
-    marginBottom: "20px",
-  },
-
-  contributorInputContainer: {
-    display: "flex ",
+  contributorFormContainer: {
     gap: "30px",
     marginBottom: "20px",
   },
 
-  contributorsTitle: {
-    marginBottom: "20px",
+  contributorInputContainer: {
+    padding: "20px",
   },
-  addContributorBtn: {
-    marginBottom: "20px",
-  },
+
   detailsAndSizesContainer: {
     display: "flex",
     justifyContent: "space-around",
+  },
+
+  fieldArrayTextFields: {
+    root: {
+      marginRight: "10px",
+    },
+  },
+
+  closeBtn: {
+    "&:hover": { cursor: "pointer" },
   },
 };
 
 export const { classes } = jss.createStyleSheet(styles).attach();
 
 export default styles;
+// exhibitDetailsContainer
+// sizesContainer
+// contributorsContainer
+
+// materialContainer
+// labelTextFieldWrapper

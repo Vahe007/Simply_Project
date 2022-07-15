@@ -20,7 +20,6 @@ const SelectWrapper = ({ pageNumber }) => {
   // const {limit, setLimit, sortBy, setSortBy} = useExhibits();
 
   const handleChange = ({ target: { value: sortBy } }) => {
-    console.log(sortBy);
     setQuery({sortBy})
     dispatch(getExhibitsPerPage({sortBy, page: pageNumber}))
   };
