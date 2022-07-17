@@ -6,33 +6,34 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
-
+import { BASE_URL } from "../../constants";
 
 const useStyles = makeStyles({
   root: {
     maxWidth: 345,
+    minWidth:"100%"
   },
 });
 
-export default function ExibitCard({ props }) {
+export default function ExibitCard({ref,exhibit}) {
   const classes = useStyles();
-
+  const src = exhibit?.images.length ? exhibit.images[0] : 'https://cdn.w600.comps.canstockphoto.com/no-image-available-stock-illustrations_csp38533655.jpg'
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} ref={ref}>
       <CardActionArea>
         <CardMedia
           component="img"
           alt="Exibit"
           height="140"
-          image={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8Dui-CG5_VcIxTHxks0tTiME_1rIvYeIfMA&usqp=CAU'}
-          title={props.itemName}
+          image={ src }
+          title={'Title'}
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="h2">
-            {props.itemName}
+            {exhibit?.exhibitName}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            {props.material}
+            {exhibit?.description}
           </Typography>
         </CardContent>
       </CardActionArea>
