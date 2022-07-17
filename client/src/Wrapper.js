@@ -16,6 +16,8 @@ import UsersPagination from "./components/UsersPagination";
 import Materials from "./components/Materials/Materials";
 import Navbar from "./components/Navbar";
 import AddExhibit from "./components/exhibit/AddExhibit";
+import GuestPage from "./Pages/GuestPage";
+
 
 const requireAuth = ["/users/admin", "/users/guest", "/users/employee"];
 
@@ -73,6 +75,19 @@ function Wrapper() {
 
         <Route path="*" element={<Navigate to="main" />} />
       </Routes>
+    );
+  }
+
+
+  if (userInfo.role === "GUEST") {
+    return (
+      <>
+        <Navbar />      
+        <Routes>
+          <Route path="guest" element={<GuestPage />} />
+          <Route path="*" element={<Navigate to="main" />} />
+        </Routes>
+      </>
     );
   }
 }
