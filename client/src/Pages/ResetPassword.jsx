@@ -17,7 +17,6 @@ const ResetPassword = () => {
     const location = useLocation();
     const dispatch = useDispatch();
     const message = useSelector(getMessage);
-    const [errorMessage, setErrorMessage] = useState(message);
 
     const params = location.pathname.split("/");
     const id = params[2];
@@ -29,17 +28,17 @@ const ResetPassword = () => {
     }, [])
 
     useEffect(() => {
-        setErrorMessage(message);
-        if (errorMessage) {
-            dispatch(
-                setSnackbar({
-                    snackbarOpen: true,
-                    snackbarMessage: message,
-                    snackbarType: "error",
-                })
-            );
+        const { text, isError } = message;
+        if (text) {
+          dispatch(
+            setSnackbar({
+              snackbarOpen: true,
+              snackbarMessage: text || "Input the new password",
+              snackbarType: isError ? "error" : "success",
+            })
+          );
         }
-    }, [message])
+      }, [message])
 
     const onSubmit = (values) => {
         dispatch(resetUserPassword({ id, values }));

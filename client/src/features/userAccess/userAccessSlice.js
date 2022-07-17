@@ -60,14 +60,14 @@ export const resetUserPassword = createAsyncThunk(
   "userAccess/resetPassword",
   async ({ id, values }) => {
     const response = await fetch(`${BASE_URL}users/reset/${id}`,
-    {
-      method: "PUT",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(values),
-    })
+      {
+        method: "PUT",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(values),
+      })
     return response.json();
   }
 )
@@ -75,7 +75,7 @@ export const resetUserPassword = createAsyncThunk(
 
 const initialState = {
   userInfo: {},
-  message: "",
+  message: {},
   token: "",
   isLoading: false,
   currentRoute: "",
@@ -116,8 +116,15 @@ const getUser = createSlice({
       const { message = "" } = error || {};
 
 
-      status === 400 && (state.message = "Something went wrong, try again after refreshing the page");
-      [state.message, state.userInfo, state.token] = [message, userInfo, token];
+      status === 400 && (state.message = {
+        isError: true,
+        text: "Something went wrong, try again after refreshing the page",
+      });
+      [state.userInfo, state.token] = [userInfo, token];
+      state.message = {
+        isError: !!message,
+        text: message
+      };
 
       state.token && Cookies.set('token', `${token}`, { expires: 1 })
       state.token && (state.isAuthorized = true);
@@ -138,10 +145,15 @@ const getUser = createSlice({
     },
     [createUser.fulfilled]: (state, { payload }) => {
       if (payload.status === 400) {
-        state.message =
-          "Something went wrong, try again after refreshing the page";
+        state.message = {
+          isError: true,
+          text: "Something went wrong, try again after refreshing the page",
+        };
       } else if (payload.error?.code === "P2002") {
-        state.message = "User with such email already exists";
+        state.message = {
+          isError: true,
+          text: "User with such email already exists",
+        };
       } else {
         const { data } = payload;
         const { token = "", ...userInfo } = data;
@@ -158,28 +170,36 @@ const getUser = createSlice({
 
 
     [sendLink.fulfilled]: (state, { payload }) => {
-      const {message = ""} = payload.error || {};
-      state.message = message;
+      const { message = "" } = payload.error || {};
+      console.log("messasgeee", message);
+      state.message = {
+        isError: !!message,
+        text: message,
+      };
     },
 
 
     [verifyUser.fulfilled]: (state, { payload }) => {
-      const {message = ""} = payload.error || {};
-      state.message = message;
+      const { message = "" } = payload.error || {};
+      state.message = {
+        isError: !!message,
+        text: message,
+      };
+
     },
 
-    [resetUserPassword.fulfilled]: (state, {payload}) => {
-      if (state.message) {
-        console.log("hesa ara messagey ay tufta");
-        state.message = "";
-        console.log(state.message);
-      }
+
+    [resetUserPassword.fulfilled]: (state, { payload }) => {
       const { status, error, data } = payload;
       const { token = "", ...userInfo } = data || {};
       const { message = "" } = error || {};
 
 
-      [state.message, state.userInfo, state.token] = [message, userInfo, token];
+      [state.userInfo, state.token] = [userInfo, token];
+      state.message = {
+        isError: !!message,
+        text: message,
+      };
 
       state.token && Cookies.set('token', `${token}`, { expires: 1 })
       userInfo?.id && Cookies.set('id', `${userInfo.id}`, { expires: 1 })

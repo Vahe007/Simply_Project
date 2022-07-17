@@ -41,3 +41,7 @@ export const editUserSignupSchema = Yup.object().shape({
 export const resetingPasswordSchema = Yup.object().shape({
   newPass: Yup.string().min(4, "Too Short!").required('Required')
 })
+
+export const emailLinkValidationSchema = Yup.object().shape({
+  email: Yup.string().email("Email is not valid").required("required!")
+})

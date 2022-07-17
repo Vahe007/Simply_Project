@@ -13,6 +13,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { InputProps } from "../helpers/common";
 import Button from "../components/FormsUI/Button";
 import { getMessage } from "../features/userAccess/selectors";
+import MainDialog from "../components/listOfUsers/dialogs/helpers/MainDialog";
 
 const theme = createTheme();
 
@@ -38,7 +39,7 @@ const inputAllProps = (field, formik, isVisible, changeVisibility, message) => {
 }
 
 
-function Form({ type, initialValues, fields, validationSchema, headTitle, btnTitle, links, getUser }) {
+function Form({ initialValues, fields, validationSchema, headTitle, btnTitle, links, getUser, dialogAttributes, isOpen }) {
   const [isVisible, setVisibility] = useState(false);
   const message = useSelector(getMessage);
   const dispatch = useDispatch();
@@ -60,6 +61,7 @@ function Form({ type, initialValues, fields, validationSchema, headTitle, btnTit
 
   return (
     <ThemeProvider theme={theme}>
+      {isOpen && <MainDialog {...dialogAttributes} />}
       <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid
@@ -100,13 +102,14 @@ function Form({ type, initialValues, fields, validationSchema, headTitle, btnTit
                   <TextField fullWidth={true} key={index} formik={formik} {...inputAllProps(field, formik, isVisible, changeVisibility, message)} />
                 );
               })}
-              <Typography sx={{ color: 'red', textAlign: 'center' }}>
+              {/* <Typography sx={{ color: 'red', textAlign: 'center' }}>
                 {message}
-              </Typography>
+              </Typography> */}
               <Button fullWidth={true} type="submit" sx={{ mt: "15px" }}>
                 {btnTitle}
               </Button>
               {links}
+
             </Box>
           </Box>
         </Grid>

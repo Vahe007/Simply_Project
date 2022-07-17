@@ -265,6 +265,7 @@ export const loginDB = async (userData) => {
 }
 
 
+
 export const sendKeyDB = async (email) => {
 
   try {
@@ -346,12 +347,14 @@ export const resetPasswordDB = async (newPass, id) => {
         error: {message: ERROR_MESSAGES.SAME_PASSWORD}
       }
     }
+
+    const hashedPassword = bcrypt.hashSync(newPass, 7)
     const updatedUser = await user.update({
       where :{
         id
       },
       data: {
-        password: newPass
+        password: hashedPassword
       }
     })
     const token = generateAccessToken(updatedUser.role, updatedUser.id);

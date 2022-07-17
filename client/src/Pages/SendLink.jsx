@@ -7,28 +7,26 @@ import { selectSnackbar, setSnackbar } from '../features/snackbar/SnackbarSlice'
 import { getMessage } from '../features/userAccess/selectors';
 import { sendLink } from '../features/userAccess/userAccessSlice';
 
-const SendKey = () => {
+const SendLink = () => {
   const dispatch = useDispatch();
   const message = useSelector(getMessage);
   console.log(message);
 
   const initialValues = { email: "" };
 
-
-
-  
   useEffect(() => {
-    if (message) {
+    const { text, isError } = message;
+    if (Object.values(message).length) {
       dispatch(
         setSnackbar({
           snackbarOpen: true,
-          snackbarMessage: message,
-          snackbarType: "error",
+          snackbarMessage: text || "Input your email",
+          snackbarType: isError ? "error" : "success",
         })
       );
     }
   }, [message])
-  
+
   const handleSubmit = (values) => {
     dispatch(sendLink(values));
   }
@@ -50,5 +48,5 @@ const SendKey = () => {
   )
 }
 
-export default SendKey
+export default SendLink
 

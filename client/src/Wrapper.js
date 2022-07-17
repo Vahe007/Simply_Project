@@ -16,8 +16,9 @@ import UsersPagination from "./components/UsersPagination";
 import Materials from "./components/Materials/Materials";
 import Navbar from "./components/Navbar";
 import AddExhibit from "./components/exhibit/AddExhibit";
-import SendLink from "./Pages/SendKey";
+import SendLink from "./Pages/SendLink";
 import ResetPassword from "./Pages/ResetPassword";
+
 
 function Wrapper() {
   const dispatch = useDispatch();
