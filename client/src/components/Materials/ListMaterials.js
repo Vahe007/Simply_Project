@@ -1,23 +1,26 @@
 import * as React from "react";
-import { getMaterials, selectMaterials, updateMaterial} from "../../features/materials/materialsSlice";
+import {
+  getMaterials,
+  selectMaterials,
+  updateMaterial,
+} from "../../redux/features/materials/materialsSlice";
 import { useDispatch, useSelector } from "react-redux/es/exports";
 import { Checkbox, TextField } from "@mui/material";
 import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
-import { setSnackbar } from "../../features/snackbar/SnackbarSlice";
+import { setSnackbar } from "../../redux/features/snackbar/SnackbarSlice";
 import MainTable from "../listOfUsers/MainTable";
-import CheckIcon from '@mui/icons-material/Check';
+import CheckIcon from "@mui/icons-material/Check";
 import { Button } from "@material-ui/core";
-
-export default function ListMaterials({searchParams, setSearchParams}) {
+import { classes } from "../../styles/materialsStyle";
+export default function ListMaterials({ searchParams, setSearchParams }) {
   const dispatch = useDispatch();
-  const {filteredMaterials} = useSelector(selectMaterials);
+  const { filteredMaterials } = useSelector(selectMaterials);
   const [inputValues, setInputValues] = useState({});
   const [showEditIds, setShowEditIds] = useState([]);
 
   const onEditClick = ({ materialName, id }) => {
-    console.log(materialName, id);
     setShowEditIds(showEditIds.concat(id));
   };
 
@@ -29,14 +32,14 @@ export default function ListMaterials({searchParams, setSearchParams}) {
   };
 
   const isDisabled = (materialName, id) => {
-    if(materialName === inputValues[id]) {
+    if (materialName === inputValues[id]) {
       return true;
-    } else if(!inputValues[id]) {
+    } else if (!inputValues[id]) {
       return true;
     } else {
       return false;
     }
-  }
+  };
 
   const onCheckChange = (e, id) => {
     dispatch(
@@ -45,7 +48,7 @@ export default function ListMaterials({searchParams, setSearchParams}) {
         newData: {
           isActive: e.target.checked,
         },
-        isActive: searchParams.get('isActive')
+        isActive: searchParams.get("isActive"),
       })
     );
 
@@ -72,8 +75,8 @@ export default function ListMaterials({searchParams, setSearchParams}) {
     setShowEditIds(clone);
     setInputValues({
       ...inputValues,
-      [id]: materialName
-    })
+      [id]: materialName,
+    });
   };
 
   const onEditConfirm = (id) => {
@@ -90,11 +93,13 @@ export default function ListMaterials({searchParams, setSearchParams}) {
     let newIds = [...showEditIds];
     newIds.splice(newIds.indexOf(id), 1);
     setShowEditIds(newIds);
-      dispatch(setSnackbar({
+    dispatch(
+      setSnackbar({
         snackbarOpen: true,
         snackbarType: "success",
-        snackbarMessage: message
-      }))
+        snackbarMessage: message,
+      })
+    );
     setTimeout(() => {
       dispatch(getMaterials());
     }, 0);
@@ -118,7 +123,10 @@ export default function ListMaterials({searchParams, setSearchParams}) {
 
   const data = filteredMaterials.map((material, index) => {
     const materialClone = { ...material };
-    const inputValue = inputValues[materialClone.id] !== undefined ? inputValues[materialClone.id] : materialClone.materialName;
+    const inputValue =
+      inputValues[materialClone.id] !== undefined
+        ? inputValues[materialClone.id]
+        : materialClone.materialName;
     const createdAtFullDate = new Date(materialClone.createdAt).toDateString();
     const updatedAtFullDate = new Date(materialClone.updatedAt).toDateString();
     delete materialClone.isActive;
@@ -134,6 +142,7 @@ export default function ListMaterials({searchParams, setSearchParams}) {
             id: materialClone.id,
           });
         }}
+        className={classes.editIcon}
       >
         edit
       </EditIcon>
@@ -151,43 +160,50 @@ export default function ListMaterials({searchParams, setSearchParams}) {
         inputProps={{ "aria-labelledby": "" }}
       />
     );
-    if(showEditIds.includes(materialClone.id)) {
-      materialClone.materialName = <TextField
-                                    type="text"
-                                    name={`materialName${materialClone.id}`}
-                                    required
-                                    value={inputValue}
-                                    onChange={(e) => {
-                                      onInputChange(e.target.value, materialClone.id);
-                                    }}
-                                    helperText={!inputValue && "required"}
-                                  />
-     materialClone.editIcon =  <Button
-            variant="contained"
-            onClick={() => {
-              onEditConfirm(materialClone.id);
-            }}
-            disabled={isDisabled(material.materialName, materialClone.id)}
-          >
+    if (showEditIds.includes(materialClone.id)) {
+      materialClone.materialName = (
+        <TextField
+          type="text"
+          name={`materialName${materialClone.id}`}
+          required
+          value={inputValue}
+          onChange={(e) => {
+            onInputChange(e.target.value, materialClone.id);
+          }}
+          sx={{ width: "92px", height: "42px", padding: 0, margin: 0 }}
+          fontSize="small"
+        />
+      );
+      materialClone.editIcon = (
+        <Button
+          variant="contained"
+          onClick={() => {
+            onEditConfirm(materialClone.id);
+          }}
+          disabled={isDisabled(material.materialName, materialClone.id)}
+          className={classes.submitBtn}
+        >
+          submit
+        </Button>
+      );
 
-            submit
-          </Button>
-
-    materialClone.checkbox =  <CloseIcon
-        variant="contained"
-        onClick={() => {
-          onCancel(material.materialName, materialClone.id);
-        }}
-        disabled={!inputValue}
-        fontSize="large"
-      />
+      materialClone.checkbox = (
+        <CloseIcon
+          variant="contained"
+          onClick={() => {
+            onCancel(material.materialName, materialClone.id);
+          }}
+          disabled={!inputValue}
+          fontSize="large"
+          className={classes.closeIcon}
+        />
+      );
     }
-    return  materialClone;
+    return materialClone;
   });
 
   return (
     <>
-    
       <MainTable
         headRow={[
           "ID",
@@ -204,9 +220,6 @@ export default function ListMaterials({searchParams, setSearchParams}) {
     </>
   );
 }
-
-
-
 
 //rubbish
 /**

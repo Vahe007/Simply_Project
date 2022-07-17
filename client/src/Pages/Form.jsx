@@ -12,7 +12,7 @@ import TextField from "../components/FormsUI/TextField";
 import { useSelector, useDispatch } from "react-redux";
 import { InputProps } from "../helpers/common";
 import Button from "../components/FormsUI/Button";
-import { getMessage } from "../features/userAccess/selectors";
+import { getMessage } from "../redux/features/userAccess/selectors";
 import MainDialog from "../components/listOfUsers/dialogs/helpers/MainDialog";
 
 const theme = createTheme();
@@ -130,4 +130,3 @@ export default Form;
 // error={formik.errors[field]}
 // touched={formik.touched[field]}
 // onBlur={formik.handleBlur}
-// {...inputProps(field)}

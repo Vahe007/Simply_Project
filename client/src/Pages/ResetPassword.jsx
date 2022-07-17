@@ -6,12 +6,12 @@ import Button from '../components/FormsUI/Button'
 import TextField from '../components/FormsUI/TextField'
 import { BASE_URL } from '../constants'
 import { useDispatch, useSelector } from 'react-redux'
-import { resetUserPassword, verifyUser } from '../features/userAccess/userAccessSlice'
+import { resetUserPassword, verifyUser } from '../redux/features/userAccess/userAccessSlice'
 import Paper from "@mui/material/Paper";
-import { setSnackbar } from "../features/snackbar/SnackbarSlice";
-import { resetingPasswordSchema } from "../features/userAccess/validations";
+import { setSnackbar } from "../redux/features/snackbar/SnackbarSlice";
+import { resetingPasswordSchema } from "../redux/features/userAccess/validations";
 import { InputProps } from '../helpers/common'
-import { getMessage } from "../features/userAccess/selectors"
+import { getMessage } from "../redux/features/userAccess/selectors"
 
 const ResetPassword = () => {
     const location = useLocation();

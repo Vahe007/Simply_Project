@@ -60,7 +60,7 @@ model Image {
   id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(255)
   path      String   @db.VarChar(255)
-  itemId    Int?     @unique
+  itemId    Int?
   exhibit   Exhibit? @relation(fields: [itemId], references: [id])
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())

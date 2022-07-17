@@ -4,7 +4,7 @@ import React from "react";
 import Select from "../../FormsUI/Select";
 import TextField from "../../FormsUI/TextField";
 import Button from "../../FormsUI/Button";
-import { selectUsers } from "../../../../features/users/usersSlice";
+import { selectUsers } from "../../../../redux/features/users/usersSlice";
 import { useSelector } from "react-redux";
 import { classes } from "../../../../styles/usersListStyles";
 
@@ -15,7 +15,6 @@ function Content({ helperText, setFieldError }) {
     if (error && error.message === "Email is already registered") {
       setFieldError("email", error.message);
     }
-    console.log(error);
   }, [error]);
 
   return (

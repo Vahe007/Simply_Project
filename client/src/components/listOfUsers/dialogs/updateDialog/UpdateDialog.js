@@ -8,10 +8,10 @@ import {
   getUsersPerPage,
   selectUsers,
   updateAndGetUsers,
-} from "../../../../features/users/usersSlice";
+} from "../../../../redux/features/users/usersSlice";
 import { Form, Formik } from "formik";
-import { editUserSchema } from "../../../../features/users/validations";
-import { setSnackbar } from "../../../../features/snackbar/SnackbarSlice";
+import { editUserSchema } from "../../validations";
+import { setSnackbar } from "../../../../redux/features/snackbar/SnackbarSlice";
 import { useSelector } from "react-redux";
 import { getQueries } from "./helpers";
 import { useCustomSearchParams } from "../../SearchParamsContext";
@@ -28,9 +28,7 @@ const UpdateDialog = ({ user, editUserData, setEditUserData }) => {
       setIsFirstTime(false);
       return;
     }
-    console.log(users.error);
     if (!users.error.isError) {
-      console.log(users.error);
       dispatch(
         setSnackbar({
           snackbarOpen: true,

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getMaterials } from "../../features/materials/materialsSlice";
+import { getMaterials } from "../../redux/features/materials/materialsSlice";
 import MaterialButtons from "./MaterialButtons";
 import ListMaterials from "./ListMaterials";
 import MaterialsContextProvider from "./MaterialsContextProvider";

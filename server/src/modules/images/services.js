@@ -18,16 +18,13 @@ export const getAllImages = async (req, res, next) => {
 }
 
 export const uploadImage = async (req, res, next) => {
-  const { exhibitId } = req.params
-  const { files } = req
-  console.log(files)
+  const { file } = req
   const baseUrl = 'http://localhost:5000/api/v1/'
-  const data = files.map((file) => {
-    return {
-      name: file.filename,
-      path: file.path.replace('public', `${baseUrl}`).replace(/\\/g, '/'),
-    }
-  })
+  const data = {
+    name: file.filename,
+    path: file.path.replace('public', `${baseUrl}`).replace(/\\/g, '/'),
+  }
+
   try {
     const file = await uploadImageDB(data)
     res.json(responseDataCreator(file))

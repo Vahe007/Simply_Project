@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
-import { editUserLoginSchema, emailLinkValidationSchema } from "../features/userAccess/validations";
+import { editUserLoginSchema, emailLinkValidationSchema } from "../redux/features/userAccess/validations";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
-import { loadUser, sendLink } from "../features/userAccess/userAccessSlice";
+import { loadUser, sendLink } from "../redux/features/userAccess/userAccessSlice";
 import Form from "./Form";
 import Button from "../components/FormsUI/Button";
 import { useFormik } from 'formik'
@@ -10,8 +10,8 @@ import { Box } from "@material-ui/core";
 import TextField from "../components/FormsUI/TextField";
 import { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { getMessage } from "../features/userAccess/selectors";
-import { setSnackbar } from "../features/snackbar/SnackbarSlice";
+import { getMessage } from "../redux/features/userAccess/selectors";
+import { setSnackbar } from "../redux/features/snackbar/SnackbarSlice";
 
 
 

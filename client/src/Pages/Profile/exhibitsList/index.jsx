@@ -3,10 +3,10 @@ import {
   getExhibitsCount,
   getExhibitsSelector,
   getFilteredCount,
-} from "../../../features/exhibits/selectors";
+} from "../../../redux/features/exhibits/selectors";
 import ExhibitItem from "../exhibitItem";
 import { v4 as uuid } from "uuid";
-import { getExhibitsPerPage } from "../../../features/exhibits/exhibitsSlice";
+import { getExhibitsPerPage } from "../../../redux/features/exhibits/exhibitsSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import Pagination from "@mui/material/Pagination";
@@ -19,11 +19,11 @@ import { styled } from "@mui/material/styles";
 import {
   getMaterials,
   getCategories,
-} from "../../../features/filteringFeatures/filteringFeaturesSlice";
+} from "../../../redux/features/filteringFeatures/filteringFeaturesSlice";
 import {
   getAllCategories,
   getAllMaterials,
-} from "../../../features/filteringFeatures/selectors";
+} from "../../../redux/features/filteringFeatures/selectors";
 import FilteringSelect from "../../../components/FilteringSelect/index.jsx";
 import { useStyles } from "./styles";
 import Box from "@mui/material/Box";

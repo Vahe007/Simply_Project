@@ -20,14 +20,13 @@ function MainDialog(props) {
   return (
     <>
       <Dialog open onClose={onClose}>
-        {<CloseIcon fontSize="large" onClick={onClose} />}
+        <CloseIcon fontSize="large" onClick={onClose} />
         <DialogTitle>{title}</DialogTitle>
 
 
         <DialogContent sx={{ paddingTop: "10px !important" }}>
           {content}
         </DialogContent>
-
       </Dialog>
     </>
   );

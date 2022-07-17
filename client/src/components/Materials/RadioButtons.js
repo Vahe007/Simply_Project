@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { getActiveMaterials, getInactiveMaterials, getMaterials } from "../../features/materials/materialsSlice";
+import { getActiveMaterials, getInactiveMaterials, getMaterials } from "../../redux/features/materials/materialsSlice";
 import MainRadioButtons from "../listOfUsers/MainRadioButtons";
 
 export default function RadioButtons({searchParams, setSearchParams}) {

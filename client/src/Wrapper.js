@@ -6,8 +6,11 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { getLoading, getUserInfo } from "./features/userAccess/selectors.js";
-import { getMeCall } from "./features/userAccess/userAccessSlice.js";
+import {
+  getLoading,
+  getUserInfo,
+} from "./redux/features/userAccess/selectors.js";
+import { getMeCall } from "./redux/features/userAccess/userAccessSlice.js";
 import { LinearProgress } from "@mui/material";
 import Profile from "./Pages/Profile.jsx";
 import Form from "./Pages/Form";
@@ -18,6 +21,8 @@ import Navbar from "./components/Navbar";
 import AddExhibit from "./components/exhibit/AddExhibit";
 import SendLink from "./Pages/SendLink";
 import ResetPassword from "./Pages/ResetPassword";
+import ShowContributorsList from "./components/contributors/ShowContributorsList";
+import { ImageIdsContext } from "./components/Dropzone/Uploader";
 
 
 function Wrapper() {
@@ -28,17 +33,14 @@ function Wrapper() {
   const token = Cookies.get("token");
 
   const { role } = userInfo;
-
   useEffect(() => {
     const id = Cookies.get("id");
-
     token && id && dispatch(getMeCall({ id: +id, token }));
   }, []);
 
   if (isLoading) {
     return <LinearProgress />;
   }
-
   if (!Object.keys(userInfo).length || !token) {
     return (
       <Routes>
@@ -59,6 +61,7 @@ function Wrapper() {
           <Route path="main">
             <Route path="users" element={<UsersPagination />} />
             <Route path="materials" element={<Materials />} />
+            <Route path="contributors" element={<ShowContributorsList />} />
           </Route>
           <Route path="*" element={<Navigate to="main/users" />} />
         </Routes>

@@ -7,6 +7,7 @@ import {
   createContributors,
   deleteContributor,
   getContributorById,
+  updateContributor,
 } from './services.js'
 
 const router = Router()
@@ -14,7 +15,7 @@ const router = Router()
 router.get('/', getAllContributors)
 router.get('/:id', getContributorById)
 router.post('/', createContributors)
-router.put('/:id', deleteContributor)
+router.put('/:id', updateContributor)
 
 export { router as contributorsRouter }
 

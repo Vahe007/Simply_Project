@@ -1,6 +1,6 @@
 import { prisma } from '../../services/Prisma.js'
 
-const { exhibit, image } = prisma
+const { exhibit, image, contributorsOfExhibits } = prisma
 
 const exhibitObj = {
   select: {
@@ -80,23 +80,6 @@ export const getAllExhibitsDB = async (query) => {
         },
       },
 
-      // OR: [
-      //   {
-      //     material: {
-      //       materialName: {
-      //         contains: ''
-      //       }
-      //     }
-      //   },
-      //   {
-      //     material: {
-      //       materialName: {
-      //         equals: material
-      //       }
-      //     }
-      //   }
-      // ],
-
       category: {
         categoryName: {
           contains: category,
@@ -125,7 +108,7 @@ export const getAllExhibitsDB = async (query) => {
         images: true,
         category: true,
         creator: true,
-        updater: true
+        updater: true,
       },
     })
     return {
@@ -145,19 +128,21 @@ export const getAllExhibitsDB = async (query) => {
 }
 
 export const createExhibitDB = async (sentData) => {
-  const { materialName, categoryName = "cat", statusName = "stat", userId, newContributors, existingContributorsIds, ...exhibitInfo } = sentData
-
-  console.log('newContributors', newContributors);
-  console.log('existingContributorsIds', existingContributorsIds);
-
+  const {
+    materialName,
+    categoryName = 'cat',
+    statusName = 'stat',
+    userId,
+    newContributors,
+    existingContributorsIds,
+    imageIds,
+    ...exhibitInfo
+  } = sentData
 
   try {
-    const getnewImages = await image.findMany({
-      where: {
-        itemId: null,
-      },
-    })
-    const imgIds = getnewImages.map((img) => ({ id: img.id }))
+    const imgIds = imageIds.map((id) => ({ id }))
+
+    const contributorsIds = existingContributorsIds.map((id) => ({ id }))
 
     const newExhibit = await exhibit.create({
       data: {
@@ -168,6 +153,17 @@ export const createExhibitDB = async (sentData) => {
             },
             create: {
               materialName,
+            },
+          },
+        },
+
+        status: {
+          connectOrCreate: {
+            where: {
+              statusName,
+            },
+            create: {
+              statusName,
             },
           },
         },
@@ -184,101 +180,38 @@ export const createExhibitDB = async (sentData) => {
         },
 
         contributors: {
-          create: [
-            {
-              contributor: {
-                create: {
-                  contriborName: "gg",
-                  contriborSurname: "gg",
-                  contriborPhoneNumber: "gg",
-
-                }
-                // connect: existingContributorsIds.map(id => ({id})),
-                // create: newContributors
-              }
-            }
-          
-
-          ]
-        },
-
-        status: {
-          connectOrCreate: {
-            where: {
-              statusName,
+          create: newContributors.map((newContributor) => ({
+            contributor: {
+              create: newContributor,
             },
-            create: {
-              statusName,
-            },
-          },
+          })),
         },
-
         creator: {
           connect: {
             id: userId,
           },
-
         },
-
         images: {
           connect: imgIds,
         },
-        // contributors: {
-        //   create: {
-        //     contributor: {
-        //       create: {
-        //         contributorName: 'hagop',
-        //         contributorSurname: 'berberian',
-        //         contributorPhoneNumber: '094113934',
-        //       },
-        //     },
-        //   },
-        // },
         ...exhibitInfo,
       },
     })
-
-
-
-
-
-    // existingContributorsIds.map(async (conId) => {
-
-    //   if (foundContributor) {
-    //     const coe = await prisma.contributorsOfExhibits.create({
-    //       data: {
-    //         contributorId: foundContributor.id,
-    //         exhibitId: newExhibit.id
-    //       }
-    //     })
-    //     console.log('middleTable', coe);
-    //   }
-
-    //   else {
-    //     const newContributor = await prisma.contributor.create({
-    //       data: {
-    //         contributorName,
-    //         contributorSurname,
-    //         contributorPhoneNumber
-    //       }
-    //     })
-    //     console.log("newContributor", newContributor);
-    //     const coe = await prisma.contributorsOfExhibits.create({
-    //       data: {
-    //         contributorId: newContributor.id,
-    //         exhibitId: newExhibit.id
-    //       }
-    //     })
-    //     console.log('middletable', coe);
-    //   }
-    // })
+    console.log(newExhibit.id)
+    if (existingContributorsIds.length) {
+      const z = await contributorsOfExhibits.createMany({
+        data: existingContributorsIds.map((id) => ({
+          contributorId: id,
+          exhibitId: newExhibit.id,
+        })),
+      })
+    }
 
     return {
       data: newExhibit,
       error: null,
     }
   } catch (error) {
-    console.log(error)
     return {
       data: null,
       error,
@@ -305,20 +238,60 @@ export const deleteExhibitDB = async (id) => {
   }
 }
 
-export const updateExhibitDB = async (data, id) => {
-  console.log(id)
-  try {
-    const getnewImages = await image.findMany({
-      where: {
-        itemId: null,
-      },
-    })
-    const imgIds = getnewImages.map((img) => ({ id: img.id }))
-    const { materialName, contributors, checkedContributors, ...exhibitInfo } = data
+export const updateExhibitDB = async (data, exhibitId) => {
+  const {
+    materialName,
+    contributors,
+    newContributors,
+    imageIds,
+    existingContributorsIds, //[2,3,4]
+    ...exhibitInfo
+  } = data
 
+  const imgIds = imageIds.map((id) => ({ id }))
+  const contributorsOfspecificExhibit = await contributorsOfExhibits.findMany({
+    where: {
+      exhibitId,
+    },
+  })
+
+  console.log('----------------------------------------')
+  console.log(existingContributorsIds)
+  console.log('-----------------------------------------------')
+
+  const arrayOfObjectWIthIdContId = contributorsOfspecificExhibit.map(({ id, contributorId }) => ({
+    id,
+    contributorId,
+  })) //[2,3,4,5]
+  const deletedRowOfRelationTable = arrayOfObjectWIthIdContId.filter(
+    (idOfContributors) => !existingContributorsIds.includes(idOfContributors.contributorId)
+  )
+
+  const idsToDelete = deletedRowOfRelationTable.map((obj) => obj.id)
+  console.log(idsToDelete)
+  try {
+    if (idsToDelete.length) {
+      await contributorsOfExhibits.deleteMany({
+        where: {
+          id: {
+            in: idsToDelete,
+          },
+        },
+      })
+    }
+    console.log('hi')
+  } catch (error) {
+    console.log(error)
+    return {
+      data: null,
+      error,
+    }
+  }
+
+  try {
     const updatedExhibit = await exhibit.update({
       where: {
-        id,
+        id: exhibitId,
       },
       data: {
         material: {
@@ -335,15 +308,28 @@ export const updateExhibitDB = async (data, id) => {
         images: {
           connect: imgIds,
         },
+        contributors: {
+          create: newContributors.map((newContributor) => ({
+            contributor: {
+              create: newContributor,
+            },
+          })),
+        },
       },
     })
-
+    // if (existingContributorsIds.length) {
+    //   const z = await contributorsOfExhibits.createMany({
+    //     data: existingContributorsIds.map((id) => ({
+    //       contributorId: id,
+    //       exhibitId,
+    //     })),
+    //   })
+    // }
     return {
       data: updatedExhibit,
       error: null,
     }
   } catch (error) {
-    console.log(error)
     return {
       data: null,
       error,

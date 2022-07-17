@@ -3,9 +3,9 @@ import { useFormik } from 'formik'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { BASE_URL } from '../constants';
-import { selectSnackbar, setSnackbar } from '../features/snackbar/SnackbarSlice';
-import { getMessage } from '../features/userAccess/selectors';
-import { sendLink } from '../features/userAccess/userAccessSlice';
+import { selectSnackbar, setSnackbar } from '../redux/features/snackbar/SnackbarSlice';
+import { getMessage } from '../redux/features/userAccess/selectors';
+import { sendLink } from '../redux/features/userAccess/userAccessSlice';
 
 const SendLink = () => {
   const dispatch = useDispatch();

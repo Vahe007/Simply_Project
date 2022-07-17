@@ -6,7 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { v4 as uuid } from "uuid";
 import { useDispatch } from "react-redux";
-import { getExhibitsPerPage } from "../../features/exhibits/exhibitsSlice";
+import { getExhibitsPerPage } from "../../redux/features/exhibits/exhibitsSlice";
 
 const MainSelectMUI = ({
   queries,
