@@ -8,9 +8,9 @@ import {
   getUsersPerPage,
   selectUsers,
   updateAndGetUsers,
-} from "../../../../features/users/usersSlice";
+} from "../../../../redux/features/users/usersSlice";
 import { Form, Formik } from "formik";
-import { editUserSchema } from "../../../../features/users/validations";
+import { editUserSchema } from "../../validations";
 import { setSnackbar } from "../../../../redux/features/snackbar/SnackbarSlice";
 import { useSelector } from "react-redux";
 import { getQueries } from "./helpers";

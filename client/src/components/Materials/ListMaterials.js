@@ -3,7 +3,7 @@ import {
   getMaterials,
   selectMaterials,
   updateMaterial,
-} from "../../features/materials/materialsSlice";
+} from "../../redux/features/materials/materialsSlice";
 import { useDispatch, useSelector } from "react-redux/es/exports";
 import { Checkbox, TextField } from "@mui/material";
 import { useState } from "react";
@@ -13,7 +13,7 @@ import { setSnackbar } from "../../redux/features/snackbar/SnackbarSlice";
 import MainTable from "../listOfUsers/MainTable";
 import CheckIcon from "@mui/icons-material/Check";
 import { Button } from "@material-ui/core";
-
+import { classes } from "../../styles/materialsStyle";
 export default function ListMaterials({ searchParams, setSearchParams }) {
   const dispatch = useDispatch();
   const { filteredMaterials } = useSelector(selectMaterials);
@@ -142,6 +142,7 @@ export default function ListMaterials({ searchParams, setSearchParams }) {
             id: materialClone.id,
           });
         }}
+        className={classes.editIcon}
       >
         edit
       </EditIcon>
@@ -169,8 +170,7 @@ export default function ListMaterials({ searchParams, setSearchParams }) {
           onChange={(e) => {
             onInputChange(e.target.value, materialClone.id);
           }}
-          sx={{ padding: 0, margin: 0 }}
-          helperText={!inputValue && "required"}
+          sx={{ width: "92px", height: "42px", padding: 0, margin: 0 }}
           fontSize="small"
         />
       );
@@ -181,6 +181,7 @@ export default function ListMaterials({ searchParams, setSearchParams }) {
             onEditConfirm(materialClone.id);
           }}
           disabled={isDisabled(material.materialName, materialClone.id)}
+          className={classes.submitBtn}
         >
           submit
         </Button>
@@ -194,6 +195,7 @@ export default function ListMaterials({ searchParams, setSearchParams }) {
           }}
           disabled={!inputValue}
           fontSize="large"
+          className={classes.closeIcon}
         />
       );
     }

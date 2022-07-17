@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { TextField } from "@mui/material";
 import { useField } from "formik";
-import { selectUsers } from "../../../../features/users/usersSlice";
+import { selectUsers } from "../../../../redux/features/users/usersSlice";
 
 const TextFieldWrapper = (props) => {
   const { name, ...otherProps } = props;
@@ -12,7 +12,6 @@ const TextFieldWrapper = (props) => {
     fullWidth: true,
     variant: "outlined",
   };
-  console.log(configTextField.error);
   if (meta && meta.touched && meta.error) {
     configTextField.error = true;
     configTextField.helperText = meta.error;

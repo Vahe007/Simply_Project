@@ -1,18 +1,49 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { BASE_URL } from "../../constants";
+import { BASE_URL } from "../../../constants";
 // Contributors
 
 const initialState = {
-  contributors: [],
+  contributorsPerScroll: [],
+  contributorsByChunk: [],
   loading: false,
+  page: 1,
+  hasMore: true,
+  allContributors: [],
 };
 
 export const selectContributors = (state) => state.contributors;
 
-export const getContributors = createAsyncThunk("contributors", async () => {
-  const response = await fetch(`${BASE_URL}contributors`);
-  return response.json();
-});
+export const getAllContributors = createAsyncThunk(
+  "getAllContributors",
+  async () => {
+    const response = await fetch(`${BASE_URL}contributors`);
+    return response.json();
+  }
+);
+
+export const getContributors = createAsyncThunk(
+  "getContributors",
+  async ({ page, limit, contains }) => {
+    const response = await fetch(
+      `${BASE_URL}contributors?page=${page}&limit=${limit}&contains=${
+        contains || ""
+      }`
+    );
+    return response.json();
+  }
+);
+
+export const searchContributors = createAsyncThunk(
+  "searchContributors",
+  async ({ page, limit, contains }) => {
+    const response = await fetch(
+      `${BASE_URL}contributors?page=${page}&limit=${limit}&contains=${
+        contains || ""
+      }`
+    );
+    return response.json();
+  }
+);
 
 export const createAndGetContributors = createAsyncThunk(
   "createAndGetContributors",
@@ -36,7 +67,7 @@ export const createAndGetContributors = createAsyncThunk(
 
 export const updateAndGetContributors = createAsyncThunk(
   "updateAndGetContributors",
-  async ({ id, newData }) => {
+  async ({ id, newData, page, limit }) => {
     const response = await fetch(`${BASE_URL}contributors/${id}`, {
       method: "PUT",
       body: JSON.stringify(newData),
@@ -44,7 +75,9 @@ export const updateAndGetContributors = createAsyncThunk(
         "Content-Type": "application/json",
       },
     });
-    const response2 = await fetch(`${BASE_URL}contributors`);
+    const response2 = await fetch(
+      `${BASE_URL}contributors?page=${1}&limit=${15}`
+    );
     return response2.json();
   }
 );
@@ -66,16 +99,42 @@ export const deleteContributor = createAsyncThunk(
 const contributorsSlice = createSlice({
   name: "contributors",
   initialState,
-  reducers: {},
+  reducers: {
+    increasePage: (state, action) => {
+      state.page += 1;
+    },
+    decreasePage: (state) => {
+      state.contributorsByChunk = [];
+      state.contributorsPerScroll = [];
+      state.page = 1;
+    },
+    setHasMoreToTrue: (state, action) => {
+      state.hasMore = true;
+    },
+  },
   extraReducers: {
     [getContributors.pending]: (state) => {
       state.loading = true;
     },
 
     [getContributors.fulfilled]: (state, action) => {
-      state.contributors = action.payload.data;
-      state.loading = false;
+      state.contributorsPerScroll = action.payload.data;
+
+      if (!state.contributorsPerScroll.length) {
+        state.hasMore = false;
+        state.loading = false;
+      }
+      if (state.hasMore) {
+        state.contributorsByChunk = [
+          ...state.contributorsByChunk,
+          ...state.contributorsPerScroll,
+        ];
+        state.loading = false;
+      }
     },
+
+    // state.allContributors = [];
+    //
 
     [getContributors.rejected]: (state) => {
       state.loading = false;
@@ -99,14 +158,50 @@ const contributorsSlice = createSlice({
     },
 
     [updateAndGetContributors.fulfilled]: (state, action) => {
-      state.contributors = action.payload.data;
+      state.contributorsPerScroll = action.payload.data;
+      state.contributorsByChunk = action.payload.data;
+      state.page = 1;
+      state.hasMore = true;
       state.loading = false;
     },
 
     [updateAndGetContributors.rejected]: (state, action) => {
       state.loading = false;
     },
+
+    [searchContributors.pending]: (state) => {
+      state.loading = true;
+    },
+
+    [searchContributors.fulfilled]: (state, { payload }) => {
+      state.loading = false;
+      state.contributorsByChunk = [];
+      state.page = 1;
+      state.hasMore = true;
+      state.contributorsPerScroll = payload.data;
+      state.contributorsByChunk = [...state.contributorsPerScroll];
+    },
+
+    [searchContributors.rejected]: (state, action) => {
+      state.loading = false;
+    },
+
+    [getAllContributors.pending]: (state) => {
+      state.loading = true;
+    },
+
+    [getAllContributors.fulfilled]: (state, { payload }) => {
+      state.loading = false;
+      state.allContributors = payload.data;
+    },
+
+    [getAllContributors.rejected]: (state, action) => {
+      state.loading = false;
+    },
   },
 });
+
+export const { increasePage, decreasePage, setHasMoreToTrue } =
+  contributorsSlice.actions;
 
 export default contributorsSlice.reducer;

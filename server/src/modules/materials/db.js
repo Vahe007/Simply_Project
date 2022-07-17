@@ -43,7 +43,6 @@ export const createMaterialDB = async (data) => {
       error: null,
     }
   } catch (error) {
-   
     return {
       data: null,
       error,
@@ -71,7 +70,6 @@ export const deleteMaterialDB = async (id) => {
 }
 
 export const updateMaterialDB = async (data, id) => {
-  console.log(data)
   try {
     const updatedMaterial = await material.update({
       where: {

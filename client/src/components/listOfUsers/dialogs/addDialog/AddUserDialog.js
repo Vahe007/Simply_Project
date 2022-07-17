@@ -1,7 +1,7 @@
 import MainDialog from "../helpers/MainDialog";
 import { Formik, Form, useFormik  } from "formik";
 import { useDispatch, useSelector } from "react-redux";
-import { createAndGetUsers, selectUsers, setErrorToNull } from "../../../../features/users/usersSlice";
+import { createAndGetUsers, selectUsers, setErrorToNull } from "../../../../redux/features/users/usersSlice";
 import Content from "./Content";
 import { setSnackbar } from "../../../../redux/features/snackbar/SnackbarSlice";
 import { useEffect, useState } from "react";

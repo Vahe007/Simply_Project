@@ -2,12 +2,12 @@ import React from 'react'
 import { LinearProgress, Switch } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { update_getExhibit } from '../../../features/exhibits/exhibitsSlice';
-import { getExhibitsSelector, getLoading } from '../../../features/exhibits/selectors'
+import { update_getExhibit } from '../../../redux/features/exhibits/exhibitsSlice';
+import { getExhibitsSelector, getLoading } from '../../../redux/features/exhibits/selectors'
 import MainTable from '../../listOfUsers/MainTable';
 import { BASE_URL } from '../../../constants';
 import Button from '../../FormsUI/Button';
-import { useExhibit } from '../../../features/exhibits/ExhibitsContextProvider';
+import { useExhibit } from '../../../redux/features/exhibits/ExhibitsContextProvider';
 import { getExhbitQueries } from '../../listOfUsers/dialogs/updateDialog/helpers';
 
 const headRow = ['ID', 'Image', 'ExhibitName', 'Material', 'Category', 'View', 'Activate/Disactivate'];

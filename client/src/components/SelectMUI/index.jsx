@@ -3,9 +3,9 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { getExhibitsPerPage } from "../../features/exhibits/exhibitsSlice";
+import { getExhibitsPerPage } from "../../redux/features/exhibits/exhibitsSlice";
 import { useDispatch } from "react-redux";
-import {useExhibits} from "../../features/exhibits/ExhibitsContextProvider";
+import {useExhibits} from "../../redux/features/exhibits/ExhibitsContextProvider";
 import { useQueryParams, NumberParam, StringParam, ArrayParam } from 'use-query-params';
 
 const SelectWrapper = ({ pageNumber }) => {

@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import {addExhibitSchema} from "../listOfUsers/validations.js"
+import { addExhibitSchema } from "../listOfUsers/validations.js";
 import TextFieldWrapper from "../FormsUI/TextField";
 import { classes } from "../../styles/AddExhibitFormStyle";
 import _ from "lodash";
@@ -16,27 +16,28 @@ import {
 import {
   createExhibit,
   update_getExhibit,
-} from "../../features/exhibits/exhibitsSlice";
+} from "../../redux/features/exhibits/exhibitsSlice";
 import { useDispatch } from "react-redux";
 import { DateTimePicker } from "@mui/x-date-pickers";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useSelector } from "react-redux";
 import {
   getMaterials,
   selectMaterials,
-} from "../../features/materials/materialsSlice";
+} from "../../redux/features/materials/materialsSlice";
 import { Stack } from "@mui/material";
 import { Autocomplete } from "@mui/material";
 import { FormikProvider, FieldArray } from "formik";
 import CloseIcon from "@mui/icons-material/Close";
 import {
+  getAllContributors,
   getContributors,
   selectContributors,
-} from "../../features/contributors/contributorsSlice";
+} from "../../redux/features/contributors/contributorsSlice";
 import Dropzone from "../Dropzone/App";
-import { useExhibit } from "../../features/exhibits/ExhibitsContextProvider";
+import { useExhibit } from "../../redux/features/exhibits/ExhibitsContextProvider";
 import { set } from "date-fns/esm";
 import {
   addExhibitInitialValues,
@@ -45,26 +46,36 @@ import {
   initialStateOfIds,
   initialStateOfNames,
 } from "./helpers";
+import { useCustomImageUpload } from "../Dropzone/ImageUploadContext.js";
 
 const AddExhibitForm = ({ userId }) => {
+  const { uploadedImages } = useCustomImageUpload();
   const { exhibit } = useExhibit();
   const dispatch = useDispatch();
   const { filteredMaterials } = useSelector(selectMaterials);
-  const { contributors } = useSelector(selectContributors);
+  const { allContributors } = useSelector(selectContributors);
   const [selectedContributorName, setSelectedContributorName] = useState(
-    initialStateOfNames(exhibit, contributors)
+    initialStateOfNames(exhibit, allContributors)
   );
-  const [selectedContribursIds, setSelectedContribursIds] = useState(
-    initialStateOfIds(exhibit, contributors)
-  );
+  const [selectedContribursIds, setSelectedContribursIds] = useState([]);
+  useEffect(() => {
+    setSelectedContributorName(initialStateOfNames(exhibit, allContributors));
+    if (exhibit) {
+      setSelectedContribursIds(
+        exhibit.contributors.map(({ contributorId }) => contributorId)
+      );
+    }
+  }, [allContributors]);
+
+  console.log(selectedContribursIds);
+
   const [datetimeValue, setDatetimeValue] = useState(
     new Date("2014-08-18T21:11:54")
   );
   useEffect(() => {
     dispatch(getMaterials({ isActive: true }));
-    dispatch(getContributors());
+    dispatch(getAllContributors());
   }, []);
-
   const onSelectChange = (event) => {
     const {
       target: { value },
@@ -96,6 +107,7 @@ const AddExhibitForm = ({ userId }) => {
   const onFormSubmit = (values) => {
     values.acquisitionPeriod = datetimeValue;
     values.existingContributorsIds = selectedContribursIds;
+    values.imageIds = uploadedImages.map((uploadedImg) => uploadedImg.id);
     if (!exhibit) {
       dispatch(
         createExhibit({
@@ -106,6 +118,7 @@ const AddExhibitForm = ({ userId }) => {
     } else {
       dispatch(update_getExhibit({ id: exhibit.id, exhibitInfo: values }));
     }
+    setSelectedContribursIds([]);
   };
   const formik = useFormik({
     initialValues,
@@ -274,7 +287,7 @@ const AddExhibitForm = ({ userId }) => {
                     sx={{ root: { width: "500px !important" } }}
                     value={selectedContributorName}
                   >
-                    {contributors.map(
+                    {allContributors.map(
                       ({
                         id,
                         contributorName,
@@ -431,8 +444,9 @@ const AddExhibitForm = ({ userId }) => {
               <Stack spacing={2} sx={{ width: 300 }}>
                 <Autocomplete
                   freeSolo
-                  id=""
+                  id="materialName"
                   disableClearable
+                  defaultValue={exhibit?.material.materialName}
                   options={filteredMaterials.map(
                     (material) => material.materialName
                   )}

@@ -9,13 +9,13 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { loginFields, signupFields } from "../constants";
 import { useFormik } from "formik";
-import { editUserLoginSchema } from "../features/userAccess/validations";
+import { editUserLoginSchema } from "../redux/features/userAccess/validations";
 import TextField from "../components/FormsUI/TextField";
 import { useSelector, useDispatch } from "react-redux";
 import { InputProps } from "../helpers/common";
 import Button from "../components/FormsUI/Button";
-import { loadUser, createUser } from "../features/userAccess/userAccessSlice";
-import { getMessage } from "../features/userAccess/selectors";
+import { loadUser, createUser } from "../redux/features/userAccess/userAccessSlice";
+import { getMessage } from "../redux/features/userAccess/selectors";
 
 const theme = createTheme();
 

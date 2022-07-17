@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect } from "react";
 import { useState } from "react";
 import Cookies from "js-cookie";
 import { useDispatch, useSelector } from "react-redux";
-import { getMeCall } from "../features/userAccess/userAccessSlice";
+import { getMeCall } from "../redux/features/userAccess/userAccessSlice";
 
 const AuthContext = createContext(null);
 

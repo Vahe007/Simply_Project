@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { fetchUser } from "./userAccessAPI";
 import Cookies from "js-cookie";
-import { BASE_URL } from "../../constants";
+import { BASE_URL } from "../../../constants";
 
 export const getMeCall = createAsyncThunk(
   "getUserCall",
@@ -69,7 +69,7 @@ const getUser = createSlice({
       const { status, error, data } = payload;
       const { token = "", ...userInfo } = data || {};
       const { message = "" } = error || {};
-
+      console.log(error);
       status === 400 &&
         (state.message =
           "Something went wrong, try again after refreshing the page");

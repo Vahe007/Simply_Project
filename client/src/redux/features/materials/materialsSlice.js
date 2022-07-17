@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { BASE_URL } from "../../constants";
+import { BASE_URL } from "../../../constants";
 
 const initialState = {
   allMaterials: [],
@@ -116,7 +116,6 @@ const materialsSlice = createSlice({
           code: payload.createResponse.error.code,
           existingMaterials: payload.inputtedMaterials,
         };
-        console.log(payload);
       } else {
         state.error = {
           isError: false,

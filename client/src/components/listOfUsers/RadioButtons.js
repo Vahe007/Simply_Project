@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUsersPerPage, selectUsers } from '../../features/users/usersSlice';
+import { getUsersPerPage, selectUsers } from '../../redux/features/users/usersSlice';
 import MainRadioButtons from './MainRadioButtons';
 
 export default function RadioButtons({searchParams, setSearchParams}) {

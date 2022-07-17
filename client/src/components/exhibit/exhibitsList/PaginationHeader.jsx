@@ -2,13 +2,13 @@ import React, { useEffect } from 'react'
 import { Box } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
-import { getFilteredCount } from '../../../features/exhibits/selectors';
-import { getCategories, getMaterials } from '../../../features/filteringFeatures/filteringFeaturesSlice';
-import { getAllCategories, getAllMaterials } from '../../../features/filteringFeatures/selectors';
+import { getFilteredCount } from '../../../redux/features/exhibits/selectors';
+import { getCategories, getMaterials } from '../../../redux/features/filteringFeatures/filteringFeaturesSlice';
+import { getAllCategories, getAllMaterials } from '../../../redux/features/filteringFeatures/selectors';
 import { debounce } from '../../../helpers/common';
 import FilteringSelect from '../../FilteringSelect';
 import Search from '../../Search';
-import { getExhibitsPerPage } from '../../../features/exhibits/exhibitsSlice';
+import { getExhibitsPerPage } from '../../../redux/features/exhibits/exhibitsSlice';
 import { getExhbitQueries } from '../../listOfUsers/dialogs/updateDialog/helpers';
 import MainRadioButtons from '../../listOfUsers/MainRadioButtons';
 

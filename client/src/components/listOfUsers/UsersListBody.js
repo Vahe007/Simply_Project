@@ -5,7 +5,7 @@ import UpdateDialog from "./dialogs/updateDialog/UpdateDialog";
 import {
   selectUsers,
   updateAndGetUsers,
-} from "../../features/users/usersSlice";
+} from "../../redux/features/users/usersSlice";
 import { setSnackbar } from "../../redux/features/snackbar/SnackbarSlice";
 import { Switch } from "@material-ui/core";
 import ButtonMUI from "./ButtonMUI";

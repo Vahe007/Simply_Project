@@ -81,9 +81,3 @@ const styles = {
 export const { classes } = jss.createStyleSheet(styles).attach();
 
 export default styles;
-// exhibitDetailsContainer
-// sizesContainer
-// contributorsContainer
-
-// materialContainer
-// labelTextFieldWrapper

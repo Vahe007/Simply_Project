@@ -80,23 +80,6 @@ export const getAllExhibitsDB = async (query) => {
         },
       },
 
-      // OR: [
-      //   {
-      //     material: {
-      //       materialName: {
-      //         contains: ''
-      //       }
-      //     }
-      //   },
-      //   {
-      //     material: {
-      //       materialName: {
-      //         equals: material
-      //       }
-      //     }
-      //   }
-      // ],
-
       category: {
         categoryName: {
           contains: category,
@@ -152,18 +135,15 @@ export const createExhibitDB = async (sentData) => {
     userId,
     newContributors,
     existingContributorsIds,
+    imageIds,
     ...exhibitInfo
   } = sentData
 
   try {
-    const getnewImages = await image.findMany({
-      where: {
-        itemId: null,
-      },
-    })
-    const imgIds = getnewImages.map((img) => ({ id: img.id }))
+    const imgIds = imageIds.map((id) => ({ id }))
 
     const contributorsIds = existingContributorsIds.map((id) => ({ id }))
+
     const newExhibit = await exhibit.create({
       data: {
         material: {
@@ -211,15 +191,13 @@ export const createExhibitDB = async (sentData) => {
             id: userId,
           },
         },
-
         images: {
           connect: imgIds,
         },
-
         ...exhibitInfo,
       },
     })
-
+    console.log(newExhibit.id)
     if (existingContributorsIds.length) {
       const z = await contributorsOfExhibits.createMany({
         data: existingContributorsIds.map((id) => ({
@@ -228,12 +206,12 @@ export const createExhibitDB = async (sentData) => {
         })),
       })
     }
+
     return {
       data: newExhibit,
       error: null,
     }
   } catch (error) {
-    console.log(error)
     return {
       data: null,
       error,
@@ -261,16 +239,56 @@ export const deleteExhibitDB = async (id) => {
 }
 
 export const updateExhibitDB = async (data, exhibitId) => {
+  const {
+    materialName,
+    contributors,
+    newContributors,
+    imageIds,
+    existingContributorsIds, //[2,3,4]
+    ...exhibitInfo
+  } = data
+
+  const imgIds = imageIds.map((id) => ({ id }))
+  const contributorsOfspecificExhibit = await contributorsOfExhibits.findMany({
+    where: {
+      exhibitId,
+    },
+  })
+
+  console.log('----------------------------------------')
+  console.log(existingContributorsIds)
+  console.log('-----------------------------------------------')
+
+  const arrayOfObjectWIthIdContId = contributorsOfspecificExhibit.map(({ id, contributorId }) => ({
+    id,
+    contributorId,
+  })) //[2,3,4,5]
+  const deletedRowOfRelationTable = arrayOfObjectWIthIdContId.filter(
+    (idOfContributors) => !existingContributorsIds.includes(idOfContributors.contributorId)
+  )
+
+  const idsToDelete = deletedRowOfRelationTable.map((obj) => obj.id)
+  console.log(idsToDelete)
   try {
-    const getnewImages = await image.findMany({
-      where: {
-        itemId: null,
-      },
-    })
-    const imgIds = getnewImages.map((img) => ({ id: img.id }))
-    const { materialName, contributors, newContributors, existingContributorsIds, ...exhibitInfo } =
-      data
-    console.log(existingContributorsIds)
+    if (idsToDelete.length) {
+      await contributorsOfExhibits.deleteMany({
+        where: {
+          id: {
+            in: idsToDelete,
+          },
+        },
+      })
+    }
+    console.log('hi')
+  } catch (error) {
+    console.log(error)
+    return {
+      data: null,
+      error,
+    }
+  }
+
+  try {
     const updatedExhibit = await exhibit.update({
       where: {
         id: exhibitId,
@@ -299,20 +317,19 @@ export const updateExhibitDB = async (data, exhibitId) => {
         },
       },
     })
-    if (existingContributorsIds.length) {
-      const z = await contributorsOfExhibits.createMany({
-        data: existingContributorsIds.map((id) => ({
-          contributorId: id,
-          exhibitId,
-        })),
-      })
-    }
+    // if (existingContributorsIds.length) {
+    //   const z = await contributorsOfExhibits.createMany({
+    //     data: existingContributorsIds.map((id) => ({
+    //       contributorId: id,
+    //       exhibitId,
+    //     })),
+    //   })
+    // }
     return {
       data: updatedExhibit,
       error: null,
     }
   } catch (error) {
-    console.log(error)
     return {
       data: null,
       error,

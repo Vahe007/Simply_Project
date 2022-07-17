@@ -51,24 +51,27 @@ function UsersListHeader() {
   const onSearchInputChange = searchInputWrapper();
 
   const label = {
-    placeholder: "search",
+    placeholder: "Search for user",
     sx: { width: 300 },
     onChange: onSearchInputChange,
   };
 
   return (
-    <div className={classes.searchContainer}>
-      <Input {...label} />
+    <>
+      <div className={classes.searchContainer}>
+        <Input {...label} />
 
-      <AddUser />
-
-      <MainRadioButtons
-        labels={["All users", "Active users", "Inactive Users"]}
-        values={["allUsers", "activeUsers", "inactiveUsers"]}
-        handleChange={handleChange}
-        defaultValue="allUsers"
-      />
-    </div>
+        <AddUser />
+      </div>
+      <div style={{ textAlign: "center", marginTop: "20px" }}>
+        <MainRadioButtons
+          labels={["All users", "Active users", "Inactive Users"]}
+          values={["allUsers", "activeUsers", "inactiveUsers"]}
+          handleChange={handleChange}
+          defaultValue="allUsers"
+        />
+      </div>
+    </>
   );
 }
 

@@ -3,8 +3,8 @@ import {
   getExhibitsSelector,
   getFilteredCount,
   getLoading,
-} from "../../features/exhibits/selectors";
-import { getExhibitsPerPage } from "../../features/exhibits/exhibitsSlice";
+} from "../../redux/features/exhibits/selectors";
+import { getExhibitsPerPage } from "../../redux/features/exhibits/exhibitsSlice";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import Pagination from "@mui/material/Pagination";
@@ -16,20 +16,20 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import {
   getMaterials,
   getCategories,
-} from "../../features/filteringFeatures/filteringFeaturesSlice";
+} from "../../redux/features/filteringFeatures/filteringFeaturesSlice";
 import {
   getAllCategories,
   getAllMaterials,
-} from "../../features/filteringFeatures/selectors";
+} from "../../redux/features/filteringFeatures/selectors";
 import FilteringSelect from "../FilteringSelect/index.jsx";
 import Box from "@mui/material/Box";
 import MainTable from "../listOfUsers/MainTable";
 import Button from "../FormsUI/Button";
 import { LinearProgress, Switch } from "@material-ui/core";
 import { BASE_URL } from "../../constants";
-import { update_getExhibit } from "../../features/exhibits/exhibitsSlice";
+import { update_getExhibit } from "../../redux/features/exhibits/exhibitsSlice";
 import { debounce } from "../../helpers/common";
-import { useExhibit } from "../../features/exhibits/ExhibitsContextProvider";
+import { useExhibit } from "../../redux/features/exhibits/ExhibitsContextProvider";
 import { getQueries, getExhbitQueries } from "../listOfUsers/dialogs/updateDialog/helpers";
 
 const headRow = ['ID', 'Image', 'ExhibitName', 'Material', 'Category', 'View', 'Activate/Disactivate'];

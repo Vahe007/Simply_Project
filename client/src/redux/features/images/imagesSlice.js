@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { BASE_URL } from "../../constants";
+import { BASE_URL } from "../../../constants";
 
 export const getImage = createAsyncThunk('exhibit/image', async(imgPath) => {
     const data = await fetch(`${BASE_URL}images${imgPath}`);

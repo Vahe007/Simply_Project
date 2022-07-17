@@ -49,6 +49,7 @@ export default {
       images: Joi.any(),
       existingContributorsIds: Joi.any(),
       newContributors: Joi.any(),
+      imageIds: Joi.array(),
     }),
   },
   updateExhibitValidation: {
@@ -73,6 +74,7 @@ export default {
       materialName: Joi.string(),
       existingContributorsIds: Joi.any(),
       newContributors: Joi.any(),
+      imageIds: Joi.array(),
     }),
   },
   deleteExhibitValidation: {

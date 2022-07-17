@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { BASE_URL } from "../../constants";
+import { BASE_URL } from "../../../constants";
 
 export const getExhibitsPerPage = createAsyncThunk("exhibits", async({page = 1, sortBy='', limit = 5, contains='', material='', category=''}) => {
     const response = await fetch(`${BASE_URL}exhibits?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${contains}&material=${material}&category=${category}`);

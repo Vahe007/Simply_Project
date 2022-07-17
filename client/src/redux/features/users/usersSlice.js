@@ -1,4 +1,4 @@
-import { baseUrl } from "../../helpers/common.js";
+import { BASE_URL } from "../../../constants";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -8,47 +8,52 @@ const initialState = {
   loading: false,
   error: {
     isError: false,
-    message: ""
-  }
+    message: "",
+  },
 };
 export const selectUsers = (state) => state.users;
 
-export const createAndGetUsers = createAsyncThunk("addUser", async ({data, queries}) => {
-  const {page, limit, sortBy, contains, isActive} = queries;
+export const createAndGetUsers = createAsyncThunk(
+  "addUser",
+  async ({ data, queries }) => {
+    const { page, limit, sortBy, contains, isActive } = queries;
 
-  const response = await fetch(`${baseUrl}users`, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+    const response = await fetch(`${BASE_URL}users`, {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-  const response2 = await fetch(
-    `${baseUrl}users?page=${page}&sortBy=${
-      sortBy || ""
-    }&limit=${limit}&contains=${contains || ""}&isActive=${isActive || ""}`
-  );
+    const response2 = await fetch(
+      `${BASE_URL}users?page=${page}&sortBy=${
+        sortBy || ""
+      }&limit=${limit}&contains=${contains || ""}&isActive=${isActive || ""}`
+    );
 
-  return {
-    updateResponse: await response.json(),
-    getResponse: await response2.json()
-  };
-});
+    return {
+      updateResponse: await response.json(),
+      getResponse: await response2.json(),
+    };
+  }
+);
 
 export const getUsersPerPage = createAsyncThunk("users", async (queries) => {
-  const { page, sortBy = "", limit, contains = "", isActive="" } = queries;
+  const { page, sortBy = "", limit, contains = "", isActive = "" } = queries;
   const response = await fetch(
-    `${baseUrl}users?page=${page}&sortBy=${
+    `${BASE_URL}users?page=${page}&sortBy=${
       sortBy || ""
     }&limit=${limit}&contains=${contains || ""}&isActive=${isActive || ""}`
   );
   return response.json();
 });
 
-export const updateAndGetUsers = createAsyncThunk("updateAndGetUsers",async ({ id, newData, queries }) => {
-    const {page, limit, sortBy, contains, isActive} = queries;
-    const response = await fetch(`${baseUrl}users/${id}`, {
+export const updateAndGetUsers = createAsyncThunk(
+  "updateAndGetUsers",
+  async ({ id, newData, queries }) => {
+    const { page, limit, sortBy, contains, isActive } = queries;
+    const response = await fetch(`${BASE_URL}users/${id}`, {
       method: "PUT",
       body: JSON.stringify(newData),
       headers: {
@@ -57,7 +62,7 @@ export const updateAndGetUsers = createAsyncThunk("updateAndGetUsers",async ({ i
     });
 
     const response2 = await fetch(
-      `${baseUrl}users?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${
+      `${BASE_URL}users?page=${page}&sortBy=${sortBy}&limit=${limit}&contains=${
         contains || ""
       }&isActive=${isActive}`
     );
@@ -67,13 +72,13 @@ export const updateAndGetUsers = createAsyncThunk("updateAndGetUsers",async ({ i
 );
 
 export const getAllEmails = createAsyncThunk("getEmails", async () => {
-  const response = await fetch(`${baseUrl}users/emails`);
+  const response = await fetch(`${BASE_URL}users/emails`);
 
   return response.json();
 });
 
 export const deleteUser = createAsyncThunk("deleteUser", async (id) => {
-  const response = await fetch(`${baseUrl}users/${id}`, {
+  const response = await fetch(`${BASE_URL}users/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -85,8 +90,7 @@ export const deleteUser = createAsyncThunk("deleteUser", async (id) => {
 export const usersSlice = createSlice({
   name: "users",
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: {
     [createAndGetUsers.pending]: (state) => {
       state.loading = true;
@@ -97,19 +101,18 @@ export const usersSlice = createSlice({
       if (error && error.code === "P2002") {
         state.error = {
           isError: true,
-          message:"Email is already registered"
+          message: "Email is already registered",
         };
       } else {
         state.error = {
           isError: false,
-          message: ""
+          message: "",
         };
       }
       state.loading = false;
-      state.usersPerPage = payload.getResponse.data.usersPerPage
-      state.count = payload.getResponse.data.count
+      state.usersPerPage = payload.getResponse.data.usersPerPage;
+      state.count = payload.getResponse.data.count;
       state.countAfterSearch = payload.getResponse.data.countAfterSearch;
-
     },
 
     [createAndGetUsers.rejected]: ({ loading }, action) => {
@@ -137,7 +140,6 @@ export const usersSlice = createSlice({
 
     [updateAndGetUsers.pending]: (state) => {
       state.loading = true;
-      
     },
 
     [updateAndGetUsers.fulfilled]: (state, action) => {
@@ -145,15 +147,15 @@ export const usersSlice = createSlice({
       if (error && error.code === "P2002") {
         state.error = {
           isError: true,
-          message:"Email is already registered"
+          message: "Email is already registered",
         };
       } else {
         state.error = {
           isError: false,
-          message: ""
+          message: "",
         };
       }
-      state.usersPerPage = action.payload.data.usersPerPage
+      state.usersPerPage = action.payload.data.usersPerPage;
       state.loading = false;
     },
 
@@ -189,6 +191,6 @@ export const usersSlice = createSlice({
   },
 });
 
-export const {setErrorToNull} = usersSlice.actions;
+export const { setErrorToNull } = usersSlice.actions;
 
 export default usersSlice.reducer;

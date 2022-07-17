@@ -1,7 +1,7 @@
 import React from 'react'
 import { Pagination, Stack } from '@mui/material';
 import { useSearchParams } from 'react-router-dom';
-import { getFilteredCount } from '../../../features/exhibits/selectors';
+import { getFilteredCount } from '../../../redux/features/exhibits/selectors';
 import { useSelector } from 'react-redux';
 import MainSelectMUI from '../../MainSelectMUI';
 import { LIMIT, SORTBY } from '../../../constants';
