@@ -21,6 +21,7 @@ model User {
   exhibitsUpdated Exhibit[] @relation("updater")
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @default(now()) @updatedAt
+  key             String?
 }
 
 model Exhibit {
@@ -108,14 +109,14 @@ model Contributor {
 }
 
 model ContributorsOfExhibits {
-  id            Int           @id @default(autoincrement())
+  id            Int          @id @default(autoincrement())
   contributorId Int?
   contributor   Contributor? @relation(fields: [contributorId], references: [id])
   exhibitId     Int
-  exhibit       Exhibit       @relation(fields: [exhibitId], references: [id])
-  isActive      Boolean       @default(true)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  exhibit       Exhibit      @relation(fields: [exhibitId], references: [id])
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 }
 
 model Exhibition {

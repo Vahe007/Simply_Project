@@ -16,8 +16,8 @@ import UsersPagination from "./components/UsersPagination";
 import Materials from "./components/Materials/Materials";
 import Navbar from "./components/Navbar";
 import AddExhibit from "./components/exhibit/AddExhibit";
-
-const requireAuth = ["/users/admin", "/users/guest", "/users/employee"];
+import SendLink from "./Pages/SendKey";
+import ResetPassword from "./Pages/ResetPassword";
 
 function Wrapper() {
   const dispatch = useDispatch();
@@ -29,7 +29,6 @@ function Wrapper() {
   const { role } = userInfo;
 
   useEffect(() => {
-    // const token = Cookies.get("token");
     const id = Cookies.get("id");
 
     token && id && dispatch(getMeCall({ id: +id, token }));
@@ -45,6 +44,8 @@ function Wrapper() {
         <Route path="form" element={<Form />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
+        <Route path="send-key" element={<SendLink />} />
+        <Route path="reset-password/:id/:token" element={<ResetPassword />} />
         <Route path="*" element={<Navigate to="login" />} />
       </Routes>
     );

@@ -37,7 +37,6 @@ import {
 } from "../../features/contributors/contributorsSlice";
 import Dropzone from "../Dropzone/App";
 import { useExhibit } from "../../features/exhibits/ExhibitsContextProvider";
-import { set } from "date-fns/esm";
 
 const AddExhibitForm = ({ userId }) => {
   const { exhibit } = useExhibit();
@@ -88,7 +87,6 @@ const AddExhibitForm = ({ userId }) => {
       fundNumber: exhibit.fundNumber,
       exhibitName: exhibit.exhibitName,
       materialName: exhibit.material.materialName,
-      contributorIds: checkedContributorsIds,
       newContributors: [],
       checkedContributors: [],
       placeOfOrigin: exhibit.placeOfOrigin,
@@ -99,7 +97,6 @@ const AddExhibitForm = ({ userId }) => {
       length: exhibit.length,
       diameter: exhibit.diameter,
       description: exhibit.description,
-      contributors: [],
     };
   } else {
     initialValues = {
@@ -115,6 +112,8 @@ const AddExhibitForm = ({ userId }) => {
       length: "",
       diameter: "",
       description: "",
+
+
     };
   }
   const formik = useFormik({
@@ -125,6 +124,7 @@ const AddExhibitForm = ({ userId }) => {
     onSubmit: (values) => {
       console.log(values);
       values.acquisitionPeriod = datetimeValue;
+      values.existingContributorsIds = selectedContribursIds;
       if (!exhibit) {
         dispatch(
           createExhibit({
@@ -293,9 +293,8 @@ const AddExhibitForm = ({ userId }) => {
                       const {
                         target: { value },
                       } = e;
-                      const newContributor = `${value.at(-1).contributorName} ${
-                        value.at(-1).contributorSurname
-                      }`;
+                      const newContributor = `${value.at(-1).contributorName} ${value.at(-1).contributorSurname
+                        }`;
 
                       if (selectedContribursIds.includes(value.at(-1).id)) {
                         let cloneIds = [...selectedContribursIds];
@@ -306,8 +305,7 @@ const AddExhibitForm = ({ userId }) => {
                         );
                         cloneNames.splice(
                           cloneNames.indexOf(
-                            `${value.at(-1).contributorName} ${
-                              value.at(-1).contributorSurname
+                            `${value.at(-1).contributorName} ${value.at(-1).contributorSurname
                             }}`,
                             1
                           )
@@ -326,8 +324,8 @@ const AddExhibitForm = ({ userId }) => {
                       }
                     }}
                     value={selectedContributorName}
-                    // value={checkedContributorsIds}
-                    // onChange={handleSelect}
+                  // value={checkedContributorsIds}
+                  // onChange={handleSelect}
                   >
                     {contributors.map(
                       ({
@@ -540,20 +538,6 @@ function AddExhibit({ id }) {
   return (
     <AddExhibitForm
       userId={id}
-      initialValues={{
-        fundNumber: "",
-        exhibitName: "",
-        materialName: "",
-        checkedContributors: [],
-        placeOfOrigin: "",
-        creationPeriod: "",
-        acquisitionPeriod: "",
-        width: "",
-        height: "",
-        length: "",
-        diameter: "",
-        description: "",
-      }}
     />
   );
 }

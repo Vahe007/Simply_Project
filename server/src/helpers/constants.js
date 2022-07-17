@@ -17,6 +17,8 @@ export const ERROR_MESSAGES = {
   NOT_FOUND_RECORD: ' Such record not found',
   SUCH_USER_EXISTS: 'User with such email  is already registered',
   NO_USER_FOUND: 'No user found with such email',
+  PASSWORD_NOT_MATCHING: 'Old password is not matching',
+  SAME_PASSWORD: 'New password cannot be the same as old one'
 }
 
 export const MIDDLEWARE_MESSAGES = {

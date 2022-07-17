@@ -7,14 +7,11 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { loginFields, signupFields } from "../constants";
 import { useFormik } from "formik";
-import { editUserLoginSchema } from "../features/userAccess/validations";
 import TextField from "../components/FormsUI/TextField";
 import { useSelector, useDispatch } from "react-redux";
 import { InputProps } from "../helpers/common";
 import Button from "../components/FormsUI/Button";
-import { loadUser, createUser } from "../features/userAccess/userAccessSlice";
 import { getMessage } from "../features/userAccess/selectors";
 
 const theme = createTheme();
@@ -94,13 +91,13 @@ function Form({ type, initialValues, fields, validationSchema, headTitle, btnTit
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h5">
+            <Typography component="h2" variant="h5">
               {headTitle}
             </Typography>
             <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 1 }}>
               {fields.map((field, index) => {
                 return (
-                  <TextField key={index} formik={formik} {...inputAllProps(field, formik, isVisible, changeVisibility, message)} />
+                  <TextField fullWidth={true} key={index} formik={formik} {...inputAllProps(field, formik, isVisible, changeVisibility, message)} />
                 );
               })}
               <Typography sx={{ color: 'red', textAlign: 'center' }}>

@@ -48,6 +48,8 @@ export default {
       category: Joi.any(),
       images: Joi.any(),
       checkedContributors: Joi.any(),
+      newContributors: Joi.any(),
+      existingContributorsIds: Joi.any(),
     }),
   },
   updateExhibitValidation: {

@@ -1,4 +1,5 @@
-import { responseDataCreator } from '../../helpers/common.js'
+import { responseDataCreator, sendActivationKey } from '../../helpers/common.js'
+import { ERROR_MESSAGES } from '../../helpers/constants.js'
 import {
   getAllUsersDB,
   createUserDB,
@@ -6,6 +7,9 @@ import {
   updateUserDB,
   deleteUserDB,
   loginDB,
+  sendKeyDB,
+  verifyUserDB,
+  resetPasswordDB
 } from './db.js'
 
 export const getAllUsers = async ({ query, body }, res, next) => {
@@ -66,3 +70,47 @@ export const login = async ({ body }, res, next) => {
     next(error)
   }
 }
+
+
+
+export const sendKey = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    const data = await sendKeyDB(email);
+
+    if (data.data) {
+      sendActivationKey(email, data.data.link);
+    }
+    res.status(200).json(responseDataCreator(data));
+  }
+  catch (error) {
+    next(error);
+  }
+}
+
+
+export const verifyUser = async (req, res, next) => {
+  const { id, token } = req.params;
+  try {
+    const data = await verifyUserDB(+id, token);
+    res.status(200).json(responseDataCreator(data));
+
+  }
+  catch (error) {
+    next(error);
+  }
+}
+
+
+export const resetPassword = async (req, res, next) => {
+  const { newPass } = req.body;
+  const { id } = req.params;
+  try {
+    const data = await resetPasswordDB(newPass, +id);
+    res.status(200).json(responseDataCreator(data));
+  }
+  catch (error) {
+    next(error);
+  }
+} 

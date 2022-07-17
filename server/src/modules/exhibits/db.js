@@ -145,13 +145,10 @@ export const getAllExhibitsDB = async (query) => {
 }
 
 export const createExhibitDB = async (sentData) => {
-  const { materialName, categoryName = "cat", statusName = "stat", userId, newContributors, existingContributorsIds,  ...exhibitInfo } = sentData
-  console.log('-------------------------------');
+  const { materialName, categoryName = "cat", statusName = "stat", userId, newContributors, existingContributorsIds, ...exhibitInfo } = sentData
 
-  console.log("contributors", conValues);
-
-  console.log('------------------------------------');
-
+  console.log('newContributors', newContributors);
+  console.log('existingContributorsIds', existingContributorsIds);
 
 
   try {
@@ -161,9 +158,6 @@ export const createExhibitDB = async (sentData) => {
       },
     })
     const imgIds = getnewImages.map((img) => ({ id: img.id }))
-    console.log('------------------------')
-    console.log(imgIds)
-    console.log('------------------------')
 
     const newExhibit = await exhibit.create({
       data: {
@@ -190,12 +184,22 @@ export const createExhibitDB = async (sentData) => {
         },
 
         contributors: {
-          create: {
-            contributor: {
-              connect: existingContributorsIds.map(id => ({id})),
-              create: newContributors
+          create: [
+            {
+              contributor: {
+                create: {
+                  contriborName: "gg",
+                  contriborSurname: "gg",
+                  contriborPhoneNumber: "gg",
+
+                }
+                // connect: existingContributorsIds.map(id => ({id})),
+                // create: newContributors
+              }
             }
-          }
+          
+
+          ]
         },
 
         status: {
@@ -213,7 +217,7 @@ export const createExhibitDB = async (sentData) => {
           connect: {
             id: userId,
           },
-          
+
         },
 
         images: {
@@ -238,36 +242,36 @@ export const createExhibitDB = async (sentData) => {
 
 
 
-    conIds.map(async (conId) => {
+    // existingContributorsIds.map(async (conId) => {
 
-      if (foundContributor) {
-        const coe = await prisma.contributorsOfExhibits.create({
-          data: {
-            contributorId: foundContributor.id,
-            exhibitId: newExhibit.id
-          }
-        })
-        console.log('middleTable', coe);
-      }
+    //   if (foundContributor) {
+    //     const coe = await prisma.contributorsOfExhibits.create({
+    //       data: {
+    //         contributorId: foundContributor.id,
+    //         exhibitId: newExhibit.id
+    //       }
+    //     })
+    //     console.log('middleTable', coe);
+    //   }
 
-      else {
-        const newContributor = await prisma.contributor.create({
-          data: {
-            contributorName,
-            contributorSurname,
-            contributorPhoneNumber
-          }
-        })
-        console.log("newContributor", newContributor);
-        const coe = await prisma.contributorsOfExhibits.create({
-          data: {
-            contributorId: newContributor.id,
-            exhibitId: newExhibit.id
-          }
-        })
-        console.log('middletable', coe);
-      }
-    })
+    //   else {
+    //     const newContributor = await prisma.contributor.create({
+    //       data: {
+    //         contributorName,
+    //         contributorSurname,
+    //         contributorPhoneNumber
+    //       }
+    //     })
+    //     console.log("newContributor", newContributor);
+    //     const coe = await prisma.contributorsOfExhibits.create({
+    //       data: {
+    //         contributorId: newContributor.id,
+    //         exhibitId: newExhibit.id
+    //       }
+    //     })
+    //     console.log('middletable', coe);
+    //   }
+    // })
 
     return {
       data: newExhibit,

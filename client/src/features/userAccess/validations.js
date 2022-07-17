@@ -37,3 +37,7 @@ export const editUserSignupSchema = Yup.object().shape({
       .test('length', 'Must be exactly 9 numbers', val => String(val).length === 8),    
 
 });
+
+export const resetingPasswordSchema = Yup.object().shape({
+  newPass: Yup.string().min(4, "Too Short!").required('Required')
+})

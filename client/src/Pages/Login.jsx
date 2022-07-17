@@ -4,11 +4,12 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import { loadUser } from "../features/userAccess/userAccessSlice";
 import Form from "./Form";
+import { Button } from "@material-ui/core";
 
 const links = (
   <Grid container>
     <Grid item xs>
-      <Link href="#" variant="body2">
+      <Link href="send-key" variant="body2">
         Forgot password?
       </Link>
     </Grid>
