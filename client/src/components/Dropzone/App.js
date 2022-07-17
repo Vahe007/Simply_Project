@@ -1,9 +1,6 @@
-import { useState } from "react";
-import axios from "axios";
-import styles from "../../styles/uploadImageStyle";
 import BasicCard from "./CardExample";
 import { Dropzone } from "./Uploader";
-import { useExhibit } from "../../features/exhibits/ExhibitsContextProvider";
+import { useExhibit } from "../../redux/features/exhibits/ExhibitsContextProvider";
 import { classes } from "../../styles/uploadImageStyle";
 import CloseIcon from "@mui/icons-material/Close";
 

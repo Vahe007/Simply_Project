@@ -35,7 +35,7 @@ router.get('/:imageName', (req, res) => {
   res.sendFile(imageName, { root: `./public/images` })
 })
 router.get('/:exhibitId', validate(getAllImagesByExhibitIdSchema), getAllImagesByExhibitId)
-router.post('/', validate(uploadImageSchema), upload.array('file', 12), uploadImage)
+router.post('/', validate(uploadImageSchema), upload.single('file'), uploadImage)
 router.put('/:imageRowId', validate(updateImageIsactiveSchema), updateImage)
 
 // router.get('/active/:exhibitId', validate(getAllImagesByExhibitIdSchema), authMiddleware, getActiveImagesByExhibitId)

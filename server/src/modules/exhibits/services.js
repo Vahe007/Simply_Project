@@ -44,9 +44,7 @@ export const deleteExhibit = async (req, res, next) => {
 }
 
 export const updateExhibit = async (req, res, next) => {
-  console.log('updateExhibit')
   try {
-    console.log('id', req.params.id);
     const updatedExhibit = await updateExhibitDB(req.body, +req.params.id)
     res.json(responseDataCreator(updatedExhibit))
   } catch (error) {

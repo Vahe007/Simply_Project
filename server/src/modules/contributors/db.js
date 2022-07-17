@@ -1,100 +1,120 @@
-import {prisma} from '../../services/Prisma.js'
+import { prisma } from '../../services/Prisma.js'
 
-const {contributor} = prisma;
+const { contributor } = prisma
 
-export const getAllContributorsDB = async () => {
-    try {
-        const contributors = await contributor.findMany({
-            include: {
-                exhibits: true,
-            }
-        })
+const searchHandler = (contains) => {
+  return contains
+    ?.split(' ')
+    .map((search) => {
+      return ['contributorName', 'contributorSurname'].map((el) => {
         return {
-            data: contributors,
-            error: null
+          [el]: {
+            contains: search,
+          },
         }
+      })
+    })
+    .flat()
+}
+
+export const getAllContributorsDB = async ({ page, limit, contains = '' }) => {
+  try {
+    const contributors = await contributor.findMany({
+      where: {
+        OR: searchHandler(contains),
+      },
+      include: {
+        exhibits: true,
+      },
+      skip: (+page - 1) * +limit || undefined,
+      take: +limit || undefined,
+    })
+    return {
+      data: contributors.sort((a, b) => a.exhibits.length - b.exhibits.length),
+      error: null,
     }
-    catch(error) {
-        return {
-            data: null,
-            error,
-        }
+  } catch (error) {
+    return {
+      data: null,
+      error,
     }
+  }
 }
 
 export const getContributorByIdDB = async (id) => {
-    try {
-        const foundContributor = await contributor.findUnique({
-            where: {
-                id
-            },
-            include: {
-                exhibits: true
-            }
-        })
-        return {
-            data: foundContributor,
-            error: null
-        }
+  try {
+    const foundContributor = await contributor.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        exhibits: true,
+      },
+    })
+    return {
+      data: foundContributor,
+      error: null,
     }
-    catch(error) {
-        return {
-            data: null,
-            error
-        }
+  } catch (error) {
+    return {
+      data: null,
+      error,
     }
+  }
 }
 
 export const createContributorsDB = async (sentData) => {
-    try {
-        const contributors = await contributor.createMany({
-            data: sentData
-        })
-        return {
-            data: contributors,
-            error: null
-        }
+  try {
+    const contributors = await contributor.createMany({
+      data: sentData,
+    })
+    return {
+      data: contributors,
+      error: null,
     }
-    catch(error) {
-        return {
-            data: null,
-            error
-        }
+  } catch (error) {
+    return {
+      data: null,
+      error,
     }
+  }
 }
 
-export const updateContributorsDB = async (data) => {
-    try {
-        const updatedContributors = await contributor.updateMany({
-            data: {
-                
-            }
-        })
+export const updateContributorDB = async (id, newData) => {
+  try {
+    const updatedContributor = await contributor.update({
+      where: {
+        id,
+      },
+      data: newData,
+    })
+    return {
+      data: updatedContributor,
+      error: null,
     }
-    catch(error) {
-        return {
-            data: null,
-            error
-        }
+  } catch (error) {
+    return {
+      data: null,
+      error,
     }
+  }
 }
 
 export const deleteContributorDB = async (id) => {
-    try {
-        const deletedContributors = await contributor.delete({
-            where: {
-                id 
-            }
-        })
-        return {
-            data: deletedContributors,
-            error: null
-        }
+  try {
+    const deletedContributors = await contributor.delete({
+      where: {
+        id,
+      },
+    })
+    return {
+      data: deletedContributors,
+      error: null,
     }
-    catch(error) {
-        return {
-            data: null,
-            error
-        }
+  } catch (error) {
+    return {
+      data: null,
+      error,
     }
+  }
 }

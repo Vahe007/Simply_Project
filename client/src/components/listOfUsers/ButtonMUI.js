@@ -1,15 +1,14 @@
-import { Button } from "@mui/material"
+import { Button } from "@mui/material";
 
 function ButtonMUI(props) {
-    const {text, color, variant, onClick } = props;
-    return <Button 
-                color={color} 
-                variant={variant}
-                onClick={onClick}
-            >
-                {text}
+  const { text, color, variant, onClick, ...otherProps } = props;
+  const configButton = {
+    color,
+    variant,
+    onClick,
+    ...otherProps,
+  };
+  return <Button {...configButton}>{text}</Button>;
+}
 
-            </Button>
-}   
-
-export default ButtonMUI
+export default ButtonMUI;

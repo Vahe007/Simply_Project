@@ -1,260 +1,258 @@
-import {prisma} from '../../services/Prisma.js'
+import { prisma } from '../../services/Prisma.js'
 import bcrypt from 'bcryptjs'
-import {exclude, generateAccessToken} from "../../helpers/common.js"
-import {ERROR_MESSAGES} from "../../helpers/constants.js";
+import { exclude, generateAccessToken } from '../../helpers/common.js'
+import { ERROR_MESSAGES } from '../../helpers/constants.js'
 
-const {user} = prisma
+const { user } = prisma
 
 const searchHandler = (contains) => {
-  return contains?.split(' ').map(search => {
-      return ['firstName', 'lastName', 'email', 'phoneNumber'].map(el => {
+  return contains
+    ?.split(' ')
+    .map((search) => {
+      return ['firstName', 'lastName', 'email', 'phoneNumber'].map((el) => {
         return {
-            [el]: {
-              contains: search 
-            }}
+          [el]: {
+            contains: search,
+          },
+        }
       })
-    }).flat()
+    })
+    .flat()
 }
 
 export const getAllUsersDB = async (query) => {
-    if(query.isActive === 'true') {
-        query.isActive = true;
-    } else if(query.isActive === 'false') {
-        query.isActive = false;
-    } else {
-        query.isActive = undefined;
-    }
-    const {page, limit , sortBy, contains = "", isActive} = query;
-    const handleSortBy = {
-      "name [A-Z]": {
-        "firstName": "asc"
-      },
-
-      "name [Z-A]":{
-        "firstName": "desc"
-      },
-  
-      "created date (new to old)":{
-        "createdAt": "desc"
-      },
-  
-      "created date (old to new)": {
-        "createdAt": "asc"
-      },
-  
-      "updated date (new to old)": {
-        "updatedAt": "desc"
-      },
-  
-      "updated date (new to old)": {
-        "updatedAt": "asc"
-      },
-    }
-  
-    try {
-      const countAfterSearch = await user.count({
-        where: {
-          isActive: query.isActive,
-          OR: searchHandler(contains)
-        
-      }})
-
-      const usersCount = await user.count()
-  
-      const usersPerPage = await user.findMany({
-        where: {
-          isActive: query.isActive,
-          OR: searchHandler(contains)
-            
-        },
-
-        skip: (+page - 1) * +limit || undefined,
-        take: +limit || undefined,
-        orderBy: handleSortBy[sortBy] || undefined,
-  
-        include: {
-          exhibitsCreated: true,
-          exhibitsUpdated: true,
-        }
-      });
-
-      return {
-        data: {
-          usersPerPage,
-          count: usersCount,
-          countAfterSearch
-        },
-        error: null
-      }
-    } catch(error) {
-      return {
-        data: null,
-        error
-      }
-    }
+  if (query.isActive === 'true') {
+    query.isActive = true
+  } else if (query.isActive === 'false') {
+    query.isActive = false
+  } else {
+    query.isActive = undefined
   }
-  
-export const getUserByIdDB = async (id) => {
-    try {
-      const userData = await user.findUnique({
-        where: {
-          id,
-        },
-        include: {
-          exhibitsCreated: true,
-          exhibitsUpdated: true
-        }
-      })
-      
-      // const {isActive} = userData;
+  const { page, limit, sortBy, contains = '', isActive } = query
+  const handleSortBy = {
+    'name [A-Z]': {
+      firstName: 'asc',
+    },
 
-      if(userData) {
-        const userPassExcluded = exclude(userData, ['password']);
-        const {id, role} = userPassExcluded;
-        const token = generateAccessToken(id, role);
-        return {
-          data: {...userPassExcluded, token},
-          error: null,
-        }
-      } else {
-        return {
-            data: "no such User",
-            error: null,
-          }
-      } 
-     
-    } catch (error) {
-      return {
-        data: null,
-        error,
-      }
-    }
+    'name [Z-A]': {
+      firstName: 'desc',
+    },
+
+    'created date (new to old)': {
+      createdAt: 'desc',
+    },
+
+    'created date (old to new)': {
+      createdAt: 'asc',
+    },
+
+    'updated date (new to old)': {
+      updatedAt: 'desc',
+    },
+
+    'updated date (new to old)': {
+      updatedAt: 'asc',
+    },
   }
 
-export const updateUserDB = async (data, id) => {
+  try {
+    const countAfterSearch = await user.count({
+      where: {
+        isActive: query.isActive,
+        OR: searchHandler(contains),
+      },
+    })
 
-    try {
-        if (data.password) {
-            data.password = bcrypt.hashSync(data.password, 7)
-        }
+    const usersCount = await user.count()
 
-        const newData = await user.update({
-            where: {
-                id
-            },
-            data
-        });
+    const usersPerPage = await user.findMany({
+      where: {
+        isActive: query.isActive,
+        OR: searchHandler(contains),
+      },
 
-        const {password, ...userInfo} = newData;
+      skip: (+page - 1) * +limit || undefined,
+      take: +limit || undefined,
+      orderBy: handleSortBy[sortBy] || undefined,
 
-        return {
-            data: userInfo,
-            error: null
-        }
+      include: {
+        exhibitsCreated: true,
+        exhibitsUpdated: true,
+      },
+    })
 
-    } catch (error) {
-        return {
-            data: null,
-            error
-        }
+    return {
+      data: {
+        usersPerPage,
+        count: usersCount,
+        countAfterSearch,
+      },
+      error: null,
     }
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    }
+  }
 }
 
-export const deleteUserDB = async(id) => {
-    try {
-        await user.update({
-        where: {
-            id
-        },
-        data: {
-            isActive: false
-        }
-        });
-        return {
-            message: "user deleted",
-            error: null
-        }  
-    } catch(error) {
-        return {
-            data: null,
-            error
-        }
+export const getUserByIdDB = async (id) => {
+  try {
+    const userData = await user.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        exhibitsCreated: true,
+        exhibitsUpdated: true,
+      },
+    })
+
+    // const {isActive} = userData;
+
+    if (userData) {
+      const userPassExcluded = exclude(userData, ['password'])
+      const { id, role } = userPassExcluded
+      const token = generateAccessToken(id, role)
+      return {
+        data: { ...userPassExcluded, token },
+        error: null,
+      }
+    } else {
+      return {
+        data: 'no such User',
+        error: null,
+      }
     }
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    }
+  }
+}
+
+export const updateUserDB = async (data, id) => {
+  
+  try {
+    if (data.password) {
+      data.password = bcrypt.hashSync(data.password, 7)
+    }
+
+    const newData = await user.update({
+      where: {
+        id,
+      },
+      data,
+    })
+
+    const { password, ...userInfo } = newData
+
+    return {
+      data: userInfo,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    }
+  }
+}
+
+export const deleteUserDB = async (id) => {
+  try {
+    await user.update({
+      where: {
+        id,
+      },
+      data: {
+        isActive: false,
+      },
+    })
+    return {
+      message: 'user deleted',
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    }
+  }
 }
 
 export const createUserDB = async (userData) => {
-    const {password, ...restData} = userData
-    
-    try {
-        const hashedPassword = bcrypt.hashSync(password, 7);
+  const { password, ...restData } = userData
 
-        const newUser = await user.create({
-            data: {
-                password: hashedPassword,
-                ...restData
-            },
-            include: {
-              exhibitsCreated: true,
-              exhibitsUpdated: true
-            }
-        })
+  try {
+    const hashedPassword = bcrypt.hashSync(password, 7)
 
-        const {password: newUserPass, ...userInfo} = newUser
+    const newUser = await user.create({
+      data: {
+        password: hashedPassword,
+        ...restData,
+      },
+      include: {
+        exhibitsCreated: true,
+        exhibitsUpdated: true,
+      },
+    })
 
-        const token = generateAccessToken(userInfo.id, userInfo.role)
+    const { password: newUserPass, ...userInfo } = newUser
 
-        return {
-            data: {...userInfo, token},
-            error: null,
-        }
+    const token = generateAccessToken(userInfo.id, userInfo.role)
 
-    } catch (error) {
-        return {
-            data: null,
-            error,
-        }
+    return {
+      data: { ...userInfo, token },
+      error: null,
     }
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    }
+  }
 }
 
-
 export const loginDB = async (userData) => {
-    const {email, password} = userData
-    try {
-        const candidate = await user.findUnique({
-            where: {
-                email,
-            },
-            include: {
-                exhibitsCreated: true,
-                exhibitsUpdated: true
-            },
-        })
-
-        if (!candidate) {
-          return {
-            data: null,
-            error: {message: "No user found with such email"}
-          }
-        }
-     
-        const validPassword = bcrypt.compareSync(password, candidate.password)
-
-        if (!validPassword) {
-            return {
-                data: null,
-                error: {message: 'Password incorrect'},
-            }
-        }
-        const {password: createdUserPass, ...userInfo} = candidate
-        const token = generateAccessToken(userInfo.id, userInfo.role)
-        return {
-            data: {...userInfo, token},
-            error: null,
-        }
-    } catch (error) {
-        return {
-            data: null,
-            error,
-        }
+  const { email, password } = userData
+  console.log('EMAIL', email)
+  console.log('pass', password)
+  try {
+    const candidate = await user.findUnique({
+      where: {
+        email,
+      },
+      include: {
+        exhibitsCreated: true,
+        exhibitsUpdated: true,
+      },
+    })
+    if (!candidate) {
+      return {
+        data: null,
+        error: { message: 'No user found with such email' },
+      }
     }
+    const validPassword = bcrypt.compareSync(password, candidate.password)
+    if (!validPassword) {
+      return {
+        data: null,
+        error: { message: 'Password incorrect' },
+      }
+    }
+    const { password: createdUserPass, ...userInfo } = candidate
+    const token = generateAccessToken(userInfo.id, userInfo.role)
+    return {
+      data: { ...userInfo, token },
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    }
+  }
 }

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { editUserSignupSchema } from "../features/userAccess/validations";
+import { editUserSignupSchema } from "../redux/features/userAccess/validations";
 import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import Form from './Form';
-import { createUser } from "../features/userAccess/userAccessSlice";
+import { createUser } from "../redux/features/userAccess/userAccessSlice";
 
 
 const links = (

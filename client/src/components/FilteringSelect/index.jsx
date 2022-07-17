@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import Box from "@mui/material/Box";
-import { getAllMaterials } from "../../features/filteringFeatures/selectors";
+import { getAllMaterials } from "../../redux/features/filteringFeatures/selectors";
 import { v4 as uuid } from "uuid";
 import { useDispatch } from "react-redux";
 import InputLabel from "@mui/material/InputLabel";
@@ -9,8 +9,8 @@ import MenuItem from "@mui/material/MenuItem";
 import FormHelperText from "@mui/material/FormHelperText";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { getMaterials } from "../../features/filteringFeatures/filteringFeaturesSlice";
-import { getExhibitsPerPage } from "../../features/exhibits/exhibitsSlice";
+import { getMaterials } from "../../redux/features/filteringFeatures/filteringFeaturesSlice";
+import { getExhibitsPerPage } from "../../redux/features/exhibits/exhibitsSlice";
 
 
 const FilteringSelect = ({

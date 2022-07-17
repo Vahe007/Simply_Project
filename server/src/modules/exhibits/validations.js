@@ -47,7 +47,9 @@ export default {
       userId: Joi.number(),
       category: Joi.any(),
       images: Joi.any(),
-      checkedContributors: Joi.any(),
+      existingContributorsIds: Joi.any(),
+      newContributors: Joi.any(),
+      imageIds: Joi.array(),
     }),
   },
   updateExhibitValidation: {
@@ -70,8 +72,9 @@ export default {
       categoryId: Joi.number().integer(),
       description: Joi.string().min(0).max(200),
       materialName: Joi.string(),
-      checkedContributors: Joi.any(),
-      contributors: Joi.any(),
+      existingContributorsIds: Joi.any(),
+      newContributors: Joi.any(),
+      imageIds: Joi.array(),
     }),
   },
   deleteExhibitValidation: {

@@ -18,14 +18,22 @@ const styles = {
     flex: 1,
     padding: "10px 0px",
   },
+  addUserButton: {
+    position: "absolute !important",
+    right: 0,
+    "&:hover": {
+      backgroundColor: "green !important",
+    },
+  },
 
   searchContainer: {
     marginBottom: "20px",
     textAlign: "center",
+    position: "relative",
   },
 
   usersListContainer: {
-    maxWidth: "calc(100% - 100px)",
+    maxWidth: "calc(100% - 200px)",
     margin: "auto",
   },
 
