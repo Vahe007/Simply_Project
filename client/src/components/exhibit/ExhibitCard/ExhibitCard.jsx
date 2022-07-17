@@ -15,7 +15,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function ExibitCard({ref,exhibit}) {
+function ExibitCard({ref,exhibit}) {
   const classes = useStyles();
   const src = exhibit?.images.length ? exhibit.images[0] : 'https://cdn.w600.comps.canstockphoto.com/no-image-available-stock-illustrations_csp38533655.jpg'
   return (
@@ -40,3 +40,6 @@ export default function ExibitCard({ref,exhibit}) {
     </Card>
   );
 }
+
+
+export default ExibitCard

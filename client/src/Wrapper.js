@@ -68,7 +68,6 @@ function Wrapper() {
     );
   }
 
-  if (role === "EMPLOYEE") {
     return (
       <Routes>
         <Route path="exhibit-view" element={<AddExhibit id={userInfo.id} />} />
@@ -78,7 +77,6 @@ function Wrapper() {
         <Route path="*" element={<Navigate to="main" />} />
       </Routes>
     );
-  }
 }
 
 export default Wrapper;
