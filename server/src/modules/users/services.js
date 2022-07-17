@@ -104,10 +104,10 @@ export const verifyUser = async (req, res, next) => {
 
 
 export const resetPassword = async (req, res, next) => {
-  const { newPass } = req.body;
+  const { newPass, token } = req.body;
   const { id } = req.params;
   try {
-    const data = await resetPasswordDB(newPass, +id);
+    const data = await resetPasswordDB(newPass, token, +id);
     res.status(200).json(responseDataCreator(data));
   }
   catch (error) {

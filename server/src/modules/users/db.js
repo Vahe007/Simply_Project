@@ -311,12 +311,13 @@ export const verifyUserDB = async (id, token) => {
     const decodedData = jwt.verify(token, process.env.TOKEN_SECRET)
 
     if (foundUser && decodedData.id === id) {
-      return {
-        data: {
-          message: 'cool'
-        },
-        error: null
-      }
+      return
+      // return {
+      //   data: {
+      //     message: ''
+      //   },
+      //   error: null
+      // }
     }
     return {
       data: null,
@@ -333,8 +334,16 @@ export const verifyUserDB = async (id, token) => {
   }
 }
 
-export const resetPasswordDB = async (newPass, id) => {
+export const resetPasswordDB = async (newPass, userToken, id) => {
   try {
+    const verified = await verifyUserDB(id, userToken);
+    console.log("verified", verified);
+    if (verified?.error) {
+      return {
+        data: null,
+        error: {message: ERROR_MESSAGES.NOT_VERIFIED}
+      }
+    }
     const foundUser = await user.findUnique({
       where: {
         id

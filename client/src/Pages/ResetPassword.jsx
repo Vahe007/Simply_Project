@@ -41,7 +41,9 @@ const ResetPassword = () => {
       }, [message])
 
     const onSubmit = (values) => {
-        dispatch(resetUserPassword({ id, values }));
+        dispatch(verifyUser({ id, token }));
+
+        dispatch(resetUserPassword({ id, values, token }));
     }
 
     const formik = useFormik({

@@ -58,7 +58,7 @@ export const verifyUser = createAsyncThunk(
 
 export const resetUserPassword = createAsyncThunk(
   "userAccess/resetPassword",
-  async ({ id, values }) => {
+  async ({ id, values, token }) => {
     const response = await fetch(`${BASE_URL}users/reset/${id}`,
       {
         method: "PUT",
@@ -66,7 +66,10 @@ export const resetUserPassword = createAsyncThunk(
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          ...values,
+          token
+        }),
       })
     return response.json();
   }
