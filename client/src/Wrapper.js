@@ -19,10 +19,11 @@ import UsersPagination from "./components/UsersPagination";
 import Materials from "./components/Materials/Materials";
 import Navbar from "./components/Navbar";
 import AddExhibit from "./components/exhibit/AddExhibit";
+import SendLink from "./Pages/SendLink";
+import ResetPassword from "./Pages/ResetPassword";
 import ShowContributorsList from "./components/contributors/ShowContributorsList";
 import { ImageIdsContext } from "./components/Dropzone/Uploader";
 
-const requireAuth = ["/users/admin", "/users/guest", "/users/employee"];
 
 function Wrapper() {
   const dispatch = useDispatch();
@@ -33,7 +34,6 @@ function Wrapper() {
 
   const { role } = userInfo;
   useEffect(() => {
-    // const token = Cookies.get("token");
     const id = Cookies.get("id");
     token && id && dispatch(getMeCall({ id: +id, token }));
   }, []);
@@ -47,6 +47,8 @@ function Wrapper() {
         <Route path="form" element={<Form />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
+        <Route path="send-key" element={<SendLink />} />
+        <Route path="reset-password/:id/:token" element={<ResetPassword />} />
         <Route path="*" element={<Navigate to="login" />} />
       </Routes>
     );
@@ -67,7 +69,6 @@ function Wrapper() {
     );
   }
 
-  if (token) {
     return (
       <Routes>
         <Route path="exhibit-view" element={<AddExhibit id={userInfo.id} />} />
@@ -77,8 +78,6 @@ function Wrapper() {
         <Route path="*" element={<Navigate to="main" />} />
       </Routes>
     );
-  }
-
 }
 
 export default Wrapper;

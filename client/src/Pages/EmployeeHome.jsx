@@ -7,7 +7,6 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { useSelector, useDispatch } from "react-redux";
 import { getExhibitsPerPage } from "../redux/features/exhibits/exhibitsSlice";
-// import ExhibitsList from "../components/ExhibitsList";
 import { updateRoute } from "../redux/features/userAccess/userAccessSlice";
 import { Button } from "@mui/material";
 import {  useNavigate } from "react-router-dom";

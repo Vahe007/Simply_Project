@@ -24,17 +24,3 @@ app.use((err, req, res, next) => {
 app.listen(PORT, function () {
   console.log(`\n🚀 Server ready at: http://localhost:${this.address().port}\n`)
 })
-
-// prisma.exhibit.create({
-//   name: 'asdf',
-//   images: [
-//     {
-//       name: jkasdf,
-//       asjdkfad
-//     },
-//     {
-//       name: jkasdf,
-//       asjdkfad
-//     },
-//   ]
-// })

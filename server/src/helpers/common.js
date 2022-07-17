@@ -4,6 +4,10 @@ import multer from 'multer'
 import fs from 'fs'
 import path from 'path'
 import { JOI_VALIDATION_MESSAGES, PUBLIC_FOLDER_PATH } from '../helpers/constants.js'
+import nodemailer from 'nodemailer'
+import { v4 as uuid } from "uuid";
+
+
 
 export const validate = (schema) => {
   if (typeof schema !== 'object' || schema === null)
@@ -69,4 +73,29 @@ export function exclude(obj, options) {
     delete objClone[options]
   }
   return objClone
+}
+
+
+export const sendActivationKey = (recipient, link) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD
+      }
+    })
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: recipient,
+      subject: "Password Rest",
+      html: `<b>${link}</b>`,
+    }
+
+    transporter.sendMail(mailOptions);
+  }
+  catch (error) {
+    console.log("error", error);
+  }
 }

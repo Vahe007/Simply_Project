@@ -7,15 +7,13 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { loginFields, signupFields } from "../constants";
 import { useFormik } from "formik";
-import { editUserLoginSchema } from "../redux/features/userAccess/validations";
 import TextField from "../components/FormsUI/TextField";
 import { useSelector, useDispatch } from "react-redux";
 import { InputProps } from "../helpers/common";
 import Button from "../components/FormsUI/Button";
-import { loadUser, createUser } from "../redux/features/userAccess/userAccessSlice";
 import { getMessage } from "../redux/features/userAccess/selectors";
+import MainDialog from "../components/listOfUsers/dialogs/helpers/MainDialog";
 
 const theme = createTheme();
 
@@ -41,7 +39,7 @@ const inputAllProps = (field, formik, isVisible, changeVisibility, message) => {
 }
 
 
-function Form({ type, initialValues, fields, validationSchema, headTitle, btnTitle, links, getUser }) {
+function Form({ initialValues, fields, validationSchema, headTitle, btnTitle, links, getUser, dialogAttributes, isOpen }) {
   const [isVisible, setVisibility] = useState(false);
   const message = useSelector(getMessage);
   const dispatch = useDispatch();
@@ -63,6 +61,7 @@ function Form({ type, initialValues, fields, validationSchema, headTitle, btnTit
 
   return (
     <ThemeProvider theme={theme}>
+      {isOpen && <MainDialog {...dialogAttributes} />}
       <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid
@@ -94,22 +93,23 @@ function Form({ type, initialValues, fields, validationSchema, headTitle, btnTit
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h5">
+            <Typography component="h2" variant="h5">
               {headTitle}
             </Typography>
             <Box component="form" onSubmit={formik.handleSubmit} sx={{ mt: 1 }}>
               {fields.map((field, index) => {
                 return (
-                  <TextField key={index} formik={formik} {...inputAllProps(field, formik, isVisible, changeVisibility, message)} />
+                  <TextField fullWidth={true} key={index} formik={formik} {...inputAllProps(field, formik, isVisible, changeVisibility, message)} />
                 );
               })}
-              <Typography sx={{ color: 'red', textAlign: 'center' }}>
+              {/* <Typography sx={{ color: 'red', textAlign: 'center' }}>
                 {message}
-              </Typography>
+              </Typography> */}
               <Button fullWidth={true} type="submit" sx={{ mt: "15px" }}>
                 {btnTitle}
               </Button>
               {links}
+
             </Box>
           </Box>
         </Grid>
