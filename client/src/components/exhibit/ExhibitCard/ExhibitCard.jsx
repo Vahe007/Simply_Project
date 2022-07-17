@@ -6,7 +6,7 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
-import { BASE_URL } from "../../constants";
+import { BASE_URL } from "../../../constants";
 
 const useStyles = makeStyles({
   root: {

@@ -130,4 +130,3 @@ export default Form;
 // error={formik.errors[field]}
 // touched={formik.touched[field]}
 // onBlur={formik.handleBlur}
-// {...inputProps(field)}

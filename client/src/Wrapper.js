@@ -35,7 +35,6 @@ function Wrapper() {
   useEffect(() => {
     // const token = Cookies.get("token");
     const id = Cookies.get("id");
-
     token && id && dispatch(getMeCall({ id: +id, token }));
   }, []);
 
@@ -68,6 +67,7 @@ function Wrapper() {
     );
   }
 
+  if (token) {
     return (
       <Routes>
         <Route path="exhibit-view" element={<AddExhibit id={userInfo.id} />} />
@@ -77,6 +77,8 @@ function Wrapper() {
         <Route path="*" element={<Navigate to="main" />} />
       </Routes>
     );
+  }
+
 }
 
 export default Wrapper;
