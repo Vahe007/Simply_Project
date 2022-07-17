@@ -9,9 +9,10 @@ import Box from '@mui/material/Box';
 import RootRef from '@material-ui/core/RootRef';
 import {  TextField, IconButton } from '@material-ui/core';
 
-
+import SearchIcon from '@mui/icons-material/Search';
 const GuestPage = ()=>{
-
+    const [query, setQuery] = useState('')
+    const [pageNumber, setPageNumber] = useState(1)
 
     const {
         loading,
@@ -34,14 +35,36 @@ const GuestPage = ()=>{
 
 
 
-
+    function handleSearch(e){
+        setQuery(e.target.value)
+        setPageNumber(1)
+    }
 
     return (
-    <Grid sx={{ flexGrow: 1 }} container spacing={2} px={1}>
-
+    <Grid sx={{ flexGrow: 1 }} container spacing={2} py={3} px={1}>
+        <Grid 
+            container 
+            xs={12} 
+            direction="row" 
+            justifyContent="center"
+            >
+            <TextField
+                onChange={handleSearch}
+                value={query}
+                id="standard-bare"
+                variant="outlined"
+                InputProps={{
+                  endAdornment: (
+                    <IconButton>
+                      <SearchIcon />
+                    </IconButton>
+                  ),
+                }}
+              />
+        </Grid>
             {
             exhibits.map((exhibit, index) => {
-                return index === exhibits.length - 1 ? <Grid item md={3}><RootRef rootRef={lastExhibitElementRef}><ExhibitCard key={exhibit.key} /></RootRef></Grid> : <Grid md={3} item ><ExhibitCard key={exhibit.key} /></Grid>
+                return index === exhibits.length - 1 ? <Grid  key={exhibit.id} item md={3}><RootRef rootRef={lastExhibitElementRef}><ExhibitCard  exhibit={exhibit}/></RootRef></Grid> : <Grid key={exhibit.id} md={3} item ><ExhibitCard   exhibit={exhibit} /></Grid>
         
             })
             }
