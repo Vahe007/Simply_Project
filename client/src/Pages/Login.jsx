@@ -43,19 +43,19 @@ const Login = () => {
   const formik = useFormik({
     initialValues: { email: "" },
     validationSchema: emailLinkValidationSchema,
-    onSubmit: (values, {resetForm}) => {
+    onSubmit: (values, { resetForm }) => {
       dispatch(sendLink(values));
-      resetForm({values: ''});
+      resetForm({ values: '' });
     }
   })
 
   const links = (
     <Grid container>
       <Grid item xs>
-        <div style={{cursor: "pointer", color: "#1976d2", fontSize: "0.875rem"}} onClick={() => setOpen(true)}>Forgot Password?</div>
+        <div style={{ cursor: "pointer", color: "#1976d2", fontSize: "0.875rem" }} onClick={() => setOpen(true)}>Forgot Password?</div>
       </Grid>
       <Grid item>
-        <Link style={{textDecoration: "none"}} href="/signup" variant="body2">
+        <Link style={{ textDecoration: "none" }} href="/signup" variant="body2">
           {"Don't have an account? Sign Up"}
         </Link>
       </Grid>
@@ -75,10 +75,15 @@ const Login = () => {
 
   const dialogAttributes = {
     title: "Input your email",
-    content: <Box onSubmit={formik.handleSubmit} component="form">
-      <TextField formik={formik} name="email" label="Email" />
-      <Button type="submit">Send Verification Link</Button>
-    </Box>,
+    content: <>
+      <Box onSubmit={formik.handleSubmit} component="form">
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+
+          <TextField sx={{m: "10px 0"}} formik={formik} name="email" label="Email" />
+          <Button sx={{m: "10px 0"}} type="submit">Send Verification Link</Button>
+        </Box>
+      </Box>
+    </>,
     onClose: () => setOpen(false)
   }
 
