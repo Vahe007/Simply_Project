@@ -22,23 +22,23 @@ function Content({ setFieldError }) {
         <Grid item xs={12}>
           <TextField
             name="firstName"
-            label="first Name"
+            label="First name"
             className={classes.textField}
           />
           <TextField
             name="lastName"
-            label="last Name"
+            label="Last name"
             className={classes.textField}
           />
           <TextField name="email" label="email" className={classes.textField} />
           <TextField
             name="password"
-            label="password"
+            label="Password"
             className={classes.textField}
           />
           <TextField
             name="phoneNumber"
-            label="phoneNumber"
+            label="Phone number"
             className={classes.textField}
           />
           <Select

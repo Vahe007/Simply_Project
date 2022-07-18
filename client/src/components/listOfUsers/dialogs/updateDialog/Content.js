@@ -34,12 +34,12 @@ function Content({ helperText, setFieldError }) {
             />
             <TextField
               name="email"
-              label="email"
+              label="Email"
               className={classes.textField}
             />
             <TextField
               name="phoneNumber"
-              label="phoneNumber"
+              label="Phone number"
               className={classes.textField}
             />
             <Select

@@ -43,8 +43,8 @@ export const createAndGetMaterials = createAsyncThunk(
   }
 );
 
-export const updateMaterial = createAsyncThunk(
-  "updateMaterial",
+export const updateAndGetMaterials = createAsyncThunk(
+  "updateAndGetMaterials",
   async ({ id, newData, isActive }) => {
     const response = await fetch(`${BASE_URL}materials/${id}`, {
       method: "put",
@@ -56,7 +56,10 @@ export const updateMaterial = createAsyncThunk(
 
     const response2 = await fetch(`${BASE_URL}materials?isActive=${isActive}`);
 
-    return response2.json();
+    return {
+      updateResponse: await response.json(),
+      getResponse: await response2.json(),
+    };
   }
 );
 
@@ -131,17 +134,30 @@ const materialsSlice = createSlice({
       state.loading = false;
     },
 
-    [updateMaterial.pending]: (state, action) => {
+    [updateAndGetMaterials.pending]: (state, action) => {
       state.loading = true;
     },
 
-    [updateMaterial.fulfilled]: (state, action) => {
-      state.allMaterials = action.payload.data;
-      state.filteredMaterials = action.payload.data;
+    [updateAndGetMaterials.fulfilled]: (state, { payload }) => {
+      const { updateResponse, getResponse } = payload;
+      if (updateResponse.error && updateResponse.error.code === "P2002") {
+        state.error = {
+          isError: true,
+          message: "name exists",
+          code: updateResponse.error.code,
+        };
+      } else {
+        state.error = {
+          isError: false,
+          message: "",
+        };
+      }
+      state.allMaterials = getResponse.data;
+      state.filteredMaterials = getResponse.data;
       state.loading = false;
     },
 
-    [updateMaterial.rejected]: (state, action) => {
+    [updateAndGetMaterials.rejected]: (state, action) => {
       state.loading = false;
     },
   },

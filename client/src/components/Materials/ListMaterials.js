@@ -2,7 +2,7 @@ import * as React from "react";
 import {
   getMaterials,
   selectMaterials,
-  updateMaterial,
+  updateAndGetMaterials,
 } from "../../redux/features/materials/materialsSlice";
 import { useDispatch, useSelector } from "react-redux/es/exports";
 import { Checkbox, TextField } from "@mui/material";
@@ -14,12 +14,24 @@ import MainTable from "../listOfUsers/MainTable";
 import CheckIcon from "@mui/icons-material/Check";
 import { Button } from "@material-ui/core";
 import { classes } from "../../styles/materialsStyle";
+import { useEffect } from "react";
 export default function ListMaterials({ searchParams, setSearchParams }) {
   const dispatch = useDispatch();
-  const { filteredMaterials } = useSelector(selectMaterials);
+  const { filteredMaterials, error } = useSelector(selectMaterials);
   const [inputValues, setInputValues] = useState({});
   const [showEditIds, setShowEditIds] = useState([]);
 
+  useEffect(() => {
+    if (error.isError) {
+      dispatch(
+        setSnackbar({
+          snackbarOpen: true,
+          snackbarType: "error",
+          snackbarMessage: "Material Name already exists",
+        })
+      );
+    }
+  }, [error]);
   const onEditClick = ({ materialName, id }) => {
     setShowEditIds(showEditIds.concat(id));
   };
@@ -43,7 +55,7 @@ export default function ListMaterials({ searchParams, setSearchParams }) {
 
   const onCheckChange = (e, id) => {
     dispatch(
-      updateMaterial({
+      updateAndGetMaterials({
         id,
         newData: {
           isActive: e.target.checked,
@@ -51,10 +63,6 @@ export default function ListMaterials({ searchParams, setSearchParams }) {
         isActive: searchParams.get("isActive"),
       })
     );
-
-    setTimeout(() => {
-      dispatch(getMaterials());
-    }, 100);
 
     const message = `Material with ID:${id} is ${
       e.target.checked ? "Activated" : "Deactivated"
@@ -79,17 +87,19 @@ export default function ListMaterials({ searchParams, setSearchParams }) {
     });
   };
 
-  const onEditConfirm = (id) => {
+  const onEditConfirm = (id, allMaterials) => {
     const message = `Material with ID:${id} is updated`;
     dispatch(
-      updateMaterial({
+      updateAndGetMaterials({
         id,
         newData: {
           materialName: inputValues[id],
         },
       })
     );
-
+    if (error.isError) {
+      console.log("hi");
+    }
     let newIds = [...showEditIds];
     newIds.splice(newIds.indexOf(id), 1);
     setShowEditIds(newIds);
@@ -220,80 +230,3 @@ export default function ListMaterials({ searchParams, setSearchParams }) {
     </>
   );
 }
-
-//rubbish
-/**
- *   <List className={classes.ul}>
-        {materials.map(({ materialName, id, isActive, exhibit }, index) => {
-          const inputValue =
-            inputValues[id] !== undefined ? inputValues[id] : materialName;
-          return (
-            <>
-              <ListItem key={id}>
-                {
-                  <Checkbox
-                    edge="start"
-                    tabIndex={-1}
-                    disableRipple
-                    id={id + ""}
-                    onChange={(e) => {
-                      onCheckChange(e, id);
-                    }}
-                    checked={materials[index].isActive}
-                    inputProps={{ "aria-labelledby": "" }}
-                  />
-                }
-                {showEditIds.includes(id) ? (
-                  <>
-                    <TextField
-                      type="text"
-                      name={`materialName${id}`}
-                      required
-                      value={inputValue}
-                      onChange={(e) => {
-                        onInputChange(e.target.value, id);
-                      }}
-                      helperText={!inputValue && "required"}
-                    />
-                    <CheckIcon
-                      variant="contained"
-                      onClick={() => {
-                        onEditConfirm(id);
-                      }}
-                      disabled={!inputValue}
-                      fontSize="large"
-                    >
-                      submit
-                    </CheckIcon>
-                    <CloseIcon
-                      variant="contained"
-                      onClick={() => {
-                        onCancel(id);
-                      }}
-                      disabled={!inputValue}
-                      fontSize="large"
-                    />
-                  </>
-                ) : (
-                  <>
-                    <ListItemText primary={id} />
-                    <ListItemText primary={materialName} />
-                    <ListItemText primary={exhibit.length} />
-                    <ListItemText primary={isActive ? "active" : "inactive"} />
-
-                    <EditIcon
-                      variant="contained"
-                      onClick={() => {
-                        onEditClick({ materialName, id });
-                      }}
-                    >
-                      edit
-                    </EditIcon>
-                  </>
-                )}
-              </ListItem>
-            </>
-          );
-        })}
-      </List>
- */

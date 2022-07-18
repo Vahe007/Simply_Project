@@ -3,16 +3,41 @@ import { Dropzone } from "./Uploader";
 import { useExhibit } from "../../redux/features/exhibits/ExhibitsContextProvider";
 import { classes } from "../../styles/uploadImageStyle";
 import CloseIcon from "@mui/icons-material/Close";
+import { useCustomImageUpload } from "./ImageUploadContext";
+import { useEffect, useState } from "react";
 
 function App() {
   const { exhibit } = useExhibit();
+  const { imageIdsToDelete, setImageIdsToDelete, oldImages, setOldImages } =
+    useCustomImageUpload();
+
+  useEffect(() => {
+    if (exhibit) {
+      setOldImages([...exhibit.images]);
+    }
+  }, []);
+
   const CurrentImages = () => {
     if (exhibit) {
-      return exhibit.images.map((img, index) => {
+      return oldImages.map((img, index) => {
         return (
           <div key={img.id} className={classes.imageContainer}>
             <div>
-              <CloseIcon className={classes.closeBtn} onClick={() => {}} />
+              <CloseIcon
+                className={classes.closeBtn}
+                onClick={() => {
+                  let oldImagesClone = [...oldImages];
+                  setImageIdsToDelete([...imageIdsToDelete, img.id]);
+                  console.log(oldImagesClone);
+                  const index = oldImagesClone.findIndex(
+                    (oldImage) => oldImage.id === img.id
+                  );
+                  console.log(index);
+                  oldImagesClone.splice(index, 1);
+                  setOldImages(oldImagesClone);
+                  console.log(oldImages);
+                }}
+              />
             </div>
 
             <img src={img.path} className={classes.uploadedImage} />

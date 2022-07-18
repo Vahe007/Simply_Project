@@ -11,6 +11,7 @@ CREATE TABLE `User` (
     `role` ENUM('EMPLOYEE', 'ADMIN', 'GUEST') NOT NULL DEFAULT 'GUEST',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `key` VARCHAR(191) NULL,
 
     UNIQUE INDEX `User_email_key`(`email`),
     PRIMARY KEY (`id`)
@@ -47,7 +48,7 @@ CREATE TABLE `Image` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
     `path` VARCHAR(255) NOT NULL,
-    `itemId` INTEGER NULL,
+    `exhibitId` INTEGER NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -126,7 +127,7 @@ CREATE TABLE `Exhibition` (
     `place` VARCHAR(255) NOT NULL,
     `headline` VARCHAR(255) NOT NULL,
     `marks` VARCHAR(255) NULL,
-    `itemId` INTEGER NULL,
+    `exhibitId` INTEGER NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -162,7 +163,7 @@ ALTER TABLE `Exhibit` ADD CONSTRAINT `Exhibit_materialId_fkey` FOREIGN KEY (`mat
 ALTER TABLE `Exhibit` ADD CONSTRAINT `Exhibit_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `Category`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Image` ADD CONSTRAINT `Image_itemId_fkey` FOREIGN KEY (`itemId`) REFERENCES `Exhibit`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Image` ADD CONSTRAINT `Image_exhibitId_fkey` FOREIGN KEY (`exhibitId`) REFERENCES `Exhibit`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Recovery` ADD CONSTRAINT `Recovery_exhibitId_fkey` FOREIGN KEY (`exhibitId`) REFERENCES `Exhibit`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -174,4 +175,4 @@ ALTER TABLE `ContributorsOfExhibits` ADD CONSTRAINT `ContributorsOfExhibits_exhi
 ALTER TABLE `ContributorsOfExhibits` ADD CONSTRAINT `ContributorsOfExhibits_contributorId_fkey` FOREIGN KEY (`contributorId`) REFERENCES `Contributor`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Exhibition` ADD CONSTRAINT `Exhibition_itemId_fkey` FOREIGN KEY (`itemId`) REFERENCES `Exhibit`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `Exhibition` ADD CONSTRAINT `Exhibition_exhibitId_fkey` FOREIGN KEY (`exhibitId`) REFERENCES `Exhibit`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

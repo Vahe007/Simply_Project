@@ -89,40 +89,43 @@ const ListUsers = () => {
     "Activate/Deactivate",
   ];
 
-  const data = usersPerPage.map((user) => {
-    const userClone = { ...user };
-    const createdAtFullDate = new Date(userClone.createdAt).toDateString();
-    const updatedAtFullDate = new Date(userClone.updatedAt).toDateString();
-    userClone.createdAt = createdAtFullDate;
-    userClone.updatedAt = updatedAtFullDate;
-    userClone.exhibitsCreated = userClone.exhibitsCreated.length;
-    delete userClone.lastLogin;
-    delete userClone.exhibitsUpdated;
-    delete userClone.password;
-    delete userClone.isActive;
-    userClone.EditBtn = (
-      <ButtonMUI
-        color="primary"
-        variant="contained"
-        text="Edit"
-        onClick={(e) => onEditClick(e, user)}
-      />
-    );
-    userClone.switchBtn = (
-      <Switch
-        {...label}
-        onChange={(evt) => {
-          onSwitchChange(evt, user);
-        }}
-        checked={user.isActive}
-      />
-    );
-    return userClone;
-  });
+  const data = usersPerPage
+    .filter((user) => user.role !== "ADMIN")
+    .map((user) => {
+      const userClone = { ...user };
+
+      const createdAtFullDate = new Date(userClone.createdAt).toDateString();
+      const updatedAtFullDate = new Date(userClone.updatedAt).toDateString();
+      userClone.createdAt = createdAtFullDate;
+      userClone.updatedAt = updatedAtFullDate;
+      userClone.exhibitsCreated = userClone.exhibitsCreated.length;
+      delete userClone.lastLogin;
+      delete userClone.exhibitsUpdated;
+      delete userClone.password;
+      delete userClone.isActive;
+      userClone.EditBtn = (
+        <ButtonMUI
+          color="primary"
+          variant="contained"
+          text="Edit"
+          onClick={(e) => onEditClick(e, user)}
+        />
+      );
+      userClone.switchBtn = (
+        <Switch
+          {...label}
+          onChange={(evt) => {
+            onSwitchChange(evt, user);
+          }}
+          checked={user.isActive}
+        />
+      );
+      return userClone;
+    });
 
   return (
     <>
-      <MainTable headRow={headRow} data={data} searchParams={searchParams} />
+      <MainTable headRow={headRow} data={data} />
 
       {deleteUserId && (
         <DeleteDialog onClose={onDeleteClose} usersPerPage={usersPerPage} />

@@ -10,6 +10,7 @@ import Collapse from "@mui/material/Collapse";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { getTableRowUtilityClass } from "@mui/material";
+import { useCustomSearchParams } from "./SearchParamsContext";
 
 function MainTable(props) {
   const { headRow, data, ...otherProps } = props;

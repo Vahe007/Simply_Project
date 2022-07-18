@@ -62,7 +62,6 @@ const styles = {
     marginLeft: "3px",
     height: "200px !important",
     width: "200px !important",
-    backgroundColor: "black !important",
   },
   imageContainer: {
     position: "relative",

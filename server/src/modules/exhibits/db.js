@@ -136,12 +136,11 @@ export const createExhibitDB = async (sentData) => {
     newContributors,
     existingContributorsIds,
     imageIds,
+    imageIdsToDelete,
     ...exhibitInfo
   } = sentData
 
   try {
-    const imgIds = imageIds.map((id) => ({ id }))
-
     const contributorsIds = existingContributorsIds.map((id) => ({ id }))
 
     const newExhibit = await exhibit.create({
@@ -192,7 +191,7 @@ export const createExhibitDB = async (sentData) => {
           },
         },
         images: {
-          connect: imgIds,
+          connect: imageIds.map((id) => ({ id })),
         },
         ...exhibitInfo,
       },
@@ -212,6 +211,8 @@ export const createExhibitDB = async (sentData) => {
       error: null,
     }
   } catch (error) {
+    console.log(error)
+
     return {
       data: null,
       error,
@@ -245,30 +246,54 @@ export const updateExhibitDB = async (data, exhibitId) => {
     newContributors,
     imageIds,
     existingContributorsIds, //[2,3,4]
+    imageIdsToDelete,
     ...exhibitInfo
   } = data
 
-  const imgIds = imageIds.map((id) => ({ id }))
-  const contributorsOfspecificExhibit = await contributorsOfExhibits.findMany({
-    where: {
-      exhibitId,
-    },
-  })
+  let contributorsOfspecificExhibit
 
-  console.log('----------------------------------------')
-  console.log(existingContributorsIds)
-  console.log('-----------------------------------------------')
-
-  const arrayOfObjectWIthIdContId = contributorsOfspecificExhibit.map(({ id, contributorId }) => ({
+  try {
+    await image.deleteMany({
+      where: {
+        id: {
+          in: imageIdsToDelete,
+        },
+      },
+    })
+    console.log('hii')
+    contributorsOfspecificExhibit = await contributorsOfExhibits.findMany({
+      where: {
+        exhibitId,
+      },
+    })
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    }
+  }
+  console.log(data)
+  const relationTableIdContId = contributorsOfspecificExhibit.map(({ id, contributorId }) => ({
     id,
     contributorId,
-  })) //[2,3,4,5]
-  const deletedRowOfRelationTable = arrayOfObjectWIthIdContId.filter(
+  }))
+
+  const deletedRowOfRelationTable = relationTableIdContId.filter(
     (idOfContributors) => !existingContributorsIds.includes(idOfContributors.contributorId)
   )
 
+  let connectedIds = []
+
+  const arr = contributorsOfspecificExhibit.map(({ contributorId }) => contributorId)
+
+  existingContributorsIds.forEach((id) => {
+    if (!arr.includes(id)) {
+      connectedIds.push(id)
+    }
+  })
+
   const idsToDelete = deletedRowOfRelationTable.map((obj) => obj.id)
-  console.log(idsToDelete)
+
   try {
     if (idsToDelete.length) {
       await contributorsOfExhibits.deleteMany({
@@ -279,9 +304,7 @@ export const updateExhibitDB = async (data, exhibitId) => {
         },
       })
     }
-    console.log('hi')
   } catch (error) {
-    console.log(error)
     return {
       data: null,
       error,
@@ -306,7 +329,7 @@ export const updateExhibitDB = async (data, exhibitId) => {
         },
         ...exhibitInfo,
         images: {
-          connect: imgIds,
+          connect: imageIds.map((id) => ({ id })),
         },
         contributors: {
           create: newContributors.map((newContributor) => ({
@@ -317,19 +340,26 @@ export const updateExhibitDB = async (data, exhibitId) => {
         },
       },
     })
-    // if (existingContributorsIds.length) {
-    //   const z = await contributorsOfExhibits.createMany({
-    //     data: existingContributorsIds.map((id) => ({
-    //       contributorId: id,
-    //       exhibitId,
-    //     })),
-    //   })
-    // }
+    console.log('arrlength', arr)
+    if (connectedIds.length) {
+      try {
+        const z = await contributorsOfExhibits.createMany({
+          data: connectedIds.map((id) => ({
+            contributorId: id,
+            exhibitId,
+          })),
+        })
+        console.log(z)
+      } catch (error) {
+        console.log(error)
+      }
+    }
     return {
       data: updatedExhibit,
       error: null,
     }
   } catch (error) {
+    console.log(error)
     return {
       data: null,
       error,

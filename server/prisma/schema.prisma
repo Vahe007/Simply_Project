@@ -60,8 +60,8 @@ model Image {
   id        Int      @id @default(autoincrement())
   name      String   @db.VarChar(255)
   path      String   @db.VarChar(255)
-  itemId    Int?
-  exhibit   Exhibit? @relation(fields: [itemId], references: [id])
+  exhibitId Int?
+  exhibit   Exhibit? @relation(fields: [exhibitId], references: [id])
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -126,8 +126,8 @@ model Exhibition {
   place     String   @db.VarChar(255)
   headline  String   @db.VarChar(255)
   marks     String?  @db.VarChar(255)
-  exhibit   Exhibit? @relation(fields: [itemId], references: [id])
-  itemId    Int?
+  exhibit   Exhibit? @relation(fields: [exhibitId], references: [id])
+  exhibitId Int?
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
