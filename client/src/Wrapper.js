@@ -18,6 +18,7 @@ import UsersPagination from "./components/UsersPagination";
 import Materials from "./components/Materials/Materials";
 import Navbar from "./components/Navbar";
 import AddExhibit from "./components/exhibit/AddExhibit";
+import GuestExhibit from "./Pages/GuestExhibit";
 import SendLink from "./Pages/SendLink";
 import ResetPassword from "./Pages/ResetPassword";
 import ShowContributorsList from "./components/contributors/ShowContributorsList";
@@ -80,6 +81,7 @@ function Wrapper() {
         <Route path="exhibit-view" element={<AddExhibit id={userInfo.id} />} />
         <Route path="main" element={<Profile role={userInfo.role} />} />
         <Route path="addexhibit" element={<AddExhibit id={userInfo.id} />} />
+        <Route path=":exhibitId" element={<GuestExhibit />} />
         <Route path="settings" element={<Settings id={userInfo.id} />} />
         <Route path="*" element={<Navigate to="main" />} />
       </Routes>

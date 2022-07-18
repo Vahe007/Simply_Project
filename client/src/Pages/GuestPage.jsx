@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState, useRef, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import CircularProgress from '@mui/material/CircularProgress';
 import useExhibitSearch from '../hooks/useExhibitSearch'
 import ExhibitCard from '../components/exhibit/ExhibitCard/ExhibitCard'
@@ -44,7 +45,6 @@ const GuestPage = ()=>{
     <Grid sx={{ flexGrow: 1 }} container spacing={2} py={3} px={1}>
         <Grid 
             container 
-            xs={12} 
             direction="row" 
             justifyContent="center"
             >
@@ -64,7 +64,7 @@ const GuestPage = ()=>{
         </Grid>
             {
             exhibits.map((exhibit, index) => {
-                return index === exhibits.length - 1 ? <Grid  key={exhibit.id} item md={3}><RootRef rootRef={lastExhibitElementRef}><ExhibitCard  exhibit={exhibit}/></RootRef></Grid> : <Grid key={exhibit.id} md={3} item ><ExhibitCard   exhibit={exhibit} /></Grid>
+                return index === exhibits.length - 1 ? <Grid  key={exhibit.id} item md={3}><RootRef rootRef={lastExhibitElementRef}><Link to={`${exhibit?.id}`} ><ExhibitCard  exhibit={exhibit}/></Link></RootRef></Grid> : <Grid key={exhibit.id} md={3} item ><Link to={`${exhibit?.id}`} ><ExhibitCard   exhibit={exhibit} /></Link></Grid>
         
             })
             }
