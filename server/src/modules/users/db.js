@@ -308,12 +308,6 @@ export const verifyUserDB = async (id, token) => {
 
     if (foundUser && decodedData.id === id) {
       return
-      // return {
-      //   data: {
-      //     message: ''
-      //   },
-      //   error: null
-      // }
     }
     return {
       data: null,
@@ -333,7 +327,6 @@ export const verifyUserDB = async (id, token) => {
 export const resetPasswordDB = async (newPass, userToken, id) => {
   try {
     const verified = await verifyUserDB(id, userToken);
-    console.log("verified", verified);
     if (verified?.error) {
       return {
         data: null,

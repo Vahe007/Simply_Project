@@ -9,6 +9,7 @@ import { classes } from "../../styles/usersListStyles";
 import Collapse from "@mui/material/Collapse";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import { v4 as uuid } from "uuid";
 import { getTableRowUtilityClass } from "@mui/material";
 
 function MainTable(props) {
@@ -71,9 +72,9 @@ function Row({ row }) {
                   </TableHead>
                   <TableBody>
                     {history.data.map((row, index) => (
-                      <TableRow key={`${row}${index}`}>
+                      <TableRow key={uuid()}>
                         {Object.values(row).map((value) => (
-                          <TableCell key={`${value}${index}`}>
+                          <TableCell key={uuid()}>
                             {value}
                           </TableCell>
                         ))}
@@ -89,6 +90,10 @@ function Row({ row }) {
     </>
   );
 }
+
+
+
+
 
 // import Table from "@material-ui/core/Table";
 // import TableBody from "@material-ui/core/TableBody";
