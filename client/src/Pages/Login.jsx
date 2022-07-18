@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { getMessage } from "../redux/features/userAccess/selectors";
 import { setSnackbar } from "../redux/features/snackbar/SnackbarSlice";
+import Cookies from "js-cookie";
 
 
 
@@ -25,11 +26,12 @@ const Login = () => {
   const dispatch = useDispatch();
   const [isOpen, setOpen] = useState(false);
   const message = useSelector(getMessage);
+  
 
 
   useEffect(() => {
-    const { text, isError } = message;
-    if (Object.values(message).length) {
+    const { text, isError, type } = message;
+    if (Object.values(message).length && type === "send") {
       dispatch(
         setSnackbar({
           snackbarOpen: true,

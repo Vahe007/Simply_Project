@@ -1,37 +1,47 @@
 import { Button } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { classes } from "../styles/adminHomePageStyle";
-import React, { useEffect, useState } from "react";
-import AppBar from "@mui/material/AppBar";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Cookies from "js-cookie";
+import MainDialog from "./listOfUsers/dialogs/helpers/MainDialog";
 
 function Navbar() {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const token = Cookies.get("token");
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  console.log("open", open);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
-  };
-  const handleLogout = () => {
-    console.log(Cookies.get("token"));
-    Cookies.remove("token");
-    Cookies.remove("id");
-    navigate("/login");
   };
 
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleLogout = () => {
+    console.log("okooooookkokoooko");
+    Cookies.remove("token");
+    Cookies.remove("id");
+    navigate("/login");
+  };
+
+  const dialogAttributes = {
+    onConfirm: handleLogout,
+    onClose: () => setOpen(false),
+    title: "Are you sure you want to log out?",
+    content: <Button onClick={handleLogout}>Confirm</Button>,
+  }
+
   return (
     <nav className={classes.header}>
+      {open && <MainDialog {...dialogAttributes} />}
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
         <div>
           <Link to="main/users">
@@ -73,7 +83,7 @@ function Navbar() {
               onClose={handleClose}
             >
               <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleLogout}>Log Out</MenuItem>
+              <MenuItem onClick={() => setOpen(true)}>Log Out</MenuItem>
             </Menu>
           </div>
         )}

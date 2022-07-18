@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -11,32 +11,62 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Avatar from "../Avatar/Avatar";
 import Logo from "../../assets/Logo.svg";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router";
+import { getUserInfo } from "../../redux/features/userAccess/selectors";
+import Cookies from "js-cookie";
+import MainDialog from "../listOfUsers/dialogs/helpers/MainDialog";
+import Button from "../FormsUI/Button";
 
-const settings = ["Profile", "Logout"];
 
 const ProfileHeader = () => {
-  // hardcode below, needs to change for DB
-  const name = "Tigran";
-  const surname = "I";
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const userInfo = useSelector(getUserInfo)
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
+
+  const name = userInfo.firstName;
+  const surname = userInfo.lastName;
+  const [anchorElUser, setAnchorElUser] = useState(null);
+
+  const handleClose = () => {
+    setAnchorElUser(null);
+  };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
+
+  const onProfileClick = () => {
+    navigate('/settings');
+  }
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
 
+
+  const handleLogout = () => {
+    Cookies.remove("token");
+    Cookies.remove("id");
+    navigate("/login");
+  };
+  const dialogAttributes = {
+    onConfirm: handleLogout,
+    onClose: () => setOpen(false),
+    title: "Are you sure you want to log out?",
+    content: <Button onClick={handleLogout}>Confirm</Button>,
+  }
+
   return (
     <AppBar position="static">
+      {open && <MainDialog {...dialogAttributes} />}
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box
             component="img"
             sx={{
               height: 80,
-              mr: 2,
+              mr: 2,    
               display: { xs: "none", md: "flex" },
             }}
             alt="Logo"
@@ -73,7 +103,7 @@ const ProfileHeader = () => {
             src={Logo}
           />
 
-          <Typography
+          {/* <Typography
             variant="h5"
             noWrap
             component="a"
@@ -90,9 +120,9 @@ const ProfileHeader = () => {
             }}
           >
             HISTORY MUSEUM OF ARMENIA
-          </Typography>
+          </Typography> */}
 
-          <Typography
+          {/* <Typography
             variant="h5"
             component="a"
             href=""
@@ -108,7 +138,7 @@ const ProfileHeader = () => {
             }}
           >
             HISTORY MUSEUM OF ARMENIA
-          </Typography>
+          </Typography> */}
 
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
           <Box sx={{ flexGrow: 0 }}>
@@ -131,13 +161,10 @@ const ProfileHeader = () => {
                 horizontal: "right",
               }}
               open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
+              onClose={handleClose}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={onProfileClick}>Profile</MenuItem>
+              <MenuItem onClick={() => setOpen(true)}>Log Out</MenuItem>
             </Menu>
           </Box>
         </Toolbar>

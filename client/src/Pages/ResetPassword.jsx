@@ -33,8 +33,8 @@ const ResetPassword = () => {
           dispatch(
             setSnackbar({
               snackbarOpen: true,
-              snackbarMessage: text || "Input the new password",
-              snackbarType: isError ? "error" : "success",
+              snackbarMessage: text,
+              snackbarType: "error"
             })
           );
         }
