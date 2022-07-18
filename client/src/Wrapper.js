@@ -5,7 +5,6 @@ import { Navigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useLocation } from "react-router-dom";
 import {
   getLoading,
   getUserInfo,
@@ -19,24 +18,30 @@ import UsersPagination from "./components/UsersPagination";
 import Materials from "./components/Materials/Materials";
 import Navbar from "./components/Navbar";
 import AddExhibit from "./components/exhibit/AddExhibit";
+import GuestExhibit from "./Pages/GuestExhibit";
 import SendLink from "./Pages/SendLink";
 import ResetPassword from "./Pages/ResetPassword";
 import ShowContributorsList from "./components/contributors/ShowContributorsList";
+import ProfileHeader from "./components/ProfileHeader/ProfileHeader";
 import { ImageIdsContext } from "./components/Dropzone/Uploader";
-
+import { useNavigate } from "react-router";
+import Button from "./components/FormsUI/Button";
+import Settings from "./Pages/Settings";
 
 function Wrapper() {
   const dispatch = useDispatch();
   const userInfo = useSelector(getUserInfo);
   const isLoading = useSelector(getLoading);
-  const location = useLocation();
+  const navigate = useNavigate();
   const token = Cookies.get("token");
+
 
   const { role } = userInfo;
   useEffect(() => {
     const id = Cookies.get("id");
     token && id && dispatch(getMeCall({ id: +id, token }));
   }, []);
+
 
   if (isLoading) {
     return <LinearProgress />;
@@ -69,15 +74,19 @@ function Wrapper() {
     );
   }
 
-    return (
+  return (
+    <>
+      <ProfileHeader />
       <Routes>
         <Route path="exhibit-view" element={<AddExhibit id={userInfo.id} />} />
         <Route path="main" element={<Profile role={userInfo.role} />} />
-        <Route path="addexhibit" element={<AddExhibit id={userInfo.id} />} />
-
+        <Route path="addexhibit" element={<AddExhibit id={userInfo.id} />} />        
+        <Route path="settings" element={<Settings id={userInfo.id} />} />
+        <Route path="main/:exhibitId" element={<GuestExhibit />} />
         <Route path="*" element={<Navigate to="main" />} />
       </Routes>
-    );
+    </>
+  );
 }
 
 export default Wrapper;

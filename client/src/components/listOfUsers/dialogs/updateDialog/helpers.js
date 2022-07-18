@@ -15,7 +15,7 @@ export const getQueries = (searchParams, arr) => {
 }
 
 export const getExhbitQueries = (searchParams) => {
-    const queryNames = ['page', 'limit', 'contains', 'sortBy', 'material', 'category'];
+    const queryNames = ['page', 'limit', 'contains', 'sortBy', 'material', 'category', 'isActive'];
 
     queryNames.forEach((query) => {
         const value = searchParams.get(query);

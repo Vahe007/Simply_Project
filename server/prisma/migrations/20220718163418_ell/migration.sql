@@ -11,6 +11,7 @@ CREATE TABLE `User` (
     `role` ENUM('EMPLOYEE', 'ADMIN', 'GUEST') NOT NULL DEFAULT 'GUEST',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `profileImage` VARCHAR(191) NULL,
     `key` VARCHAR(191) NULL,
 
     UNIQUE INDEX `User_email_key`(`email`),

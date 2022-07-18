@@ -20,10 +20,12 @@ import {
   initialStateOfNames,
 } from "./helpers";
 import { useCustomImageUpload } from "../Dropzone/ImageUploadContext.js";
+import { Navigate, useNavigate } from "react-router-dom";
 import Content from "./Content.js";
 
 const AddExhibitForm = ({ userId }) => {
-  const { uploadedImages, imageIdsToDelete } = useCustomImageUpload();
+  const navigate = useNavigate();
+  const { uploadedImages } = useCustomImageUpload();
   const { exhibit } = useExhibit();
   const dispatch = useDispatch();
   const { allContributors } = useSelector(selectContributors);
@@ -75,7 +77,8 @@ const AddExhibitForm = ({ userId }) => {
     } else {
       dispatch(update_getExhibit({ id: exhibit.id, exhibitInfo: values }));
     }
-    setSelectedContributorsIds([]);
+    setSelectedContribursIds([]);
+    navigate("/main");
   };
   const formik = useFormik({
     initialValues,

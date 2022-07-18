@@ -41,6 +41,7 @@ const exhibitObj = {
         isActive: true,
       },
     },
+    images:true,
     category: true,
   },
 }
@@ -68,12 +69,20 @@ export const getAllExhibitsDB = async (query) => {
       acquisitionPeriod: 'desc',
     },
   }
-  const { page = 1, limit = 10, sortBy, contains = '', material = '', category = '' } = query
+  if (query.isActive === 'true') {
+    query.isActive = true
+  } else if (query.isActive === 'false') {
+    query.isActive = false
+  } else {
+    query.isActive = undefined
+  }
+  const { page = 1, limit = 10, sortBy, contains = '', material = '', category = '', isActive } = query
 
   const count = await exhibit.count()
-
+  console.log('isActive', isActive);
   const filteredExhibits = {
     where: {
+      isActive,
       material: {
         materialName: {
           contains: material,
@@ -294,6 +303,23 @@ export const updateExhibitDB = async (data, exhibitId) => {
   const idsToDelete = deletedRowOfRelationTable.map((obj) => obj.id)
 
   try {
+
+    const imgIds = imageIds.map((id) => ({ id }))
+    const contributorsOfspecificExhibit = await contributorsOfExhibits.findMany({
+      where: {
+        exhibitId,
+      },
+    })
+
+    const arrayOfObjectWIthIdContId = contributorsOfspecificExhibit.map(({ id, contributorId }) => ({
+      id,
+      contributorId,
+    }))
+    const deletedRowOfRelationTable = arrayOfObjectWIthIdContId.filter(
+      (idOfContributors) => !existingContributorsIds.includes(idOfContributors.contributorId)
+    )
+
+    const idsToDelete = deletedRowOfRelationTable.map((obj) => obj.id)
     if (idsToDelete.length) {
       await contributorsOfExhibits.deleteMany({
         where: {

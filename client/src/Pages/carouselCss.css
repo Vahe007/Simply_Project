@@ -1,0 +1,13 @@
+.alice-carousel ul li img{
+    height: 400px;
+    width: 100%;
+    object-fit: cover;
+  }
+  .alice-carousel{
+    background: #ccc;
+  }
+  .alice-carousel img{
+    height: 400px;
+    width: 100%;
+    object-fit: cover;
+  }

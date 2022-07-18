@@ -90,7 +90,7 @@ export const sendActivationKey = (recipient, link) => {
       from: process.env.EMAIL,
       to: recipient,
       subject: "Password Rest",
-      html: `<b>${link}</b>`,
+      html: `<button>${link}</button>`,
     }
 
     transporter.sendMail(mailOptions);

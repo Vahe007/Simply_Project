@@ -77,7 +77,6 @@ export const sendKey = async (req, res, next) => {
 
   try {
     const data = await sendKeyDB(email);
-
     if (data.data) {
       sendActivationKey(email, data.data.link);
     }
@@ -94,7 +93,6 @@ export const verifyUser = async (req, res, next) => {
   try {
     const data = await verifyUserDB(+id, token);
     res.status(200).json(responseDataCreator(data));
-
   }
   catch (error) {
     next(error);

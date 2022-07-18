@@ -171,10 +171,10 @@ const getUser = createSlice({
 
     [sendLink.fulfilled]: (state, { payload }) => {
       const { message = "" } = payload.error || {};
-      console.log("messasgeee", message);
       state.message = {
         isError: !!message,
         text: message,
+        type: "send"
       };
     },
 

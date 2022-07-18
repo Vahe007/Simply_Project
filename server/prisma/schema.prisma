@@ -21,6 +21,7 @@ model User {
   exhibitsUpdated Exhibit[] @relation("updater")
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @default(now()) @updatedAt
+  profileImage    String?
   key             String?
 }
 

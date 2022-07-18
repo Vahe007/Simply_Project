@@ -102,9 +102,9 @@ function Form({ initialValues, fields, validationSchema, headTitle, btnTitle, li
                   <TextField fullWidth={true} key={index} formik={formik} {...inputAllProps(field, formik, isVisible, changeVisibility, message)} />
                 );
               })}
-              {/* <Typography sx={{ color: 'red', textAlign: 'center' }}>
-                {message}
-              </Typography> */}
+              <Typography sx={{ color: 'red', textAlign: 'center' }}>
+                {message.text}
+              </Typography>
               <Button fullWidth={true} type="submit" sx={{ mt: "15px" }}>
                 {btnTitle}
               </Button>
@@ -120,13 +120,3 @@ function Form({ initialValues, fields, validationSchema, headTitle, btnTitle, li
 
 
 export default Form;
-
-// key={index}
-// name={field}
-// label={`${field.charAt(0).toUpperCase()}${field.slice(1)}`}
-// margin="normal"
-// onChange={formik.handleChange}
-// value={formik.values[field]}
-// error={formik.errors[field]}
-// touched={formik.touched[field]}
-// onBlur={formik.handleBlur}
