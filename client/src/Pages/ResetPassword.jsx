@@ -48,7 +48,8 @@ const ResetPassword = () => {
 
     const formik = useFormik({
         initialValues: {
-            newPass: ""
+            newPass: "",
+            key: ""
         },
         validationSchema: resetingPasswordSchema,
         onSubmit,
@@ -61,6 +62,7 @@ const ResetPassword = () => {
                         <Typography style={{ textAlign: "center", margin: "20px" }} component="h2" variant="h5">
                             Reseting Password
                         </Typography>
+                        <TextField sx={{ m: "20px" }} fullwidth="false" name="key" formik={formik} label="Input Key" />
                         <TextField sx={{ m: "20px" }} fullwidth="false" name="newPass" formik={formik} label="New Password" />
                         <Button sx={{ m: "20px" }} type="submit">Reset Password</Button>
                     </Box>

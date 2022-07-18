@@ -100,6 +100,7 @@ const ListUsers = () => {
     delete userClone.exhibitsUpdated;
     delete userClone.password;
     delete userClone.isActive;
+    delete userClone.key;
     userClone.EditBtn = (
       <ButtonMUI
         color="primary"

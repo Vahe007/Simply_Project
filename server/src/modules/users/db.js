@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import { exclude, generateAccessToken, sendActivationKey } from "../../helpers/common.js"
 import { ERROR_MESSAGES } from "../../helpers/constants.js";
 import jwt from 'jsonwebtoken'
+import { v4 as uuid } from 'uuid';
 
 
 const { user } = prisma
@@ -280,9 +281,21 @@ export const sendKeyDB = async (email) => {
     }
     const token = generateAccessToken(foundUser.id, foundUser.role);
     const link = `http://localhost:3000/reset-password/${foundUser.id}/${token}`;
+    const key = uuid();
+
+    const a = await user.update({
+      where: {
+        id: +foundUser.id
+      },
+      data: {
+        key
+      }
+    })
+
+    console.log("newUser", a);
 
     return {
-      data: { link },
+      data: { link, key },
       error: null
     }
   }
@@ -324,7 +337,7 @@ export const verifyUserDB = async (id, token) => {
   }
 }
 
-export const resetPasswordDB = async (newPass, userToken, id) => {
+export const resetPasswordDB = async (newPass, userToken, id, key) => {
   try {
     const verified = await verifyUserDB(id, userToken);
     if (verified?.error) {
@@ -338,6 +351,12 @@ export const resetPasswordDB = async (newPass, userToken, id) => {
         id
       }
     });
+    if (foundUser.key !== key) {
+      return {
+        data: null,
+        error: {message: ERROR_MESSAGES.INCORRECT_KEY}
+      }
+    }
     const validPassword = bcrypt.compareSync(newPass, foundUser.password)
     if (validPassword) {
       return {
@@ -352,7 +371,7 @@ export const resetPasswordDB = async (newPass, userToken, id) => {
         id
       },
       data: {
-        password: hashedPassword
+        password: hashedPassword,
       }
     })
     const token = generateAccessToken(updatedUser.role, updatedUser.id);

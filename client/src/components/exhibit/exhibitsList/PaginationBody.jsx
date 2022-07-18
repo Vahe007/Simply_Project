@@ -23,7 +23,7 @@ const PaginationBody = () => {
     const loading = useSelector(getLoading);
 
     const onSwitchChange = (e, id, isActive, materialName) => {
-        // e.stopPropogation()  //?????????????????????
+        e.stopPropagation();
         dispatch(
             update_getExhibit({
                 id,

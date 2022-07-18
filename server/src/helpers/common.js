@@ -76,7 +76,7 @@ export function exclude(obj, options) {
 }
 
 
-export const sendActivationKey = (recipient, link) => {
+export const sendActivationKey = async (recipient, link, key) => {
   try {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -85,15 +85,33 @@ export const sendActivationKey = (recipient, link) => {
         pass: process.env.PASSWORD
       }
     })
+    const _dirname = path.resolve();
+
+    const file = fs.readFileSync(`${_dirname}/public/emailHtml/index.html`, 'utf8', (error, data) => {
+      if (error) {
+        console.log('error', error);
+      }
+      else {
+        return data;
+      }
+    })
+
+    const html = file.replace("reset-password", link).replace("verificationKey", key)
+
+    console.log('html', html);
+
 
     const mailOptions = {
-      from: process.env.EMAIL,
+      from: {
+        name: "HISTORY MUSEUM OF ARMENIA",
+        address: process.env.EMAIL
+      },
       to: recipient,
       subject: "Password Rest",
-      html: `<button>${link}</button>`,
+      html,
     }
 
-    transporter.sendMail(mailOptions);
+    await transporter.sendMail(mailOptions);
   }
   catch (error) {
     console.log("error", error);
