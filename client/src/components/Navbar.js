@@ -9,6 +9,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Cookies from "js-cookie";
 import MainDialog from "./listOfUsers/dialogs/helpers/MainDialog";
+import { AppBar } from "@material-ui/core";
 
 function Navbar() {
   const [auth, setAuth] = React.useState(true);
@@ -40,55 +41,57 @@ function Navbar() {
   }
 
   return (
-    <nav className={classes.header}>
-      {open && <MainDialog {...dialogAttributes} />}
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-        <div>
-          <Link to="main/users">
-            <Button className={classes.buttonHeader}>USERS</Button>
-          </Link>
-          <Link to="main/materials">
-            <Button className={classes.buttonHeader}>MATERIALS</Button>
-          </Link>
-          <Link to="main/contributors">
-            <Button className={classes.buttonHeader}>CONTRIBUTORS</Button>
-          </Link>
-        </div>
-
-        {auth && (
+    <AppBar color="primary" position="sticky" style={{marginBottom: "10px"}}>
+      {/* <nav className={classes.header}> */}
+        {open && <MainDialog {...dialogAttributes} />}
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <div>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={() => setOpen(true)}>Log Out</MenuItem>
-            </Menu>
+            <Link to="main/users">
+              <Button className={classes.buttonHeader}>USERS</Button>
+            </Link>
+            <Link to="main/materials">
+              <Button className={classes.buttonHeader}>MATERIALS</Button>
+            </Link>
+            <Link to="main/contributors">
+              <Button className={classes.buttonHeader}>CONTRIBUTORS</Button>
+            </Link>
           </div>
-        )}
-      </Box>
-    </nav>
+
+          {/* {auth && ( */}
+            <div>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                <MenuItem onClick={() => setOpen(true)}>Log Out</MenuItem>
+              </Menu>
+            </div>
+          {/* )} */}
+        </Box>
+      {/* </nav> */}
+    </AppBar>
   );
 }
 

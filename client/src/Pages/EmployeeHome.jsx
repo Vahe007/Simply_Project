@@ -15,6 +15,7 @@ import ExhibitsPagination from "../components/exhibit/exhibitsList/ExhibitsPagin
 
 const Employee = () => {
   const exhibit = useExhibit();
+  const navigate = useNavigate();
   
   useEffect(() => {
     exhibit.setExhibit(null);
@@ -22,6 +23,7 @@ const Employee = () => {
 
   return (
     <div style={{margin: '50px'}}>
+      <Button onClick={() => navigate("/addexhibit")}>Add Exhibit</Button>
       <ExhibitsPagination />
     </div>
   );

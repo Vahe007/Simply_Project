@@ -58,7 +58,7 @@ const ProfileHeader = () => {
   }
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky" >
       {open && <MainDialog {...dialogAttributes} />}
       <Container maxWidth="xl">
         <Toolbar disableGutters>

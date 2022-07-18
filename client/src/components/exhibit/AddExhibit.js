@@ -14,7 +14,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import {
-  createExhibit,
+  create_getExhibit,
   update_getExhibit,
 } from "../../redux/features/exhibits/exhibitsSlice";
 import { useDispatch } from "react-redux";
@@ -112,7 +112,7 @@ const AddExhibitForm = ({ userId }) => {
     values.imageIds = uploadedImages.map((uploadedImg) => uploadedImg.id);
     if (!exhibit) {
       dispatch(
-        createExhibit({
+        create_getExhibit({
           ...values,
           userId,
         })

@@ -7,14 +7,15 @@ export const getExhibitsPerPage = createAsyncThunk("exhibits", async ({ page = 1
     return response.json()
 })
 
-export const createExhibit = createAsyncThunk("addExhibit", async (data) => {
-    const response = await fetch(`${BASE_URL}exhibits`, {
+export const create_getExhibit = createAsyncThunk("addExhibit", async (data) => {
+    await fetch(`${BASE_URL}exhibits`, {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
             'Content-Type': 'application/json'
         }
     });
+    const response = await fetch(`${BASE_URL}exhibits`);
     return response.json();
 })
 
@@ -89,13 +90,16 @@ const exhibits = createSlice({
         },
 
 
-        [createExhibit.pending]: (state) => {
+        [create_getExhibit.pending]: (state) => {
             state.loading = true;
         },
-        [createExhibit.fulfilled]: (state) => {
+        [create_getExhibit.fulfilled]: (state, {payload}) => {
+            state.exhibitsPerPage = payload.data.exhibitsPerPage;
+            state.count = payload.data.count;
+            state.filteredCount = payload.data.filteredCount;
             state.loading = false;
         },
-        [createExhibit.rejected]: (state) => {
+        [create_getExhibit.rejected]: (state) => {
             state.loading = false;
         }
     }
