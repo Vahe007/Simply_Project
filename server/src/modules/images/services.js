@@ -29,7 +29,6 @@ export const uploadImage = async (req, res, next) => {
     const file = await uploadImageDB(data)
     res.json(responseDataCreator(file))
   } catch (error) {
-    console.log(error);
     next(error)
   }
 }
