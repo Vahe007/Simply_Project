@@ -23,6 +23,7 @@ function MainDialog(props) {
         <CloseIcon fontSize="large" onClick={onClose} />
         <DialogTitle>{title}</DialogTitle>
 
+
         <DialogContent sx={{ paddingTop: "10px !important" }}>
           {content}
         </DialogContent>
@@ -32,3 +33,16 @@ function MainDialog(props) {
 }
 
 export default MainDialog;
+
+
+//deleteId is removed from row 23 and 30
+// {deleteId && (
+//   <DialogActions>
+//     <Button onClick={onConfirm} disabled={disabled || false}>
+//       yes
+//     </Button>
+//     <Button onClick={onClose} autoFocus>
+//       cancel
+//     </Button>
+//   </DialogActions>
+// )}
