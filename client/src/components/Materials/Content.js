@@ -17,7 +17,7 @@ function Content({ setFieldError }) {
       const arr = allMaterials.map((material) =>
         material.materialName.toLowerCase()
       );
-      error.existingMaterials.forEach((el, i) => {
+      error.existingMaterials?.forEach((el, i) => {
         if (arr.includes(el)) {
           setFieldError(`materialNames[${i}]`, error.message);
         }

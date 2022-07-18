@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Grid } from "@mui/material";
 import React from "react";
 import Select from "../../FormsUI/Select";
@@ -7,11 +7,13 @@ import Button from "../../FormsUI/Button";
 import { selectUsers } from "../../../../redux/features/users/usersSlice";
 import { useSelector } from "react-redux";
 import { classes } from "../../../../styles/usersListStyles";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 function Content({ helperText, setFieldError }) {
   const { error } = useSelector(selectUsers);
-
   useEffect(() => {
+    console.log(error);
     if (error && error.message === "Email is already registered") {
       setFieldError("email", error.message);
     }
@@ -34,12 +36,13 @@ function Content({ helperText, setFieldError }) {
             />
             <TextField
               name="email"
-              label="email"
+              label="Email"
               className={classes.textField}
             />
+
             <TextField
               name="phoneNumber"
-              label="phoneNumber"
+              label="Phone number"
               className={classes.textField}
             />
             <Select

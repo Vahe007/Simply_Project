@@ -67,7 +67,10 @@ export const updateAndGetUsers = createAsyncThunk(
       }&isActive=${isActive}`
     );
 
-    return response2.json();
+    return {
+      updateUserResponse: await response.json(),
+      getUsersResponse: await response2.json(),
+    };
   }
 );
 
@@ -142,8 +145,10 @@ export const usersSlice = createSlice({
       state.loading = true;
     },
 
-    [updateAndGetUsers.fulfilled]: (state, action) => {
-      const { error } = action.payload;
+    [updateAndGetUsers.fulfilled]: (state, { payload }) => {
+      const { error } = payload.updateUserResponse;
+      const { data } = payload.getUsersResponse;
+      console.log(error);
       if (error && error.code === "P2002") {
         state.error = {
           isError: true,
@@ -155,7 +160,7 @@ export const usersSlice = createSlice({
           message: "",
         };
       }
-      state.usersPerPage = action.payload.data.usersPerPage;
+      state.usersPerPage = data.usersPerPage;
       state.loading = false;
     },
 

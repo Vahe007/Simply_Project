@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { v4 as uuid } from "uuid";
 import { getTableRowUtilityClass } from "@mui/material";
+import { useCustomSearchParams } from "./SearchParamsContext";
 
 function MainTable(props) {
   const { headRow, data, ...otherProps } = props;

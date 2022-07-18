@@ -37,7 +37,7 @@ export const uploadImageDB = async (data) => {
 
 export const getImagesByExhibitIdlDB = async ({ exhibitId, isActive }) => {
   const whereObj = {
-    itemId: +exhibitId,
+    exhibitId: +exhibitId,
   }
 
   if (isActive === 'true') {

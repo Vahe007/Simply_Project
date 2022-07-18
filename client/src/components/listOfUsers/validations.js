@@ -31,26 +31,8 @@ export const editUserSchema = Yup.object().shape({
       (val) => String(val).length === 8
     ),
 
-  // role: Yup.string().required('Required')
-
-  password: Yup.string()
-    .required("Required")
-    .min(8, "Password is too short - should be 8 chars minimum.")
-    .matches(
-      /[a-zA-Z]/,
-      "Password can contain at least one lower case, one uppercase and one number."
-    ),
+  role: Yup.string().required("Required"),
 });
-
-// exhibitName
-// placeOfOrigin
-// creationPeriod
-// acquisitionPeriod
-// width
-// height
-// length
-// diameter
-// description
 
 export const addExhibitSchema = Yup.object().shape({
   fundNumber: Yup.string()

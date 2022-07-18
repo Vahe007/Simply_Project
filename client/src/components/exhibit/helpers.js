@@ -43,7 +43,6 @@ export const cloneArr = (arr, excludedElement, addedElement) => {
 };
 
 export const initialStateOfNames = (exhibit, contributors) => {
-  console.log(contributors);
   if (contributors.length && exhibit && exhibit.contributors.length) {
     return exhibit.contributors.map((contributor) => {
       const { contributorName, contributorSurname } = contributors.find(

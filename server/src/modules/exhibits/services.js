@@ -48,6 +48,7 @@ export const updateExhibit = async (req, res, next) => {
     const updatedExhibit = await updateExhibitDB(req.body, +req.params.id)
     res.json(responseDataCreator(updatedExhibit))
   } catch (error) {
+    console.log(error)
     next(error)
   }
 }
