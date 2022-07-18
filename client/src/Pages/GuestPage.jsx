@@ -11,6 +11,7 @@ import RootRef from '@material-ui/core/RootRef';
 import {  TextField, IconButton } from '@material-ui/core';
 import Loading from "../components/Loading/Loading";
 import SearchIcon from '@mui/icons-material/Search';
+import notfound from "../assets/not_found.jpg"
 const GuestPage = ()=>{
     const [query, setQuery] = useState('')
     const [pageNumber, setPageNumber] = useState(1)
@@ -65,17 +66,21 @@ const GuestPage = ()=>{
                     />
                 </Grid>
                     {
-                    exhibits.length === 0 
-                    ? <Grid sx={{ flexGrow: 1 }} container spacing={2} py={2} px={3}><Loading /></Grid>
-                    : exhibits.map((exhibit, index) => {
+                    exhibits.length > 0 
+                    
+                    ? exhibits.map((exhibit, index) => {
                         return index === exhibits.length - 1 ? <Grid  key={exhibit.id} item md={3}><RootRef rootRef={lastExhibitElementRef}><Link to={`/main/${exhibit?.id}`} ><ExhibitCard  exhibit={exhibit}/></Link></RootRef></Grid> : <Grid key={exhibit.id} md={3} item ><Link to={`/main/${exhibit?.id}`} ><ExhibitCard   exhibit={exhibit} /></Link></Grid>
                 
                     })
+                    
+                    : exhibits.length === 0 && loading 
+                        ? <Grid sx={{ flexGrow: 1 }} container spacing={2} py={2} px={3}><Loading /></Grid>
+                        : <img src={notfound} alt="not_found" style={{width:300}} /> 
                     }
 
                 {loading && <Grid align={'center'} item xs={12}><CircularProgress /></Grid>}
                 {error && 'Error'}
-
+                
             </Grid>
     </Container>
     )
