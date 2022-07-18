@@ -64,7 +64,7 @@ const GuestPage = ()=>{
         </Grid>
             {
             exhibits.map((exhibit, index) => {
-                return index === exhibits.length - 1 ? <Grid  key={exhibit.id} item md={3}><RootRef rootRef={lastExhibitElementRef}><Link to={`/${exhibit?.id}`} ><ExhibitCard  exhibit={exhibit}/></Link></RootRef></Grid> : <Grid key={exhibit.id} md={3} item ><Link to={`/${exhibit?.id}`} ><ExhibitCard   exhibit={exhibit} /></Link></Grid>
+                return index === exhibits.length - 1 ? <Grid  key={exhibit.id} item md={3}><RootRef rootRef={lastExhibitElementRef}><Link to={`${exhibit?.id}`} ><ExhibitCard  exhibit={exhibit}/></Link></RootRef></Grid> : <Grid key={exhibit.id} md={3} item ><Link to={`${exhibit?.id}`} ><ExhibitCard   exhibit={exhibit} /></Link></Grid>
         
             })
             }

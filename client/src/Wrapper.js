@@ -16,6 +16,7 @@ import UsersPagination from "./components/UsersPagination";
 import Materials from "./components/Materials/Materials";
 import Navbar from "./components/Navbar";
 import AddExhibit from "./components/exhibit/AddExhibit";
+import GuestExhibit from "./Pages/GuestExhibit";
 
 const requireAuth = ["/users/admin", "/users/guest", "/users/employee"];
 
@@ -64,13 +65,13 @@ function Wrapper() {
     );
   }
 
-  if (role === "EMPLOYEE") {
+  if (token ) {
     return (
       <Routes>
         <Route path="exhibit-view" element={<AddExhibit id={userInfo.id} />} />
         <Route path="main" element={<Profile role={userInfo.role} />} />
         <Route path="addexhibit" element={<AddExhibit id={userInfo.id} />} />
-
+        <Route path=":exhibitId" element={<GuestExhibit />} />
         <Route path="*" element={<Navigate to="main" />} />
       </Routes>
     );
