@@ -78,7 +78,6 @@ export const getAllExhibitsDB = async (query) => {
   const { page = 1, limit = 10, sortBy, contains = '', material = '', category = '', isActive } = query
 
   const count = await exhibit.count()
-  console.log('isActive', isActive);
   const filteredExhibits = {
     where: {
       isActive,
@@ -151,7 +150,6 @@ export const createExhibitDB = async (sentData) => {
     const imgIds = imageIds.map((id) => ({ id }))
 
     const contributorsIds = existingContributorsIds.map((id) => ({ id }))
-    console.log('categoryNameee', categoryName);
 
     const newExhibit = await exhibit.create({
       data: {
@@ -205,8 +203,12 @@ export const createExhibitDB = async (sentData) => {
         },
         ...exhibitInfo,
       },
+
+
     })
-    console.log(newExhibit.id)
+    console.log("newExhibit", newExhibit);
+
+
     if (existingContributorsIds.length) {
       const z = await contributorsOfExhibits.createMany({
         data: existingContributorsIds.map((id) => ({
@@ -217,10 +219,11 @@ export const createExhibitDB = async (sentData) => {
     }
 
     return {
-      data: newExhibit,
+      data: {},
       error: null,
     }
   } catch (error) {
+    console.log("error", error);
     return {
       data: null,
       error,

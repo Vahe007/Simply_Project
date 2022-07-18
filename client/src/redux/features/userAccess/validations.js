@@ -46,3 +46,9 @@ export const resetingPasswordSchema = Yup.object().shape({
 export const emailLinkValidationSchema = Yup.object().shape({
   email: Yup.string().email("Email is not valid").required("required!")
 })
+
+export const resetingPasswordInProfile = Yup.object().shape({
+  oldPass: Yup.string().required('Required'),
+  newPass: Yup.string().min(4, "Too Short!").required('Required'),
+})
+

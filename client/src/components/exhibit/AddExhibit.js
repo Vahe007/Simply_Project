@@ -128,7 +128,7 @@ const AddExhibitForm = ({ userId }) => {
       dispatch(update_getExhibit({ id: exhibit.id, exhibitInfo: values }));
     }
     setSelectedContribursIds([]);
-    navigate('/main');
+    // navigate('/main');
   };
   const formik = useFormik({
     initialValues,
@@ -485,7 +485,7 @@ const AddExhibitForm = ({ userId }) => {
                   freeSolo
                   id="categoryName"
                   disableClearable
-                  defaultValue={exhibit?.material.materialName}
+                  defaultValue={exhibit?.category.categoryName}
                   options={categories.map(
                     (category) => category.categoryName
                   )}
