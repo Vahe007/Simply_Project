@@ -41,6 +41,7 @@ const exhibitObj = {
         isActive: true,
       },
     },
+    images:true,
     category: true,
   },
 }
