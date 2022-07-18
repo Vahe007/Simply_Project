@@ -260,7 +260,7 @@ export const updateExhibitDB = async (data, exhibitId) => {
         },
       },
     })
-    console.log('hii')
+
     contributorsOfspecificExhibit = await contributorsOfExhibits.findMany({
       where: {
         exhibitId,
@@ -272,7 +272,6 @@ export const updateExhibitDB = async (data, exhibitId) => {
       error,
     }
   }
-  console.log(data)
   const relationTableIdContId = contributorsOfspecificExhibit.map(({ id, contributorId }) => ({
     id,
     contributorId,
@@ -340,19 +339,13 @@ export const updateExhibitDB = async (data, exhibitId) => {
         },
       },
     })
-    console.log('arrlength', arr)
     if (connectedIds.length) {
-      try {
-        const z = await contributorsOfExhibits.createMany({
-          data: connectedIds.map((id) => ({
-            contributorId: id,
-            exhibitId,
-          })),
-        })
-        console.log(z)
-      } catch (error) {
-        console.log(error)
-      }
+      const z = await contributorsOfExhibits.createMany({
+        data: connectedIds.map((id) => ({
+          contributorId: id,
+          exhibitId,
+        })),
+      })
     }
     return {
       data: updatedExhibit,
