@@ -9,41 +9,22 @@ import { useSelector, useDispatch } from "react-redux";
 import { getExhibitsPerPage } from "../redux/features/exhibits/exhibitsSlice";
 import { updateRoute } from "../redux/features/userAccess/userAccessSlice";
 import { Button } from "@mui/material";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useExhibit } from "../redux/features/exhibits/ExhibitsContextProvider";
 import ExhibitsPagination from "../components/exhibit/exhibitsList/ExhibitsPagination";
 
 const Employee = () => {
-  const auth = useAuth();
-  const navigate = useNavigate();
-  const [a, setA] = useState("");
   const exhibit = useExhibit();
-  const handleChange = ({target: {value}}) => {
-    auth.logout();
-  };
+  
   useEffect(() => {
     exhibit.setExhibit(null);
   }, [])
 
-    return (
-      <>
-        {/* <Header /> */}
-        <div>
-          <Select
-            value={a}
-            label="A"
-            onChange={handleChange}
-          >
-            <MenuItem value={true}>Logout</MenuItem>
-          </Select>
-          <Button onClick={() => {
-            navigate('/addexhibit');
-          }}>Add Exhibit</Button>
-        </div>
-        <ExhibitsPagination />
-        {/* <ExhibitsList /> */}
-      </>
-    );
+  return (
+    <div style={{margin: '50px'}}>
+      <ExhibitsPagination />
+    </div>
+  );
 };
 
 export default Employee;

@@ -9,6 +9,7 @@ import { BASE_URL } from '../../../constants';
 import Button from '../../FormsUI/Button';
 import { useExhibit } from '../../../redux/features/exhibits/ExhibitsContextProvider';
 import { getExhbitQueries } from '../../listOfUsers/dialogs/updateDialog/helpers';
+import { setSnackbar } from '../../../redux/features/snackbar/SnackbarSlice';
 
 const headRow = ['ID', 'Image', 'ExhibitName', 'Material', 'Category', 'View', 'Activate/Disactivate'];
 
@@ -21,7 +22,8 @@ const PaginationBody = () => {
     const exhibit = useExhibit();
     const loading = useSelector(getLoading);
 
-    const onSwitchChange = (id, isActive, materialName) => {
+    const onSwitchChange = (e, id, isActive, materialName) => {
+        // e.stopPropogation()  //?????????????????????
         dispatch(
             update_getExhibit({
                 id,
@@ -32,6 +34,15 @@ const PaginationBody = () => {
                 ...getExhbitQueries(searchParams),
             })
         );
+        const message = `Exhibit with ID: ${id} is ${
+            isActive ? "DEACTIVATED" : "ACTIVATED"
+        }`;
+
+        dispatch(setSnackbar({
+            snackbarOpen: true,
+            snackbarMessage: message,
+            snackbarType: "success",
+        }))
     };
     const viewExhibit = (exhibitInfo) => {
         exhibit.setExhibit(exhibitInfo);
@@ -47,7 +58,7 @@ const PaginationBody = () => {
             material: material.materialName,
             category: category.categoryName,
             btn: <Button onClick={() => viewExhibit(exhibit)}>View</Button>,
-            switch: <Switch color="primary" checked={isActive} onChange={() => onSwitchChange(id, isActive, material.materialName)} />,
+            switch: <Switch color="primary" checked={isActive} onChange={(e) => onSwitchChange(e, id, isActive, material.materialName)} />,
             history: {
                 headRows: ["Creator", "Updater", "CreatedAt", "UpdatedAt"],
                 data: [{

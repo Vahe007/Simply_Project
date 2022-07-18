@@ -23,7 +23,6 @@ function MainDialog(props) {
         <CloseIcon fontSize="large" onClick={onClose} />
         <DialogTitle>{title}</DialogTitle>
 
-
         <DialogContent sx={{ paddingTop: "10px !important" }}>
           {content}
         </DialogContent>

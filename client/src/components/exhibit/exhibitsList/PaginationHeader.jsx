@@ -9,7 +9,7 @@ import { debounce } from '../../../helpers/common';
 import FilteringSelect from '../../FilteringSelect';
 import Search from '../../Search';
 import { getExhibitsPerPage } from '../../../redux/features/exhibits/exhibitsSlice';
-import { getExhbitQueries } from '../../listOfUsers/dialogs/updateDialog/helpers';
+import { getExhbitQueries, getQueries } from '../../listOfUsers/dialogs/updateDialog/helpers';
 import MainRadioButtons from '../../listOfUsers/MainRadioButtons';
 
 const PaginationHeader = () => {
@@ -21,12 +21,12 @@ const PaginationHeader = () => {
 
 
     useEffect(() => {
-        // setSearchParams(getExhbitQueries(searchParams));
         dispatch(getMaterials());
         dispatch(getCategories());
     }, []);
 
     useEffect(() => {
+        console.log("worked");
         dispatch(getExhibitsPerPage(getExhbitQueries(searchParams)));
     }, [searchParams]);
 
@@ -62,6 +62,29 @@ const PaginationHeader = () => {
         filteredCount,
     };
 
+    const handleChange = (_, value) => {
+        switch (value) {
+          case "allExhibits": {
+            searchParams.set("page", 1);
+            setSearchParams(getQueries(searchParams, ["isActive"]));
+            break;
+          }
+    
+          case "activeExhibits": {
+            searchParams.set("page", 1);
+            searchParams.set("isActive", true);
+            setSearchParams(searchParams);
+            break;
+          }
+          case "inactiveExhibits": {
+            searchParams.set("page", 1);
+            searchParams.set("isActive", false);
+            setSearchParams(searchParams);
+            break;
+          }
+        }
+      };
+
     return (
         <>
             <Box
@@ -81,6 +104,8 @@ const PaginationHeader = () => {
                 <MainRadioButtons
                     labels={["All Exhibits", "Active Exhibits", "Inactive Exhibits"]}
                     values={["allExhibits", "activeExhibits", "inactiveExhibits"]}
+                    handleChange={handleChange}
+                    defaultValue="allExhibits"
                 />
             </div>
 
