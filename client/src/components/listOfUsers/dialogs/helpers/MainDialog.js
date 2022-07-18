@@ -20,23 +20,12 @@ function MainDialog(props) {
   return (
     <>
       <Dialog open onClose={onClose}>
-        {!deleteId && <CloseIcon fontSize="large" onClick={onClose} />}
+        <CloseIcon fontSize="large" onClick={onClose} />
         <DialogTitle>{title}</DialogTitle>
 
         <DialogContent sx={{ paddingTop: "10px !important" }}>
           {content}
         </DialogContent>
-
-        {deleteId && (
-          <DialogActions>
-            <Button onClick={onConfirm} disabled={disabled || false}>
-              yes
-            </Button>
-            <Button onClick={onClose} autoFocus>
-              cancel
-            </Button>
-          </DialogActions>
-        )}
       </Dialog>
     </>
   );

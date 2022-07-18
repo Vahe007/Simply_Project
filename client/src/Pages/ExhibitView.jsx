@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { BASE_URL } from '../constants';
-import { useExhibit } from '../features/exhibits/ExhibitsContextProvider';
+import { useExhibit } from '../redux/features/exhibits/ExhibitsContextProvider';
 import { Paper, Button } from '@mui/material'
 import Box from "@mui/material/Box";
 import TextField from '../components/FormsUI/TextField';
 import { useFormik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { update_getExhibit } from '../features/exhibits/exhibitsSlice';
-import { getMaterials } from '../features/filteringFeatures/filteringFeaturesSlice';
+import { update_getExhibit } from '../redux/features/exhibits/exhibitsSlice';
+import { getMaterials } from '../redux/features/filteringFeatures/filteringFeaturesSlice';
 import { useSearchParams } from 'react-router-dom';
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -28,9 +28,7 @@ const stringFields = [
 ];
 
 const ExhibitView = ({id: userId}) => {
-  console.log(userId);
   const exhibit = useExhibit();
-  console.log(exhibit);
   const dispatch = useDispatch();
   const [uploadedImages, setUploadedImages] = useState([]);
 
@@ -44,11 +42,9 @@ const ExhibitView = ({id: userId}) => {
   }
 
   const onSubmit = (values) => {
-    console.log(values);
     dispatch(update_getExhibit({ exhibitInfo: values, id: exhibit.id }))
   }
   const onUploadImage = ({ target: { value, files } }) => {
-    console.log(files[0])
     setUploadedImages([...uploadedImages, value]);
   }
   const formik = useFormik({

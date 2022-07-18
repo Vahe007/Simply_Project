@@ -3,7 +3,7 @@ import { useState, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import CircularProgress from '@mui/material/CircularProgress';
 import useExhibitSearch from '../hooks/useExhibitSearch'
-import ExhibitCard from '../components/ExhibitCard/ExhibitCard'
+import ExhibitCard from '../components/exhibit/ExhibitCard/ExhibitCard'
 import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';

@@ -16,16 +16,14 @@ export const getAllImagesDB = async () => {
   }
 }
 export const uploadImageDB = async (data) => {
-  const imagePaths = data.map((z) => z.path)
+  const imagePath = data.path
   try {
-    const files = await image.createMany({
+    const file = await image.create({
       data,
-      skipDuplicates: true,
     })
-    console.log(files)
+
     return {
-      data: files,
-      imagePaths,
+      imageInfo: file,
       error: null,
     }
   } catch (error) {

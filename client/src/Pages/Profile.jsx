@@ -1,7 +1,7 @@
 import React from 'react'
 import EmployeeHome from './EmployeeHome';
 import UsersPagination from '../components/UsersPagination';
-import GuestPage from './GuestPage';
+import GuestPage from "./GuestPage";
 
 const Profile = ({id, role, setExhibit}) => {
     if (role === "EMPLOYEE") {
@@ -10,8 +10,8 @@ const Profile = ({id, role, setExhibit}) => {
     else if (role === "ADMIN") {
         return <UsersPagination  />
     }
-    else if (role === "GUEST") {
-        return <GuestPage  />
+    else if(role === "GUEST") {
+        return <GuestPage />
     }
 }
 

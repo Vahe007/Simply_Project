@@ -5,7 +5,7 @@ import App from './UsersPagination';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './app/store.js';
-import UsersContextProvider from './features/users/UsersContextProvider';
+import UsersContextProvider from './redux/features/users/UsersContextProvider';
 import { AlertsContextProvider } from './components/alerts/AlertMessage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

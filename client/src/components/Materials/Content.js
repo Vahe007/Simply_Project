@@ -4,17 +4,25 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { FieldArray } from "formik";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { classes } from "../../styles/materialsStyle";
-import { selectMaterials } from "../../features/materials/materialsSlice";
+import { selectMaterials } from "../../redux/features/materials/materialsSlice";
 import { useSelector } from "react-redux";
 import { useEffect } from "react";
+import CloseIcon from "@mui/icons-material/Close";
 
 function Content({ setFieldError }) {
-  const { error } = useSelector(selectMaterials);
+  const { error, allMaterials } = useSelector(selectMaterials);
   useEffect(() => {
-    if (error && error.message === "Email is already registered") {
-      setFieldError("materialNames[1]", error.message);
+    if (error && error.code === "P2002") {
+      allMaterials.some((material) => {});
+      const arr = allMaterials.map((material) =>
+        material.materialName.toLowerCase()
+      );
+      error.existingMaterials.forEach((el, i) => {
+        if (arr.includes(el)) {
+          setFieldError(`materialNames[${i}]`, error.message);
+        }
+      });
     }
-    console.log(error);
   }, [error]);
   return (
     <>
@@ -23,24 +31,25 @@ function Content({ setFieldError }) {
           const { push, remove, form } = fieldArrayProps;
           const { values } = form;
           const { materialNames } = values;
-
           return (
             <div>
-              <AddCircleIcon fontSize="large" onClick={() => push("")} />
               {materialNames.map((_, index) => {
                 return (
                   <div className={classes.inputContainer} key={index}>
                     <TextField
                       name={`materialNames[${index}]`}
                       placeholder="Material name"
+                      sx={{ marginBottom: "20px" }}
                     />
-                    <DeleteIcon
-                      onClick={() => remove(index)}
-                      fontSize="large"
-                    />
+                    <CloseIcon onClick={() => remove(index)} fontSize="large" />
                   </div>
                 );
               })}
+              <AddCircleIcon
+                className={classes.addCircleIcon}
+                fontSize="large"
+                onClick={() => push("")}
+              />
             </div>
           );
         }}
@@ -52,5 +61,3 @@ function Content({ setFieldError }) {
 }
 
 export default Content;
-
-

@@ -13,14 +13,14 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Button from "../../../components/FormsUI/Button";
 import Dialog from "../../../components/Dialog";
 import { useDispatch, useSelector } from "react-redux";
-import { update_getExhibit } from "../../../features/exhibits/exhibitsSlice";
+import { update_getExhibit } from "../../../redux/features/exhibits/exhibitsSlice";
 import Switch from "@mui/material/Switch";
 import { Formik } from "formik";
 import { Navigate, useNavigate } from "react-router-dom";
 import { Grid } from "react-loader-spinner";
 import { BASE_URL } from "../../../constants";
 import { useEffect } from "react";
-import { getImage } from "../../../features/images/imagesSlice";
+import { getImage } from "../../../redux/features/images/imagesSlice";
 
 
 
