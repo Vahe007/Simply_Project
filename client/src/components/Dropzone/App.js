@@ -59,7 +59,6 @@ function App() {
                 <>
                   {exhibit && (
                     <>
-                      <b>CurrentImages: {exhibit.images.length}</b>
                       <div style={{ display: "flex", overflowX: "scroll" }}>
                         <CurrentImages />
                       </div>

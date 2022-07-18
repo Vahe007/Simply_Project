@@ -12,20 +12,15 @@ import {
   TextField,
 } from "@material-ui/core";
 import { cloneArr } from "./helpers";
-import { DateTimePicker } from "@mui/x-date-pickers";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { Stack } from "@mui/material";
 import { Autocomplete } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Dropzone from "../Dropzone/App";
-import { useState } from "react";
 import { useExhibit } from "../../redux/features/exhibits/ExhibitsContextProvider";
 import { useSelector } from "react-redux";
 import { selectContributors } from "../../redux/features/contributors/contributorsSlice";
 import { selectMaterials } from "../../redux/features/materials/materialsSlice";
 import { useCustomImageUpload } from "../Dropzone/ImageUploadContext";
-import { classes } from "../../styles/AddExhibitFormStyle";
 import { isDisabled } from "./services";
 
 function Content(props) {
@@ -44,9 +39,6 @@ function Content(props) {
   const { filteredMaterials } = useSelector(selectMaterials);
   const currentImageInfos = exhibit?.images;
 
-  const [datetimeValue, setDatetimeValue] = useState(
-    new Date("2014-08-18T21:11:54")
-  );
   const onSelectChange = (event) => {
     const {
       target: { value },
@@ -69,10 +61,6 @@ function Content(props) {
       ]);
       setSelectedContributorsIds([...selectedContributorsIds, lastSelectedId]);
     }
-  };
-
-  const onDatetimeChange = (newValue) => {
-    setDatetimeValue(newValue);
   };
 
   return (
@@ -153,7 +141,7 @@ function Content(props) {
 
           {
             <div className={classes.contributorFormContainer}>
-              <FormControl sx={{ m: 1, width: 300 }}>
+              <FormControl>
                 <Select
                   labelId="demo-multiple-checkbox-label"
                   id="demo-multiple-checkbox"
@@ -163,6 +151,7 @@ function Content(props) {
                   name="existingContributorsIds"
                   onChange={onSelectChange}
                   value={selectedContributorName}
+                  sx={{ width: "500px" }}
                 >
                   {allContributors.map(
                     ({
@@ -355,20 +344,6 @@ function Content(props) {
               />
             </Stack>
           </div>
-        </div>
-
-        <div className={classes.labelTextFieldWrapper}>
-          <div className={classes.title}>
-            <b>Aquistion Period</b>
-          </div>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DateTimePicker
-              label="Date&Time picker"
-              value={datetimeValue}
-              onChange={onDatetimeChange}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
         </div>
 
         <Dropzone currentImageInfos={currentImageInfos} />

@@ -21,7 +21,8 @@ const SelectWrapper = (props) => {
     onChange: onSelectchange,
   };
 
-  if (meta && meta.error) {
+  if (meta && meta.touched && meta.error) {
+    console.log("hi");
     configSelect.error = true;
     configSelect.helperText = meta.error;
   }

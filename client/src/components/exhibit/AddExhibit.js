@@ -85,15 +85,15 @@ const AddExhibitForm = ({ userId }) => {
 
   return (
     <div className={classes.mainContainer}>
-        <Content
-          classes={classes}
-          formik={formik}
-          selectedContributorsIds={selectedContributorsIds}
-          initialContributorsIds={initialContributorsIds}
-          setSelectedContributorsIds={setSelectedContributorsIds}
-          selectedContributorName={selectedContributorName}
-          setSelectedContributorName={setSelectedContributorName}
-        />
+      <Content
+        classes={classes}
+        formik={formik}
+        selectedContributorsIds={selectedContributorsIds}
+        initialContributorsIds={initialContributorsIds}
+        setSelectedContributorsIds={setSelectedContributorsIds}
+        selectedContributorName={selectedContributorName}
+        setSelectedContributorName={setSelectedContributorName}
+      />
     </div>
   );
 };

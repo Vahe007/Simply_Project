@@ -20,9 +20,14 @@ export default function ListMaterials({ searchParams, setSearchParams }) {
   const { filteredMaterials, error } = useSelector(selectMaterials);
   const [inputValues, setInputValues] = useState({});
   const [showEditIds, setShowEditIds] = useState([]);
-
+  const [initial, setInitial] = useState(true);
   useEffect(() => {
-    if (error.isError) {
+    setInitial(false);
+  }, []);
+  useEffect(() => {
+    console.log(error.isError);
+
+    if (!initial && error.isError) {
       dispatch(
         setSnackbar({
           snackbarOpen: true,

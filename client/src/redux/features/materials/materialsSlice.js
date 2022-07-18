@@ -95,6 +95,10 @@ const materialsSlice = createSlice({
     },
 
     [getMaterials.fulfilled]: (state, action) => {
+      state.error = {
+        isError: false,
+        code: "",
+      };
       state.allMaterials = action.payload.data;
       state.filteredMaterials = action.payload.data;
       state.loading = false;
