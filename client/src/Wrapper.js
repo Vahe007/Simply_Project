@@ -80,9 +80,9 @@ function Wrapper() {
       <Routes>
         <Route path="exhibit-view" element={<AddExhibit id={userInfo.id} />} />
         <Route path="main" element={<Profile role={userInfo.role} />} />
-        <Route path="addexhibit" element={<AddExhibit id={userInfo.id} />} />
-        <Route path=":exhibitId" element={<GuestExhibit />} />
+        <Route path="addexhibit" element={<AddExhibit id={userInfo.id} />} />        
         <Route path="settings" element={<Settings id={userInfo.id} />} />
+        <Route path="main/:exhibitId" element={<GuestExhibit />} />
         <Route path="*" element={<Navigate to="main" />} />
       </Routes>
     </>

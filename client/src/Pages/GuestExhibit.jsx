@@ -20,7 +20,7 @@ function GuestExhibit(){
     const {exhibitId} = useParams()
 
     useEffect(()=>{
-        fetch(BASE_URL + `exhibits/${3}`).then(res => res.json()).then(data => setExhibit(data.data))
+        fetch(BASE_URL + `exhibits/${exhibitId}`).then(res => res.json()).then(data => setExhibit(data.data))
     },[exhibitId])
 
     const responsive = {
@@ -37,7 +37,7 @@ function GuestExhibit(){
     //   ];
 
 
-
+console.log('exhibit.images',exhibit)
 
     return (
         <>
@@ -51,7 +51,7 @@ function GuestExhibit(){
                     {
                         exhibit.images?.length 
                         ?   <AliceCarousel
-                                items={exhibit.images?.map(img => <img src={img} alt=""/>)}
+                                items={exhibit.images?.map(img => <img src={img.path} alt=""/>)}
                                 responsive={responsive}
                                 autoPlayInterval={2000}
                                 autoPlayDirection="ltr"
