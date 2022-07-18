@@ -21,6 +21,7 @@ export default function ListMaterials({ searchParams, setSearchParams }) {
   const [inputValues, setInputValues] = useState({});
   const [showEditIds, setShowEditIds] = useState([]);
   const [initial, setInitial] = useState(true);
+
   useEffect(() => {
     setInitial(false);
   }, []);
@@ -44,7 +45,10 @@ export default function ListMaterials({ searchParams, setSearchParams }) {
   const onInputChange = (value, id) => {
     setInputValues({
       ...inputValues,
-      [id]: value,
+      [id]: {
+        name: value,
+        error: false,
+      },
     });
   };
 
@@ -88,36 +92,46 @@ export default function ListMaterials({ searchParams, setSearchParams }) {
     setShowEditIds(clone);
     setInputValues({
       ...inputValues,
-      [id]: materialName,
+      [id]: {
+        name: materialName,
+        error: false,
+      },
     });
   };
 
-  const onEditConfirm = (id, allMaterials) => {
-    const message = `Material with ID:${id} is updated`;
-    dispatch(
-      updateAndGetMaterials({
-        id,
-        newData: {
-          materialName: inputValues[id],
+  const onEditConfirm = (id) => {
+    const hasMaterialName = filteredMaterials.some(
+      (material) => material.materialName === inputValues[id].name
+    );
+    if (hasMaterialName) {
+      setInputValues({
+        ...inputValues,
+        [id]: {
+          name: inputValues[id].name,
+          error: true,
         },
-      })
-    );
-    if (error.isError) {
-      console.log("hi");
+      });
+    } else {
+      const message = `Material with ID:${id} is updated`;
+      dispatch(
+        updateAndGetMaterials({
+          id,
+          newData: {
+            materialName: inputValues[id].name,
+          },
+        })
+      );
+      let newIds = [...showEditIds];
+      newIds.splice(newIds.indexOf(id), 1);
+      setShowEditIds(newIds);
+      dispatch(
+        setSnackbar({
+          snackbarOpen: true,
+          snackbarType: "success",
+          snackbarMessage: message,
+        })
+      );
     }
-    let newIds = [...showEditIds];
-    newIds.splice(newIds.indexOf(id), 1);
-    setShowEditIds(newIds);
-    dispatch(
-      setSnackbar({
-        snackbarOpen: true,
-        snackbarType: "success",
-        snackbarMessage: message,
-      })
-    );
-    setTimeout(() => {
-      dispatch(getMaterials());
-    }, 0);
   };
 
   const materialsCount = filteredMaterials.reduce(
@@ -140,7 +154,7 @@ export default function ListMaterials({ searchParams, setSearchParams }) {
     const materialClone = { ...material };
     const inputValue =
       inputValues[materialClone.id] !== undefined
-        ? inputValues[materialClone.id]
+        ? inputValues[materialClone.id]?.name
         : materialClone.materialName;
     const createdAtFullDate = new Date(materialClone.createdAt).toDateString();
     const updatedAtFullDate = new Date(materialClone.updatedAt).toDateString();
@@ -175,25 +189,30 @@ export default function ListMaterials({ searchParams, setSearchParams }) {
         inputProps={{ "aria-labelledby": "" }}
       />
     );
+    //sx={{ width: "92px", height: "42px", padding: 0, margin: 0 }}
     if (showEditIds.includes(materialClone.id)) {
       materialClone.materialName = (
         <TextField
           type="text"
           name={`materialName${materialClone.id}`}
           required
-          value={inputValue}
+          value={inputValue || ""}
           onChange={(e) => {
             onInputChange(e.target.value, materialClone.id);
           }}
-          sx={{ width: "92px", height: "42px", padding: 0, margin: 0 }}
           fontSize="small"
+          error={inputValues[materialClone.id]?.error}
+          helperText={
+            inputValues[materialClone.id]?.error &&
+            String("Material name already exists")
+          }
         />
       );
       materialClone.editIcon = (
         <Button
           variant="contained"
           onClick={() => {
-            onEditConfirm(materialClone.id);
+            onEditConfirm(materialClone.id, material.materialName);
           }}
           disabled={isDisabled(material.materialName, materialClone.id)}
           className={classes.submitBtn}

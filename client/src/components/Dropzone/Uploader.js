@@ -72,6 +72,7 @@ export const Dropzone = (props) => {
       }
     }
   };
+  console.log(progress);
   return (
     <div className="form-group">
       <div className={classes.dropzoneContainer}>
