@@ -151,6 +151,7 @@ export const createExhibitDB = async (sentData) => {
     const imgIds = imageIds.map((id) => ({ id }))
 
     const contributorsIds = existingContributorsIds.map((id) => ({ id }))
+    console.log('categoryNameee', categoryName);
 
     const newExhibit = await exhibit.create({
       data: {

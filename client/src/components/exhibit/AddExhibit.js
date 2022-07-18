@@ -48,9 +48,12 @@ import {
 } from "./helpers";
 import { useCustomImageUpload } from "../Dropzone/ImageUploadContext.js";
 import { Navigate, useNavigate } from "react-router-dom";
+import axios from 'axios';
+import { BASE_URL } from "../../constants.js";
 
 const AddExhibitForm = ({ userId }) => {
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
   const { uploadedImages } = useCustomImageUpload();
   const { exhibit } = useExhibit();
   const dispatch = useDispatch();
@@ -69,7 +72,12 @@ const AddExhibitForm = ({ userId }) => {
     }
   }, [allContributors]);
 
-  console.log(selectedContribursIds);
+  useEffect(() => {
+    axios.get(`${BASE_URL}/categories`).then((res) => {
+      setCategories(res.data.data);
+    })
+  }, [])
+
 
   const [datetimeValue, setDatetimeValue] = useState(
     new Date("2014-08-18T21:11:54")
@@ -83,9 +91,8 @@ const AddExhibitForm = ({ userId }) => {
       target: { value },
     } = event;
     const lastSelectedId = value.at(-1).id;
-    const contributorFullName = `${value.at(-1).contributorName} ${
-      value.at(-1).contributorSurname
-    }`;
+    const contributorFullName = `${value.at(-1).contributorName} ${value.at(-1).contributorSurname
+      }`;
     if (selectedContribursIds.includes(lastSelectedId)) {
       setSelectedContribursIds(cloneArr(selectedContribursIds, lastSelectedId));
       setSelectedContributorName(
@@ -462,6 +469,35 @@ const AddExhibitForm = ({ userId }) => {
                       label="Select/Add Material"
                       onChange={(e) => {
                         formik.setFieldValue("materialName", e.target.value);
+                      }}
+                      onBlur={formik.handleBlur}
+                      InputProps={{
+                        ...params.InputProps,
+                        type: "search",
+                      }}
+                      formik={formik}
+                    />
+                  )}
+                />
+
+
+                <Autocomplete
+                  freeSolo
+                  id="categoryName"
+                  disableClearable
+                  defaultValue={exhibit?.material.materialName}
+                  options={categories.map(
+                    (category) => category.categoryName
+                  )}
+                  onChange={(e, value) => {
+                    formik.setFieldValue("categoryName", value);
+                  }}
+                  renderInput={(params) => (
+                    <TextFieldWrapper
+                      {...params}
+                      label="Select/Add Category"
+                      onChange={(e) => {
+                        formik.setFieldValue("categoryName", e.target.value);
                       }}
                       onBlur={formik.handleBlur}
                       InputProps={{
