@@ -74,11 +74,10 @@ export const login = async ({ body }, res, next) => {
 
 export const sendKey = async (req, res, next) => {
   const { email } = req.body;
-
   try {
     const data = await sendKeyDB(email);
     if (data.data) {
-      sendActivationKey(email, data.data.link);
+      sendActivationKey(email, data.data.link, data.data.key);
     }
     res.status(200).json(responseDataCreator(data));
   }
@@ -101,13 +100,13 @@ export const verifyUser = async (req, res, next) => {
 
 
 export const resetPassword = async (req, res, next) => {
-  const { newPass, token } = req.body;
+  const { newPass, token, key } = req.body;
   const { id } = req.params;
   try {
-    const data = await resetPasswordDB(newPass, token, +id);
+    const data = await resetPasswordDB(newPass, token, +id, key);
     res.status(200).json(responseDataCreator(data));
   }
   catch (error) {
     next(error);
   }
-} 
+}

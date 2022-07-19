@@ -6,7 +6,6 @@ export const LIMIT = {
 };
 export const guestPageLimit= 2;
 export const SORTBY = {
-  "ID": "ID",
   "Name(A-Z)": "Name(A-Z)",
   "Name(Z-A)": "Name(Z-A)",
   "FundNumber(A-Z)": "FundNumber(A-Z)",

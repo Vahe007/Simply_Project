@@ -23,7 +23,7 @@ const Employee = () => {
 
   return (
     <div style={{margin: '50px'}}>
-      <Button onClick={() => navigate('/addexhibit')}>Add Exhibit</Button>
+      <Button onClick={() => navigate("/addexhibit")}>Add Exhibit</Button>
       <ExhibitsPagination />
     </div>
   );

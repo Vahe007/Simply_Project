@@ -22,21 +22,20 @@ const PaginationBody = () => {
     const exhibit = useExhibit();
     const loading = useSelector(getLoading);
 
-    const onSwitchChange = (e, id, isActive, materialName) => {
-        // e.stopPropogation()  //?????????????????????
+    const onSwitchChange = (e, id, isActive, materialName, categoryName) => {
         dispatch(
             update_getExhibit({
                 id,
                 exhibitInfo: {
                     materialName,
+                    categoryName,
                     isActive: !isActive
                 },
                 ...getExhbitQueries(searchParams),
             })
         );
-        const message = `Exhibit with ID: ${id} is ${
-            isActive ? "DEACTIVATED" : "ACTIVATED"
-        }`;
+        const message = `Exhibit with ID: ${id} is ${isActive ? "DEACTIVATED" : "ACTIVATED"
+            }`;
 
         dispatch(setSnackbar({
             snackbarOpen: true,
@@ -58,7 +57,7 @@ const PaginationBody = () => {
             material: material.materialName,
             category: category.categoryName,
             btn: <Button onClick={() => viewExhibit(exhibit)}>View</Button>,
-            switch: <Switch color="primary" checked={isActive} onChange={(e) => onSwitchChange(e, id, isActive, material.materialName)} />,
+            switch: <Switch color="primary" checked={isActive} onClick={(e) => e.stopPropagation()} onChange={(e) => onSwitchChange(e, id, isActive, material.materialName, category.categoryName)} />,
             history: {
                 headRows: ["Creator", "Updater", "CreatedAt", "UpdatedAt"],
                 data: [{

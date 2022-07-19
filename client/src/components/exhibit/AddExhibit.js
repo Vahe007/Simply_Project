@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import { addExhibitSchema } from "../listOfUsers/validations.js";
 import { classes } from "../../styles/AddExhibitFormStyle";
 import {
-  createExhibit,
+  create_getExhibit,
   update_getExhibit,
 } from "../../redux/features/exhibits/exhibitsSlice";
 import { useDispatch } from "react-redux";
@@ -22,10 +22,13 @@ import {
 import { useCustomImageUpload } from "../Dropzone/ImageUploadContext.js";
 import Content from "./Content.js";
 import { Navigate, useNavigate } from "react-router-dom";
+import axios from 'axios';
+import { BASE_URL } from "../../constants.js";
 
 const AddExhibitForm = ({ userId }) => {
   const navigate = useNavigate();
-  const { uploadedImages, setUploadedImages, imageIdsToDelete } =
+const [categories, setCategories] = useState([]);
+const { uploadedImages, setUploadedImages, imageIdsToDelete } =
     useCustomImageUpload();
   const { exhibit } = useExhibit();
   const dispatch = useDispatch();
@@ -33,6 +36,23 @@ const AddExhibitForm = ({ userId }) => {
   const [selectedContributorName, setSelectedContributorName] = useState(
     initialStateOfNames(exhibit, allContributors)
   );
+  const [selectedContribursIds, setSelectedContribursIds] = useState([]);
+  useEffect(() => {
+    setSelectedContributorName(initialStateOfNames(exhibit, allContributors));
+    if (exhibit) {
+      setSelectedContribursIds(
+        exhibit.contributors.map(({ contributorId }) => contributorId)
+      );
+    }
+  }, [allContributors]);
+
+  useEffect(() => {
+    axios.get(`${BASE_URL}/categories`).then((res) => {
+      setCategories(res.data.data);
+    })
+  }, [])
+
+
   const [datetimeValue, setDatetimeValue] = useState(
     new Date("2014-08-18T21:11:54")
   );
@@ -54,7 +74,6 @@ const AddExhibitForm = ({ userId }) => {
     dispatch(getMaterials({ isActive: true }));
     dispatch(getAllContributors());
   }, []);
-
   let initialValues;
   if (exhibit) {
     initialValues = getEditInitialValues(exhibit);
@@ -70,7 +89,7 @@ const AddExhibitForm = ({ userId }) => {
     console.log(values);
     if (!exhibit) {
       dispatch(
-        createExhibit({
+        create_getExhibit({
           ...values,
           userId,
         })
@@ -107,3 +126,33 @@ function AddExhibit({ id }) {
   return <AddExhibitForm userId={id} />;
 }
 export default AddExhibit;
+
+
+
+// <Autocomplete
+//                   freeSolo
+//                   id="categoryName"
+//                   disableClearable
+//                   defaultValue={exhibit?.category.categoryName}
+//                   options={categories.map(
+//                     (category) => category.categoryName
+//                   )}
+//                   onChange={(e, value) => {
+//                     formik.setFieldValue("categoryName", value);
+//                   }}
+//                   renderInput={(params) => (
+//                     <TextFieldWrapper
+//                       {...params}
+//                       label="Select/Add Category"
+//                       onChange={(e) => {
+//                         formik.setFieldValue("categoryName", e.target.value);
+//                       }}
+//                       onBlur={formik.handleBlur}
+//                       InputProps={{
+//                         ...params.InputProps,
+//                         type: "search",
+//                       }}
+//                       formik={formik}
+//                     />
+//                   )}
+//                 />

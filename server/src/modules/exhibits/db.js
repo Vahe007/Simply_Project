@@ -41,15 +41,12 @@ const exhibitObj = {
         isActive: true,
       },
     },
-    images:true,
+    images: true,
     category: true,
   },
 }
 export const getAllExhibitsDB = async (query) => {
   const sortHandler = {
-    ID: {
-      id: 'desc',
-    },
     'Name(A-Z)': {
       exhibitName: 'asc',
     },
@@ -79,7 +76,6 @@ export const getAllExhibitsDB = async (query) => {
   const { page = 1, limit = 10, sortBy, contains = '', material = '', category = '', isActive } = query
 
   const count = await exhibit.count()
-  console.log('isActive', isActive);
   const filteredExhibits = {
     where: {
       isActive,
@@ -204,8 +200,12 @@ export const createExhibitDB = async (sentData) => {
         },
         ...exhibitInfo,
       },
+
+
     })
-    console.log(newExhibit.id)
+    console.log("newExhibit", newExhibit);
+
+
     if (existingContributorsIds.length) {
       const z = await contributorsOfExhibits.createMany({
         data: existingContributorsIds.map((id) => ({
@@ -216,12 +216,11 @@ export const createExhibitDB = async (sentData) => {
     }
 
     return {
-      data: newExhibit,
+      data: {},
       error: null,
     }
   } catch (error) {
-    console.log(error)
-
+    console.log("error", error);
     return {
       data: null,
       error,
@@ -251,10 +250,11 @@ export const deleteExhibitDB = async (id) => {
 export const updateExhibitDB = async (data, exhibitId) => {
   const {
     materialName,
+    categoryName,
     contributors,
-    newContributors,
-    imageIds,
-    existingContributorsIds, //[2,3,4]
+    newContributors = [],
+    imageIds = [],
+    existingContributorsIds = [], //[2,3,4]
     imageIdsToDelete,
     ...exhibitInfo
   } = data
@@ -336,6 +336,8 @@ export const updateExhibitDB = async (data, exhibitId) => {
     }
   }
 
+  console.log('categoryName', categoryName);
+
   try {
     const updatedExhibit = await exhibit.update({
       where: {
@@ -349,6 +351,16 @@ export const updateExhibitDB = async (data, exhibitId) => {
             },
             create: {
               materialName,
+            },
+          },
+        },
+        category: {
+          connectOrCreate: {
+            where: {
+              categoryName,
+            },
+            create: {
+              categoryName,
             },
           },
         },
