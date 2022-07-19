@@ -305,7 +305,6 @@ export const verifyUserDB = async (id, token) => {
       error: { message: 'user is not verified' },
     }
   } catch (error) {
-    console.log(error)
     return {
       data: null,
       error,
@@ -351,7 +350,6 @@ export const resetPasswordDB = async (newPass, userToken, id) => {
       error: null,
     }
   } catch (error) {
-    console.log('error', error)
     return {
       data: null,
       error,

@@ -10,7 +10,6 @@ import { sendLink } from '../redux/features/userAccess/userAccessSlice';
 const SendLink = () => {
   const dispatch = useDispatch();
   const message = useSelector(getMessage);
-  console.log(message);
 
   const initialValues = { email: "" };
 

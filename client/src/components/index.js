@@ -1,23 +1,23 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './UsersPagination';
-import reportWebVitals from './reportWebVitals';
-import { Provider } from 'react-redux';
-import store from './app/store.js';
-import UsersContextProvider from './redux/features/users/UsersContextProvider';
-import { AlertsContextProvider } from './components/alerts/AlertMessage';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./UsersPagination";
+import reportWebVitals from "./reportWebVitals";
+import { Provider } from "react-redux";
+import store from "./app/store.js";
+import UsersContextProvider from "./redux/features/users/UsersContextProvider";
+import { AlertsContextProvider } from "./components/alerts/AlertMessage";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
-  <Provider store={store}>
-    <UsersContextProvider>
-      <AlertsContextProvider>
-        <App />
-      </AlertsContextProvider>
-    </UsersContextProvider>
-  </Provider>
+    <Provider store={store}>
+      <UsersContextProvider>
+        <AlertsContextProvider>
+          <App />
+        </AlertsContextProvider>
+      </UsersContextProvider>
+    </Provider>
   </>
 );
 

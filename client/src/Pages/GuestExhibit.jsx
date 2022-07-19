@@ -37,7 +37,6 @@ function GuestExhibit(){
     //   ];
 
 
-console.log('exhibit.images',exhibit)
 
     return (
         <>

@@ -191,6 +191,8 @@ const contributorsSlice = createSlice({
     },
 
     [getAllContributors.fulfilled]: (state, { payload }) => {
+      console.log(payload);
+
       state.loading = false;
       state.allContributors = payload.data;
     },

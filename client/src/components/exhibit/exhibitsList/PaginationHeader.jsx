@@ -26,13 +26,8 @@ const PaginationHeader = () => {
     }, []);
 
     useEffect(() => {
-        console.log("worked");
         dispatch(getExhibitsPerPage(getExhbitQueries(searchParams)));
     }, [searchParams]);
-
-
-
-
 
     const handleSearch = ({ target: { value } }) => {
         value ? searchParams.set("contains", value) : searchParams.delete("contains");

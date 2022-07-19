@@ -33,13 +33,14 @@ const AddExhibitForm = ({ userId }) => {
   const [selectedContributorName, setSelectedContributorName] = useState(
     initialStateOfNames(exhibit, allContributors)
   );
-  const [datetimeValue, setDatetimeValue] = useState(
-    new Date("2014-08-18T21:11:54")
-  );
   const [selectedContributorsIds, setSelectedContributorsIds] = useState([]);
   const [initialContributorsIds, setInitialContributorsIds] = useState(
     selectedContributorsIds
   );
+  useEffect(() => {
+    dispatch(getMaterials({ isActive: true }));
+    dispatch(getAllContributors());
+  }, []);
   useEffect(() => {
     setSelectedContributorName(initialStateOfNames(exhibit, allContributors));
     if (exhibit) {
@@ -50,11 +51,6 @@ const AddExhibitForm = ({ userId }) => {
     }
   }, [allContributors]);
 
-  useEffect(() => {
-    dispatch(getMaterials({ isActive: true }));
-    dispatch(getAllContributors());
-  }, []);
-
   let initialValues;
   if (exhibit) {
     initialValues = getEditInitialValues(exhibit);
@@ -63,11 +59,10 @@ const AddExhibitForm = ({ userId }) => {
   }
 
   const onFormSubmit = (values) => {
-    values.acquisitionPeriod = datetimeValue;
+    console.log(values);
     values.existingContributorsIds = selectedContributorsIds;
     values.imageIds = uploadedImages.map((uploadedImg) => uploadedImg.id);
     values.imageIdsToDelete = imageIdsToDelete;
-    console.log(values);
     if (!exhibit) {
       dispatch(
         createExhibit({

@@ -15,7 +15,6 @@ function Navbar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  console.log("open", open);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -26,7 +25,6 @@ function Navbar() {
   };
 
   const handleLogout = () => {
-    console.log("okooooookkokoooko");
     Cookies.remove("token");
     Cookies.remove("id");
     navigate("/login");

@@ -148,7 +148,6 @@ export const usersSlice = createSlice({
     [updateAndGetUsers.fulfilled]: (state, { payload }) => {
       const { error } = payload.updateUserResponse;
       const { data } = payload.getUsersResponse;
-      console.log(error);
       if (error && error.code === "P2002") {
         state.error = {
           isError: true,

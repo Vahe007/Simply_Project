@@ -1,6 +1,6 @@
 import { prisma } from '../../services/Prisma.js'
 
-const { exhibit, image, contributorsOfExhibits } = prisma
+const { exhibit, image, contributorsOfExhibits, contributor } = prisma
 
 const exhibitObj = {
   select: {
@@ -41,7 +41,7 @@ const exhibitObj = {
         isActive: true,
       },
     },
-    images:true,
+    images: true,
     category: true,
   },
 }
@@ -76,10 +76,17 @@ export const getAllExhibitsDB = async (query) => {
   } else {
     query.isActive = undefined
   }
-  const { page = 1, limit = 10, sortBy, contains = '', material = '', category = '', isActive } = query
+  const {
+    page = 1,
+    limit = 10,
+    sortBy,
+    contains = '',
+    material = '',
+    category = '',
+    isActive,
+  } = query
 
   const count = await exhibit.count()
-  console.log('isActive', isActive);
   const filteredExhibits = {
     where: {
       isActive,
@@ -205,7 +212,7 @@ export const createExhibitDB = async (sentData) => {
         ...exhibitInfo,
       },
     })
-    console.log(newExhibit.id)
+
     if (existingContributorsIds.length) {
       const z = await contributorsOfExhibits.createMany({
         data: existingContributorsIds.map((id) => ({
@@ -220,8 +227,6 @@ export const createExhibitDB = async (sentData) => {
       error: null,
     }
   } catch (error) {
-    console.log(error)
-
     return {
       data: null,
       error,
@@ -249,19 +254,37 @@ export const deleteExhibitDB = async (id) => {
 }
 
 export const updateExhibitDB = async (data, exhibitId) => {
+  let contributorsOfspecificExhibit
   const {
     materialName,
     contributors,
     newContributors,
     imageIds,
-    existingContributorsIds, //[2,3,4]
+    existingContributorsIds,
     imageIdsToDelete,
     ...exhibitInfo
   } = data
-
-  let contributorsOfspecificExhibit
-
+  const newContIds = []
   try {
+    for (let i = 0; i < newContributors.length; i++) {
+      const newContributorData = await contributor.create({
+        data: newContributors[i],
+      })
+      newContIds.push(newContributorData.id)
+    }
+
+    const z = await exhibit.update({
+      where: {
+        id: exhibitId,
+      },
+      data: {
+        ...exhibitInfo,
+        images: {
+          connect: imageIds.map((id) => ({ id })),
+        },
+      },
+    })
+
     await image.deleteMany({
       where: {
         id: {
@@ -276,11 +299,20 @@ export const updateExhibitDB = async (data, exhibitId) => {
       },
     })
   } catch (error) {
+    console.log(error)
     return {
       data: null,
       error,
     }
   }
+  // try {
+
+  // } catch (error) {
+  //   return {
+  //     data: null,
+  //     error,
+  //   }
+  // }
   const relationTableIdContId = contributorsOfspecificExhibit.map(({ id, contributorId }) => ({
     id,
     contributorId,
@@ -299,11 +331,21 @@ export const updateExhibitDB = async (data, exhibitId) => {
       connectedIds.push(id)
     }
   })
-
+  if (connectedIds.length) {
+    try {
+      const z = await contributorsOfExhibits.createMany({
+        data: connectedIds.map((id) => ({
+          contributorId: id,
+          exhibitId: exhibitId,
+        })),
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const idsToDelete = deletedRowOfRelationTable.map((obj) => obj.id)
 
   try {
-
     const imgIds = imageIds.map((id) => ({ id }))
     const contributorsOfspecificExhibit = await contributorsOfExhibits.findMany({
       where: {
@@ -311,10 +353,12 @@ export const updateExhibitDB = async (data, exhibitId) => {
       },
     })
 
-    const arrayOfObjectWIthIdContId = contributorsOfspecificExhibit.map(({ id, contributorId }) => ({
-      id,
-      contributorId,
-    }))
+    const arrayOfObjectWIthIdContId = contributorsOfspecificExhibit.map(
+      ({ id, contributorId }) => ({
+        id,
+        contributorId,
+      })
+    )
     const deletedRowOfRelationTable = arrayOfObjectWIthIdContId.filter(
       (idOfContributors) => !existingContributorsIds.includes(idOfContributors.contributorId)
     )
@@ -335,54 +379,12 @@ export const updateExhibitDB = async (data, exhibitId) => {
       error,
     }
   }
-
-  try {
-    const updatedExhibit = await exhibit.update({
-      where: {
-        id: exhibitId,
-      },
-      data: {
-        material: {
-          connectOrCreate: {
-            where: {
-              materialName,
-            },
-            create: {
-              materialName,
-            },
-          },
-        },
-        ...exhibitInfo,
-        images: {
-          connect: imageIds.map((id) => ({ id })),
-        },
-        contributors: {
-          create: newContributors.map((newContributor) => ({
-            contributor: {
-              create: newContributor,
-            },
-          })),
-        },
-      },
-    })
-    if (connectedIds.length) {
-      const z = await contributorsOfExhibits.createMany({
-        data: connectedIds.map((id) => ({
-          contributorId: id,
-          exhibitId,
-        })),
-      })
-    }
-    return {
-      data: updatedExhibit,
-      error: null,
-    }
-  } catch (error) {
-    console.log(error)
-    return {
-      data: null,
-      error,
-    }
+  await contributorsOfExhibits.createMany({
+    data: newContIds.map((id) => ({ contributorId: id, exhibitId })),
+  })
+  return {
+    data: 'h',
+    error: null,
   }
 }
 

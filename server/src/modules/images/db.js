@@ -27,7 +27,6 @@ export const uploadImageDB = async (data) => {
       error: null,
     }
   } catch (error) {
-    console.log(error);
     return {
       data: null,
       error,

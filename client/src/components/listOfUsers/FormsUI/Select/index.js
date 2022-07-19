@@ -22,7 +22,6 @@ const SelectWrapper = (props) => {
   };
 
   if (meta && meta.touched && meta.error) {
-    console.log("hi");
     configSelect.error = true;
     configSelect.helperText = meta.error;
   }

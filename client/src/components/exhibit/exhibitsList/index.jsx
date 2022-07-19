@@ -126,6 +126,7 @@ const ExhibitsList = () => {
     );
   };
   const viewExhibit = (exhibitInfo) => {
+    console.log(exhibitInfo);
     exhibit.setExhibit(exhibitInfo);
     navigate('/exhibit-view');
   }
@@ -139,7 +140,10 @@ const ExhibitsList = () => {
       exhibitName,
       material: material.materialName,
       category: category.categoryName,
-      btn: <Button onClick={() => viewExhibit(exhibit)}>View</Button>,
+      btn: <Button onClick={() => {
+        alert('hi');
+        viewExhibit(exhibit)
+      }}>View</Button>,
       switch: <Switch color="primary" checked={isActive} onChange={() => onSwitchChange(id, isActive, material.materialName)} />,
       history: {
         headRows: ["Creator", "Updater", "CreatedAt", "UpdatedAt"],

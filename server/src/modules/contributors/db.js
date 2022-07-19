@@ -30,7 +30,7 @@ export const getAllContributorsDB = async ({ page, limit, contains = '' }) => {
       take: +limit || undefined,
     })
     return {
-      data: contributors.sort((a, b) => a.exhibits.length - b.exhibits.length),
+      data: contributors,
       error: null,
     }
   } catch (error) {

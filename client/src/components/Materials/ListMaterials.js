@@ -26,7 +26,6 @@ export default function ListMaterials({ searchParams, setSearchParams }) {
     setInitial(false);
   }, []);
   useEffect(() => {
-    console.log(error.isError);
 
     if (!initial && error.isError) {
       dispatch(

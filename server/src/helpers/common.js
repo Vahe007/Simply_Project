@@ -21,7 +21,6 @@ export const validate = (schema) => {
       schema.body && (await schema.body.validateAsync(body))
       return next()
     } catch (error) {
-      console.log(error)
       next(badRequestErrorCreator(error.details))
     }
   }
@@ -96,6 +95,5 @@ export const sendActivationKey = (recipient, link) => {
     transporter.sendMail(mailOptions);
   }
   catch (error) {
-    console.log("error", error);
   }
 }

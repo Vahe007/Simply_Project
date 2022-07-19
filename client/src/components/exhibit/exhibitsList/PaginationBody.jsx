@@ -10,6 +10,7 @@ import Button from '../../FormsUI/Button';
 import { useExhibit } from '../../../redux/features/exhibits/ExhibitsContextProvider';
 import { getExhbitQueries } from '../../listOfUsers/dialogs/updateDialog/helpers';
 import { setSnackbar } from '../../../redux/features/snackbar/SnackbarSlice';
+import { getAllContributors } from '../../../redux/features/contributors/contributorsSlice';
 
 const headRow = ['ID', 'Image', 'ExhibitName', 'Material', 'Category', 'View', 'Activate/Disactivate'];
 
@@ -45,8 +46,13 @@ const PaginationBody = () => {
         }))
     };
     const viewExhibit = (exhibitInfo) => {
-        exhibit.setExhibit(exhibitInfo);
-        navigate('/exhibit-view');
+        dispatch(getAllContributors());
+
+        setTimeout(() => {
+            exhibit.setExhibit(exhibitInfo);
+            navigate('/exhibit-view');
+
+        }, 400)
     }
 
     const data = exhibitsPerPage.map((exhibit) => {

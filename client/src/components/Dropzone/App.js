@@ -28,14 +28,11 @@ function App() {
                 onClick={() => {
                   let oldImagesClone = [...oldImages];
                   setImageIdsToDelete([...imageIdsToDelete, img.id]);
-                  console.log(oldImagesClone);
                   const index = oldImagesClone.findIndex(
                     (oldImage) => oldImage.id === img.id
                   );
-                  console.log(index);
                   oldImagesClone.splice(index, 1);
                   setOldImages(oldImagesClone);
-                  console.log(oldImages);
                 }}
               />
             </div>

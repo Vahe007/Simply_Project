@@ -13,7 +13,6 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 function Content({ helperText, setFieldError }) {
   const { error } = useSelector(selectUsers);
   useEffect(() => {
-    console.log(error);
     if (error && error.message === "Email is already registered") {
       setFieldError("email", error.message);
     }
