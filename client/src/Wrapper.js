@@ -35,13 +35,11 @@ function Wrapper() {
   const navigate = useNavigate();
   const token = Cookies.get("token");
 
-
   const { role } = userInfo;
   useEffect(() => {
     const id = Cookies.get("id");
     token && id && dispatch(getMeCall({ id: +id, token }));
   }, []);
-
 
   if (isLoading) {
     return <LinearProgress />;
@@ -68,6 +66,7 @@ function Wrapper() {
             <Route path="materials" element={<Materials />} />
             <Route path="contributors" element={<ShowContributorsList />} />
           </Route>
+          <Route path="settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="main/users" />} />
         </Routes>
       </>
@@ -80,8 +79,8 @@ function Wrapper() {
       <Routes>
         <Route path="exhibit-view" element={<AddExhibit id={userInfo.id} />} />
         <Route path="main" element={<Profile role={userInfo.role} />} />
-        <Route path="addexhibit" element={<AddExhibit id={userInfo.id} />} />        
-        <Route path="settings" element={<Settings id={userInfo.id} />} />
+        <Route path="addexhibit" element={<AddExhibit id={userInfo.id} />} />
+        <Route path="settings" element={<Settings />} />
         <Route path="main/:exhibitId" element={<GuestExhibit />} />
         <Route path="*" element={<Navigate to="main" />} />
       </Routes>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { LinearProgress, Switch } from '@material-ui/core';
+import { LinearProgress } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { update_getExhibit } from '../../../redux/features/exhibits/exhibitsSlice';
@@ -12,32 +12,33 @@ import { getExhbitQueries } from '../../listOfUsers/dialogs/updateDialog/helpers
 import { setSnackbar } from '../../../redux/features/snackbar/SnackbarSlice';
 import { getAllContributors } from '../../../redux/features/contributors/contributorsSlice';
 
-const headRow = ['ID', 'Image', 'ExhibitName', 'Material', 'Category', 'View', 'Activate/Disactivate'];
+const headRow = ['ID', 'Image', 'ExhibitName', 'Material', 'Category', 'View'];
 
 
 const PaginationBody = () => {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSechParams] = useSearchParams();
     const exhibitsPerPage = useSelector(getExhibitsSelector);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const exhibit = useExhibit();
     const loading = useSelector(getLoading);
 
-    const onSwitchChange = (e, id, isActive, materialName) => {
-        // e.stopPropogation()  //?????????????????????
+    const onSwitchChange = (e, id, isActive, materialName, categoryName, exhibit) => {
+        const {weight, height, diameter, length, ...exhibitToUpdate } = exhibit;
         dispatch(
             update_getExhibit({
                 id,
-                exhibitInfo: {
-                    materialName,
-                    isActive: !isActive
-                },
+                exhibitInfo: {...exhibitToUpdate, isActive: !isActive},
+                // exhibitInfo: {
+                //     materialName,
+                //     categoryName,
+                //     isActive: !isActive
+                // },
                 ...getExhbitQueries(searchParams),
             })
         );
-        const message = `Exhibit with ID: ${id} is ${
-            isActive ? "DEACTIVATED" : "ACTIVATED"
-        }`;
+        const message = `Exhibit with ID: ${id} is ${isActive ? "DEACTIVATED" : "ACTIVATED"
+            }`;
 
         dispatch(setSnackbar({
             snackbarOpen: true,
@@ -45,7 +46,8 @@ const PaginationBody = () => {
             snackbarType: "success",
         }))
     };
-    const viewExhibit = (exhibitInfo) => {
+    const viewExhibit = (e, exhibitInfo) => {
+        e.stopPropagation()
         dispatch(getAllContributors());
 
         setTimeout(() => {
@@ -63,8 +65,7 @@ const PaginationBody = () => {
             exhibitName,
             material: material.materialName,
             category: category.categoryName,
-            btn: <Button onClick={() => viewExhibit(exhibit)}>View</Button>,
-            switch: <Switch color="primary" checked={isActive} onChange={(e) => onSwitchChange(e, id, isActive, material.materialName)} />,
+            btn: <Button onClick={(e) => viewExhibit(e, exhibit)}>View</Button>,
             history: {
                 headRows: ["Creator", "Updater", "CreatedAt", "UpdatedAt"],
                 data: [{

@@ -126,7 +126,6 @@ const ExhibitsList = () => {
     );
   };
   const viewExhibit = (exhibitInfo) => {
-    console.log(exhibitInfo);
     exhibit.setExhibit(exhibitInfo);
     navigate('/exhibit-view');
   }

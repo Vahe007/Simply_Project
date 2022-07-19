@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import { addExhibitSchema } from "../listOfUsers/validations.js";
 import { classes } from "../../styles/AddExhibitFormStyle";
 import {
-  createExhibit,
+  create_getExhibit,
   update_getExhibit,
 } from "../../redux/features/exhibits/exhibitsSlice";
 import { useDispatch } from "react-redux";
@@ -22,9 +22,12 @@ import {
 import { useCustomImageUpload } from "../Dropzone/ImageUploadContext.js";
 import Content from "./Content.js";
 import { Navigate, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL } from "../../constants.js";
 
 const AddExhibitForm = ({ userId }) => {
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
   const { uploadedImages, setUploadedImages, imageIdsToDelete } =
     useCustomImageUpload();
   const { exhibit } = useExhibit();
@@ -32,6 +35,25 @@ const AddExhibitForm = ({ userId }) => {
   const { allContributors } = useSelector(selectContributors);
   const [selectedContributorName, setSelectedContributorName] = useState(
     initialStateOfNames(exhibit, allContributors)
+  );
+  const [selectedContribursIds, setSelectedContribursIds] = useState([]);
+  useEffect(() => {
+    setSelectedContributorName(initialStateOfNames(exhibit, allContributors));
+    if (exhibit) {
+      setSelectedContribursIds(
+        exhibit.contributors.map(({ contributorId }) => contributorId)
+      );
+    }
+  }, [allContributors]);
+
+  useEffect(() => {
+    axios.get(`${BASE_URL}/categories`).then((res) => {
+      setCategories(res.data.data);
+    });
+  }, []);
+
+  const [datetimeValue, setDatetimeValue] = useState(
+    new Date("2014-08-18T21:11:54")
   );
   const [selectedContributorsIds, setSelectedContributorsIds] = useState([]);
   const [initialContributorsIds, setInitialContributorsIds] = useState(
@@ -58,14 +80,17 @@ const AddExhibitForm = ({ userId }) => {
     initialValues = addExhibitInitialValues;
   }
 
+  // useEffect(() => {
+  //   dispatch(getMaterials({ isActive: true }));
+  //   dispatch(getAllContributors());
+  // }, []);
   const onFormSubmit = (values) => {
-    console.log(values);
     values.existingContributorsIds = selectedContributorsIds;
     values.imageIds = uploadedImages.map((uploadedImg) => uploadedImg.id);
     values.imageIdsToDelete = imageIdsToDelete;
     if (!exhibit) {
       dispatch(
-        createExhibit({
+        create_getExhibit({
           ...values,
           userId,
         })

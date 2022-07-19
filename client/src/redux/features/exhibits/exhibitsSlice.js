@@ -27,18 +27,21 @@ export const getExhibitsPerPage = createAsyncThunk(
   }
 );
 
-export const createExhibit = createAsyncThunk("addExhibit", async (data) => {
-  const response = await fetch(`${BASE_URL}exhibits`, {
-    method: "POST",
-    body: JSON.stringify(data),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+export const create_getExhibit = createAsyncThunk("addExhibit", async (data) => {
+    await fetch(`${BASE_URL}exhibits`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    const response = await fetch(`${BASE_URL}exhibits`);
+    return response.json();
+})
 
-  const response2 = await fetch(`${BASE_URL}exhibits?limit=${200}`);
-  return response2.json();
-});
+//   const response2 = await fetch(`${BASE_URL}exhibits?limit=${200}`);
+//   return response2.json();
+// });
 
 export const update_getExhibit = createAsyncThunk(
   "editExhibit",
@@ -111,18 +114,36 @@ const exhibits = createSlice({
       state.loading = false;
     },
 
-    [createExhibit.pending]: (state) => {
-      state.loading = true;
-    },
-    [createExhibit.fulfilled]: (state, action) => {
-      console.log(action.payload);
-      state.loading = false;
-    },
-    [createExhibit.rejected]: (state) => {
-      state.loading = false;
-    },
-  },
-});
+
+
+        [update_getExhibit.pending]: (state) => {
+            state.loading = true;
+        },
+        [update_getExhibit.fulfilled]: (state, { payload }) => {
+            state.exhibitsPerPage = payload.data.exhibitsPerPage;
+            state.count = payload.data.count;
+            state.filteredCount = payload.data.filteredCount;
+            state.loading = false;
+        },
+        [update_getExhibit.rejected]: (state, { payload }) => {
+            state.loading = false;
+        },
+
+
+        [create_getExhibit.pending]: (state) => {
+            state.loading = true;
+        },
+        [create_getExhibit.fulfilled]: (state, {payload}) => {
+            state.exhibitsPerPage = payload.data.exhibitsPerPage;
+            state.count = payload.data.count;
+            state.filteredCount = payload.data.filteredCount;
+            state.loading = false;
+        },
+        [create_getExhibit.rejected]: (state) => {
+            state.loading = false;
+        }
+    }
+})
 
 export default exhibits.reducer;
 

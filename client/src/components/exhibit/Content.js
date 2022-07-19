@@ -22,6 +22,9 @@ import { selectContributors } from "../../redux/features/contributors/contributo
 import { selectMaterials } from "../../redux/features/materials/materialsSlice";
 import { useCustomImageUpload } from "../Dropzone/ImageUploadContext";
 import { isDisabled } from "./services";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { BASE_URL } from "../../constants";
 
 function Content(props) {
   const {
@@ -37,7 +40,14 @@ function Content(props) {
   const { allContributors } = useSelector(selectContributors);
   const { uploadedImages, imageIdsToDelete } = useCustomImageUpload();
   const { filteredMaterials } = useSelector(selectMaterials);
+  const [categories, setCategories] = useState([]);
   const currentImageInfos = exhibit?.images;
+
+  useEffect(() => {
+    axios.get(`${BASE_URL}/categories`).then((res) => {
+      setCategories(res.data.data);
+    });
+  }, []);
 
   const onSelectChange = (event) => {
     const {
@@ -334,11 +344,35 @@ function Content(props) {
                       type: "search",
                     }}
                     formik={formik}
-                    error={!!formik.errors.materialName}
-                    helperText={
-                      !!formik.errors.materialName &&
-                      String(formik.errors.materialName)
-                    }
+                  />
+                )}
+              />
+
+              <div className={classes.title}>
+                <b>Category</b>
+              </div>
+              <Autocomplete
+                freeSolo
+                id="categoryName"
+                disableClearable
+                defaultValue={exhibit?.category.categoryName}
+                options={categories.map((category) => category.categoryName)}
+                onChange={(e, value) => {
+                  formik.setFieldValue("categoryName", value);
+                }}
+                renderInput={(params) => (
+                  <TextFieldWrapper
+                    {...params}
+                    label="Select/Add Category"
+                    onChange={(e) => {
+                      formik.setFieldValue("categoryName", e.target.value);
+                    }}
+                    onBlur={formik.handleBlur}
+                    InputProps={{
+                      ...params.InputProps,
+                      type: "search",
+                    }}
+                    formik={formik}
                   />
                 )}
               />

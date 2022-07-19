@@ -5,11 +5,14 @@ jss.setup(preset());
 
 const styles = {
   formContainer: {
-    width: "80%",
-    margin: "auto",
+    width: 700,
+    margin: "40px auto",
     display: "flex",
     flexDirection: "column",
     gap: "40px",
+    "& .MuiTextField-root": {
+      width: "100%",
+    },
   },
 
   "@media (max-width: 584px)": {
@@ -29,10 +32,18 @@ const styles = {
   },
 
   exhibitMainInfo: {
-    width: "60%",
-    display: "flex",
+    width: "100%",
+    // display: "flex",
     flexWrap: "wrap",
     gap: "20px",
+    "& .MuiTextField-root": {
+      width: "100%",
+      marginBottom: 20,
+    },
+    // "& .MuiTextField-root": {
+    //   width: "100%",
+    //   marginBottom: 20,
+    // },
   },
 
   exhibitSizes: {
@@ -56,6 +67,10 @@ const styles = {
   contributorFormContainer: {
     gap: "30px",
     marginBottom: "20px",
+    "& .MuiFormControl-root": {
+      width: "100%",
+      marginBottom: 20,
+    },
   },
 
   contributorInputContainer: {

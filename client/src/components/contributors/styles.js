@@ -11,6 +11,13 @@ const styles = {
   },
 
   contributorsItem: {
+    "& span": {
+      width: 150,
+    },
+    "& button": {
+      width: 100,
+      marginRight: 40,
+    },
     padding: "10px",
     backgroundColor: "white",
     margin: "20px",
@@ -26,6 +33,10 @@ const styles = {
     color: "#5ab6bd",
     fontWeight: "bold",
     backgroundColor: "#f3f4f4",
+  },
+  editContributorFormContainer: {
+    display: "flex !important",
+    flexDirection: "column",
   },
 };
 

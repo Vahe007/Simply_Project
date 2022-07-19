@@ -6,6 +6,7 @@ import { editContributorSchema } from "./validations";
 import { useCustomSearchParams } from "../listOfUsers/SearchParamsContext";
 import { useDispatch } from "react-redux";
 import { updateAndGetContributors } from "../../redux/features/contributors/contributorsSlice";
+import { classes } from "./styles";
 function UpdateContributorDialog({
   editContributorData,
   setEditContributorData,
@@ -54,33 +55,32 @@ function UpdateContributorDialog({
       title="Edit User"
       content={
         <form onSubmit={formik.handleSubmit}>
-          {/* <Gri container spacing={4}>
-            <Grid item xs={12}></Grid>
-          </Grid> */}
-          <TextFieldWrapper
-            size="small"
-            name="contributorName"
-            formik={formik}
-            label="Contributor Name"
-            sx={{ width: "300px" }}
-          />
-          <TextFieldWrapper
-            size="small"
-            name="contributorSurname"
-            formik={formik}
-            label="Contributor Surname"
-            sx={{ width: "300px" }}
-          />
-          <TextFieldWrapper
-            size="small"
-            name="contributorPhoneNumber"
-            formik={formik}
-            label="Contributor Phone number"
-            sx={{ width: "300px" }}
-          />
-          <Button variant="contained" type="submit" disabled={isDisabled()}>
-            Submit
-          </Button>
+          <div className={classes.editContributorFormContainer}>
+            <TextFieldWrapper
+              size="small"
+              name="contributorName"
+              formik={formik}
+              label="Contributor Name"
+              sx={{ width: "300px", paddingBottom: "20px" }}
+            />
+            <TextFieldWrapper
+              size="small"
+              name="contributorSurname"
+              formik={formik}
+              label="Contributor Surname"
+              sx={{ width: "300px", paddingBottom: "20px" }}
+            />
+            <TextFieldWrapper
+              size="small"
+              name="contributorPhoneNumber"
+              formik={formik}
+              label="Contributor Phone number"
+              sx={{ width: "300px", paddingBottom: "20px" }}
+            />
+            <Button variant="contained" type="submit" disabled={isDisabled()}>
+              Submit
+            </Button>
+          </div>
         </form>
       }
       onClose={onClose}

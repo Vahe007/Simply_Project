@@ -5,9 +5,7 @@ import fs from 'fs'
 import path from 'path'
 import { JOI_VALIDATION_MESSAGES, PUBLIC_FOLDER_PATH } from '../helpers/constants.js'
 import nodemailer from 'nodemailer'
-import { v4 as uuid } from "uuid";
-
-
+import { v4 as uuid } from 'uuid'
 
 export const validate = (schema) => {
   if (typeof schema !== 'object' || schema === null)
@@ -74,26 +72,41 @@ export function exclude(obj, options) {
   return objClone
 }
 
-
-export const sendActivationKey = (recipient, link) => {
+export const sendActivationKey = async (recipient, link, key) => {
   try {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.EMAIL,
-        pass: process.env.PASSWORD
-      }
+        pass: process.env.PASSWORD,
+      },
     })
+    const _dirname = path.resolve()
+
+    const file = fs.readFileSync(
+      `${_dirname}/public/emailHtml/index.html`,
+      'utf8',
+      (error, data) => {
+        if (error) {
+        } else {
+          return data
+        }
+      }
+    )
+
+    const html = file.replace('reset-password', link).replace('verificationKey', key)
+
 
     const mailOptions = {
-      from: process.env.EMAIL,
+      from: {
+        name: 'HISTORY MUSEUM OF ARMENIA',
+        address: process.env.EMAIL,
+      },
       to: recipient,
-      subject: "Password Rest",
-      html: `<button>${link}</button>`,
+      subject: 'Password Rest',
+      html,
     }
 
-    transporter.sendMail(mailOptions);
-  }
-  catch (error) {
-  }
+    await transporter.sendMail(mailOptions)
+  } catch (error) {}
 }

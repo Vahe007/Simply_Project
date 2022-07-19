@@ -9,7 +9,7 @@ import {
   loginDB,
   sendKeyDB,
   verifyUserDB,
-  resetPasswordDB
+  resetPasswordDB,
 } from './db.js'
 
 export const getAllUsers = async ({ query, body }, res, next) => {
@@ -70,44 +70,36 @@ export const login = async ({ body }, res, next) => {
   }
 }
 
-
-
 export const sendKey = async (req, res, next) => {
-  const { email } = req.body;
-
+  const { email } = req.body
   try {
-    const data = await sendKeyDB(email);
+    const data = await sendKeyDB(email)
     if (data.data) {
-      sendActivationKey(email, data.data.link);
+      sendActivationKey(email, data.data.link, data.data.key)
     }
-    res.status(200).json(responseDataCreator(data));
-  }
-  catch (error) {
-    next(error);
+    res.status(200).json(responseDataCreator(data))
+  } catch (error) {
+    next(error)
   }
 }
-
 
 export const verifyUser = async (req, res, next) => {
-  const { id, token } = req.params;
+  const { id, token } = req.params
   try {
-    const data = await verifyUserDB(+id, token);
-    res.status(200).json(responseDataCreator(data));
-  }
-  catch (error) {
-    next(error);
+    const data = await verifyUserDB(+id, token)
+    res.status(200).json(responseDataCreator(data))
+  } catch (error) {
+    next(error)
   }
 }
 
-
 export const resetPassword = async (req, res, next) => {
-  const { newPass, token } = req.body;
-  const { id } = req.params;
+  const { newPass, token, key } = req.body
+  const { id } = req.params
   try {
-    const data = await resetPasswordDB(newPass, token, +id);
-    res.status(200).json(responseDataCreator(data));
+    const data = await resetPasswordDB(newPass, token, +id, key)
+    res.status(200).json(responseDataCreator(data))
+  } catch (error) {
+    next(error)
   }
-  catch (error) {
-    next(error);
-  }
-} 
+}

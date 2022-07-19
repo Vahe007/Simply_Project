@@ -31,7 +31,6 @@ export const Dropzone = (props) => {
     uploadedImagesClone.splice(index, 1);
     setUploadedImages(uploadedImagesClone);
   };
-
   const onChange = async (e) => {
     const formData = new FormData();
     const { files } = e.target;
@@ -97,7 +96,8 @@ export const Dropzone = (props) => {
       </div>
       {isUploading && (
         <div>
-          <LinearProgress variant="determinate" value={progress || 0} />
+          <LinearProgress variant="determinate" value={+progress || 0} />
+          {progress}%
         </div>
       )}
 

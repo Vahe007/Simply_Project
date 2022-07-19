@@ -80,7 +80,6 @@ const Login = () => {
     content: <>
       <Box onSubmit={formik.handleSubmit} component="form">
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-
           <TextField sx={{m: "10px 0"}} formik={formik} name="email" label="Email" />
           <Button sx={{m: "10px 0"}} type="submit">Send Verification Link</Button>
         </Box>

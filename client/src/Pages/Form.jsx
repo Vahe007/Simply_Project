@@ -70,7 +70,7 @@ function Form({ initialValues, fields, validationSchema, headTitle, btnTitle, li
           sm={4}
           md={7}
           sx={{
-            backgroundImage: "url(https://source.unsplash.com/random)",
+            backgroundImage: "url(https://historymuseum.am/wp-content/uploads/2018/01/3-Srah-11-Dvin-634x635.jpg)",
             backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
               t.palette.mode === "light"

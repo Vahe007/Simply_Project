@@ -31,16 +31,18 @@ export default {
     }),
 
     body: Joi.object({
-      firstName: Joi.string().min(2).required(),
-      lastName: Joi.string().min(2).required(),
-      email: Joi.string().email().required(),
-      password: joiPassword.string().min(4).required(),
+      firstName: Joi.string().min(2),
+      lastName: Joi.string().min(2),
+      email: Joi.string().email(),
+      password: joiPassword.string().min(4),
       phoneNumber: Joi.string()
         .regex(/^\d{9}$/)
         .messages({ 'string.pattern.base': JOI_VALIDATION_MESSAGES.PHONE_NUMBER_PATTERN }),
       isActive: Joi.boolean(),
       lastLogin: Joi.date(),
       role: Joi.string().valid('ADMIN', 'EMPLOYEE', 'GUEST'),
+      oldPass: Joi.string(),
+      newPass: Joi.string()
     }),
   },
 

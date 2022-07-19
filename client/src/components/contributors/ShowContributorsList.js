@@ -117,7 +117,7 @@ function ShowContributorsList() {
                 {contributorName} {contributorSurname}
               </span>
               <Button
-                className={classes.flexGrow}
+                variant="contained"
                 onClick={() => {
                   onEditClick(contributor);
                 }}

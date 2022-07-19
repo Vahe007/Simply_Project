@@ -86,7 +86,7 @@ const useStyles = makeStyles({
 export default function Loading() {
     const classes = useStyles();
   return (
-    [1,2,3,4].map((el,index) => <Grid item ><Card key = {index} className={classes.root}>
+    [1,2,3,4].map((el,index) => <Grid item key = {index}><Card  className={classes.root}>
         <CardActionArea>
         <Skeleton variant="rectangular" width={345} height={140} />
           <CardContent>

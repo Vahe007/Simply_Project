@@ -19,7 +19,8 @@ export const ERROR_MESSAGES = {
   NO_USER_FOUND: 'No user found with such email',
   PASSWORD_NOT_MATCHING: 'Old password is not matching',
   SAME_PASSWORD: 'New password cannot be the same as old one',
-  NOT_VERIFIED: 'User is not verified'
+  NOT_VERIFIED: 'User is not verified',
+  INCORRECT_KEY: 'Key is not matching'
 }
 
 export const MIDDLEWARE_MESSAGES = {
