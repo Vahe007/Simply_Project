@@ -91,6 +91,7 @@ const ListUsers = () => {
 
   const data = usersPerPage.map((user) => {
     const userClone = { ...user };
+
     const createdAtFullDate = new Date(userClone.createdAt).toDateString();
     const updatedAtFullDate = new Date(userClone.updatedAt).toDateString();
     userClone.createdAt = createdAtFullDate;
@@ -123,7 +124,7 @@ const ListUsers = () => {
 
   return (
     <>
-      <MainTable headRow={headRow} data={data} searchParams={searchParams} />
+      <MainTable headRow={headRow} data={data} />
 
       {deleteUserId && (
         <DeleteDialog onClose={onDeleteClose} usersPerPage={usersPerPage} />

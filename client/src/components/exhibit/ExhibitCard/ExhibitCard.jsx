@@ -17,7 +17,7 @@ const useStyles = makeStyles({
 
 function ExibitCard({ref,exhibit}) {
   const classes = useStyles();
-  const src = exhibit?.images.length ? exhibit.images[0] : 'https://cdn.w600.comps.canstockphoto.com/no-image-available-stock-illustrations_csp38533655.jpg'
+  const src = exhibit?.images.length ? exhibit.images[0].path : 'https://cdn.w600.comps.canstockphoto.com/no-image-available-stock-illustrations_csp38533655.jpg'
   return (
     <Card className={classes.root} ref={ref}>
       <CardActionArea>

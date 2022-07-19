@@ -63,6 +63,7 @@ export const updateImage = async (req, res, next) => {
     const images = await updateImageIsactiveDB(imageRowId, isActive)
     res.json(responseDataCreator(images))
   } catch (error) {
+    console.log(error);
     next(error)
   }
 }

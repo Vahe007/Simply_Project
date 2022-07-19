@@ -41,14 +41,12 @@ const exhibitObj = {
         isActive: true,
       },
     },
+    images: true,
     category: true,
   },
 }
 export const getAllExhibitsDB = async (query) => {
   const sortHandler = {
-    ID: {
-      id: 'desc',
-    },
     'Name(A-Z)': {
       exhibitName: 'asc',
     },
@@ -143,12 +141,11 @@ export const createExhibitDB = async (sentData) => {
     newContributors,
     existingContributorsIds,
     imageIds,
+    imageIdsToDelete,
     ...exhibitInfo
   } = sentData
 
   try {
-    const imgIds = imageIds.map((id) => ({ id }))
-
     const contributorsIds = existingContributorsIds.map((id) => ({ id }))
 
     const newExhibit = await exhibit.create({
@@ -199,7 +196,7 @@ export const createExhibitDB = async (sentData) => {
           },
         },
         images: {
-          connect: imgIds,
+          connect: imageIds.map((id) => ({ id })),
         },
         ...exhibitInfo,
       },
@@ -253,13 +250,57 @@ export const deleteExhibitDB = async (id) => {
 export const updateExhibitDB = async (data, exhibitId) => {
   const {
     materialName,
+    categoryName,
     contributors,
     newContributors = [],
     imageIds = [],
     existingContributorsIds = [], //[2,3,4]
+    imageIdsToDelete,
     ...exhibitInfo
   } = data
 
+  let contributorsOfspecificExhibit
+
+  try {
+    await image.deleteMany({
+      where: {
+        id: {
+          in: imageIdsToDelete,
+        },
+      },
+    })
+
+    contributorsOfspecificExhibit = await contributorsOfExhibits.findMany({
+      where: {
+        exhibitId,
+      },
+    })
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    }
+  }
+  const relationTableIdContId = contributorsOfspecificExhibit.map(({ id, contributorId }) => ({
+    id,
+    contributorId,
+  }))
+
+  const deletedRowOfRelationTable = relationTableIdContId.filter(
+    (idOfContributors) => !existingContributorsIds.includes(idOfContributors.contributorId)
+  )
+
+  let connectedIds = []
+
+  const arr = contributorsOfspecificExhibit.map(({ contributorId }) => contributorId)
+
+  existingContributorsIds.forEach((id) => {
+    if (!arr.includes(id)) {
+      connectedIds.push(id)
+    }
+  })
+
+  const idsToDelete = deletedRowOfRelationTable.map((obj) => obj.id)
 
   try {
 
@@ -288,6 +329,16 @@ export const updateExhibitDB = async (data, exhibitId) => {
         },
       })
     }
+  } catch (error) {
+    return {
+      data: null,
+      error,
+    }
+  }
+
+  console.log('categoryName', categoryName);
+
+  try {
     const updatedExhibit = await exhibit.update({
       where: {
         id: exhibitId,
@@ -303,9 +354,19 @@ export const updateExhibitDB = async (data, exhibitId) => {
             },
           },
         },
+        category: {
+          connectOrCreate: {
+            where: {
+              categoryName,
+            },
+            create: {
+              categoryName,
+            },
+          },
+        },
         ...exhibitInfo,
         images: {
-          connect: imgIds,
+          connect: imageIds.map((id) => ({ id })),
         },
         contributors: {
           create: newContributors.map((newContributor) => ({
@@ -316,13 +377,20 @@ export const updateExhibitDB = async (data, exhibitId) => {
         },
       },
     })
-
+    if (connectedIds.length) {
+      const z = await contributorsOfExhibits.createMany({
+        data: connectedIds.map((id) => ({
+          contributorId: id,
+          exhibitId,
+        })),
+      })
+    }
     return {
       data: updatedExhibit,
       error: null,
     }
   } catch (error) {
-    console.log('error', error);
+    console.log(error)
     return {
       data: null,
       error,

@@ -13,7 +13,6 @@ export default function  useExhibitSearch(query, pageNumber){
         setExhibits([])
     },[query])
     useEffect(()=>{
-        if(query){
             setError(false)
             setLoading(true)
             let cancel
@@ -35,9 +34,7 @@ export default function  useExhibitSearch(query, pageNumber){
             })
     
             return ()=> cancel()
-        }else{
-            setLoading(false)
-        }
+        
 
     },[query,pageNumber])
 

@@ -1,20 +1,27 @@
-import React, { useState, createContext, useContext } from "react";
+import { useState, createContext } from "react";
 import { classes } from "../../styles/uploadImageStyle";
 import uploadIcon from "./uploadIcon/upload.png";
 import API from "./services/index";
 import LinearProgress from "@mui/material/LinearProgress";
 import CloseIcon from "@mui/icons-material/Close";
 import { useCustomImageUpload } from "./ImageUploadContext";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectSnackbar,
+  setSnackbar,
+} from "../../redux/features/snackbar/SnackbarSlice";
 
 export const ImageIdsContext = createContext({});
 
 export const Dropzone = (props) => {
   const { id, label, api } = props;
-  const {uploadedImages, setUploadedImages} = useCustomImageUpload()
+  const dispatch = useDispatch();
+  const { uploadedImages, setUploadedImages } = useCustomImageUpload();
   const [progress, setProgress] = useState(0);
   const [isUploading, setUploading] = useState(false);
-  const [error, setError] = useState("");
   let customFileInput;
+  const { snackbarOpen, snackbarType, snackbarMessage } =
+    useSelector(selectSnackbar);
 
   const onDeleteImgClick = ({ id }) => {
     const uploadedImagesClone = [...uploadedImages];
@@ -26,28 +33,46 @@ export const Dropzone = (props) => {
   };
 
   const onChange = async (e) => {
-    let formData = new FormData();
+    const formData = new FormData();
     const { files } = e.target;
-    if (files[0]) {
-      formData.append("file", e.target.files[0]);
+    const fileType = files[0]?.type;
+
+    if (!files.length) {
+      return;
+    } else if (!fileType?.startsWith("image")) {
+      dispatch(
+        setSnackbar({
+          snackbarOpen: true,
+          snackbarMessage: "Only Image is Allowed",
+          snackbarType: "error",
+        })
+      );
+    } else {
+      formData.append("file", files[0]);
       setUploading(true);
-      let response = await API.post(`${api}`, formData, {
-        onUploadProgress: ({ loaded, total }) => {
-          setProgress(((loaded / total) * 100).toFixed(2));
-        },
-      });
-      const imageInfo = response?.data?.imageInfo;
-      setProgress(0);
-      setUploading(false);
-      setUploadedImages([
-        ...uploadedImages,
-        {
-          url: imageInfo.path,
-          id: imageInfo.id,
-        },
-      ]);
+      try {
+        let response = await API.post(`${api}`, formData, {
+          onUploadProgress: ({ loaded, total }) => {
+            setProgress(((loaded / total) * 100).toFixed(2));
+          },
+        });
+        const imageInfo = response?.data?.imageInfo;
+
+        setProgress(0);
+        setUploading(false);
+        setUploadedImages([
+          ...uploadedImages,
+          {
+            url: imageInfo.path,
+            id: imageInfo.id,
+          },
+        ]);
+      } catch (error) {
+        setProgress(0);
+      }
     }
   };
+  console.log(progress);
   return (
     <div className="form-group">
       <div className={classes.dropzoneContainer}>
@@ -63,19 +88,17 @@ export const Dropzone = (props) => {
           <label htmlFor={id}>{label}</label>
         </div>
         <input
-          multiple
           id={id}
           type="file"
           onChange={onChange}
           className={classes.uploaderInput}
           ref={(fileInput) => (customFileInput = fileInput)}
-          accept="image/png, image/gif, image/jpeg"
+          accept="image/*"
         />
       </div>
       {isUploading && (
         <div>
           <LinearProgress variant="determinate" value={progress || 0} />
-          {progress}%
         </div>
       )}
 

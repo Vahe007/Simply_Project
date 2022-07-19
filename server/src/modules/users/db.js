@@ -1,23 +1,25 @@
 import { prisma } from '../../services/Prisma.js'
 import bcrypt from 'bcryptjs'
-import { exclude, generateAccessToken, sendActivationKey } from "../../helpers/common.js"
-import { ERROR_MESSAGES } from "../../helpers/constants.js";
+import { exclude, generateAccessToken, sendActivationKey } from '../../helpers/common.js'
+import { ERROR_MESSAGES } from '../../helpers/constants.js'
 import jwt from 'jsonwebtoken'
 import { v4 as uuid } from 'uuid';
-
 
 const { user } = prisma
 
 const searchHandler = (contains) => {
-  return contains?.split(' ').map(search => {
-    return ['firstName', 'lastName', 'email', 'phoneNumber'].map(el => {
-      return {
-        [el]: {
-          contains: search
+  return contains
+    ?.split(' ')
+    .map((search) => {
+      return ['firstName', 'lastName', 'email', 'phoneNumber'].map((el) => {
+        return {
+          [el]: {
+            contains: search,
+          },
         }
-      }
+      })
     })
-  }).flat()
+    .flat()
 }
 
 export const getAllUsersDB = async (query) => {
@@ -55,7 +57,6 @@ export const getAllUsersDB = async (query) => {
     },
   }
 
-
   try {
     const countAfterSearch = await user.count({
       where: {
@@ -69,6 +70,7 @@ export const getAllUsersDB = async (query) => {
     const usersPerPage = await user.findMany({
       where: {
         isActive: query.isActive,
+        role: 'EMPLOYEE',
         OR: searchHandler(contains),
       },
 
@@ -97,9 +99,6 @@ export const getAllUsersDB = async (query) => {
     }
   }
 }
-
-
-
 
 export const getUserByIdDB = async (id) => {
   try {
@@ -138,17 +137,41 @@ export const getUserByIdDB = async (id) => {
 }
 
 export const updateUserDB = async (data, id) => {
-
+  const {newPass, oldPass, ...restInfo} = data;
   try {
     if (data.password) {
       data.password = bcrypt.hashSync(data.password, 7)
     }
+    
+    if (newPass && oldPass) {
+      const foundUser = await user.findUnique({
+        where: {
+          id
+        },
+      })
+
+      const isValid = bcrypt.compareSync(oldPass, foundUser.password)
+      console.log('isValid', isValid);
+
+      if (!isValid) {
+        return {
+          data: null,
+          error: {message: ERROR_MESSAGES.PASSWORD_NOT_MATCHING}
+        }
+      }
+
+    }
+
+    const hashedPass = bcrypt.hashSync(newPass, 7);
 
     const newData = await user.update({
       where: {
         id,
       },
-      data,
+      data: {
+        ...restInfo,
+        password: hashedPass
+      }
     })
 
     const { password, ...userInfo } = newData
@@ -158,6 +181,7 @@ export const updateUserDB = async (data, id) => {
       error: null,
     }
   } catch (error) {
+    console.log('error', error);
     return {
       data: null,
       error,
@@ -188,19 +212,19 @@ export const deleteUserDB = async (id) => {
 }
 
 export const createUserDB = async (userData) => {
-  const { password, ...restData } = userData;
+  const { password, ...restData } = userData
   try {
-    const hashedPassword = bcrypt.hashSync(password, 7);
+    const hashedPassword = bcrypt.hashSync(password, 7)
 
     const newUser = await user.create({
       data: {
         password: hashedPassword,
-        ...restData
+        ...restData,
       },
       include: {
         exhibitsCreated: true,
-        exhibitsUpdated: true
-      }
+        exhibitsUpdated: true,
+      },
     })
 
     const { password: newUserPass, ...userInfo } = newUser
@@ -222,20 +246,21 @@ export const createUserDB = async (userData) => {
 export const loginDB = async (userData) => {
   const { email, password } = userData
   try {
-    const candidate = await user.findUnique({
+    const candidate = await user.findFirst({
       where: {
         email,
+        isActive: true
       },
       include: {
         exhibitsCreated: true,
-        exhibitsUpdated: true
+        exhibitsUpdated: true,
       },
     })
 
     if (!candidate) {
       return {
         data: null,
-        error: { message: "No user found with such email" }
+        error: { message: 'No user found with such email' },
       }
     }
 
@@ -254,6 +279,7 @@ export const loginDB = async (userData) => {
       error: null,
     }
   } catch (error) {
+    console.log('error', error);
     return {
       data: null,
       error,
@@ -261,22 +287,18 @@ export const loginDB = async (userData) => {
   }
 }
 
-
-
 export const sendKeyDB = async (email) => {
-
   try {
     const foundUser = await user.findUnique({
       where: {
-        email
-      }
+        email,
+      },
     })
-
 
     if (!foundUser) {
       return {
         data: null,
-        error: { message: ERROR_MESSAGES.NO_USER_FOUND }
+        error: { message: ERROR_MESSAGES.NO_USER_FOUND },
       }
     }
     const token = generateAccessToken(foundUser.id, foundUser.role);
@@ -298,23 +320,20 @@ export const sendKeyDB = async (email) => {
       data: { link, key },
       error: null
     }
-  }
-  catch (error) {
+  } catch (error) {
     return {
       data: null,
-      error
+      error,
     }
   }
-
 }
-
 
 export const verifyUserDB = async (id, token) => {
   try {
     const foundUser = await user.findUnique({
       where: {
-        id
-      }
+        id,
+      },
     })
 
     const decodedData = jwt.verify(token, process.env.TOKEN_SECRET)
@@ -324,26 +343,24 @@ export const verifyUserDB = async (id, token) => {
     }
     return {
       data: null,
-      error: { message: 'user is not verified' }
+      error: { message: 'user is not verified' },
     }
-  }
-
-  catch (error) {
-    console.log(error);
+  } catch (error) {
+    console.log(error)
     return {
       data: null,
-      error
+      error,
     }
   }
 }
 
 export const resetPasswordDB = async (newPass, userToken, id, key) => {
   try {
-    const verified = await verifyUserDB(id, userToken);
+    const verified = await verifyUserDB(id, userToken)
     if (verified?.error) {
       return {
         data: null,
-        error: { message: ERROR_MESSAGES.NOT_VERIFIED }
+        error: { message: ERROR_MESSAGES.NOT_VERIFIED },
       }
     }
     const foundUser = await user.findUnique({
@@ -361,33 +378,30 @@ export const resetPasswordDB = async (newPass, userToken, id, key) => {
     if (validPassword) {
       return {
         data: null,
-        error: { message: ERROR_MESSAGES.SAME_PASSWORD }
+        error: { message: ERROR_MESSAGES.SAME_PASSWORD },
       }
     }
 
     const hashedPassword = bcrypt.hashSync(newPass, 7)
     const updatedUser = await user.update({
       where: {
-        id
+        id,
       },
       data: {
         password: hashedPassword,
       }
     })
-    const token = generateAccessToken(updatedUser.role, updatedUser.id);
+    const token = generateAccessToken(updatedUser.role, updatedUser.id)
 
     return {
       data: { ...updatedUser, token },
-      error: null
+      error: null,
     }
-  }
-
-  catch (error) {
-    console.log("error", error);
+  } catch (error) {
+    console.log('error', error)
     return {
       data: null,
-      error
+      error,
     }
   }
-
 }

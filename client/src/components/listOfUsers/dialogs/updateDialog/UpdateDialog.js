@@ -33,7 +33,7 @@ const UpdateDialog = ({ user, editUserData, setEditUserData }) => {
         setSnackbar({
           snackbarOpen: true,
           snackbarType: "success",
-          snackbarMessage: "User successfully Eddited",
+          snackbarMessage: "User successfully Editted",
         })
       );
       onClose();

@@ -19,7 +19,7 @@ export default {
     body: Joi.object({
       fundNumber: Joi.string().required(),
       exhibitName: Joi.string().required(),
-      materialName: Joi.string(),
+      materialName: Joi.string().min(1),
       categoryName: Joi.string(),
       isActive: Joi.boolean(),
       status: Joi.any(),
@@ -36,11 +36,6 @@ export default {
       weight: Joi.number().integer(),
       statusId: Joi.number().integer(),
       description: Joi.string().min(0).max(200),
-      // contributors: Joi.array().items({
-      //   contributorName: Joi.string(),
-      //   contributorSurname: Joi.string(),
-      //   contributorPhoneNumber: Joi.number().integer().positive(),
-      // }),
       contributors: Joi.any(),
       material: Joi.any(),
       status: Joi.any(),
@@ -51,6 +46,7 @@ export default {
       existingContributorsIds: Joi.any(),
       newContributors: Joi.any(),
       imageIds: Joi.array(),
+      imageIdsToDelete: Joi.array(),
     }),
   },
   updateExhibitValidation: {
@@ -77,6 +73,7 @@ export default {
       existingContributorsIds: Joi.any(),
       newContributors: Joi.any(),
       imageIds: Joi.array(),
+      imageIdsToDelete: Joi.array(),
     }),
   },
   deleteExhibitValidation: {

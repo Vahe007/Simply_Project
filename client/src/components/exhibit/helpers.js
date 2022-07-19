@@ -20,7 +20,7 @@ export const getEditInitialValues = (exhibit) => ({
   fundNumber: exhibit.fundNumber,
   exhibitName: exhibit.exhibitName,
   materialName: exhibit.material.materialName,
-  materialName: exhibit.category.categoryName,
+  categoryName: exhibit.category.categoryName,
   newContributors: [],
   placeOfOrigin: exhibit.placeOfOrigin,
   creationPeriod: exhibit.creationPeriod,
@@ -45,7 +45,6 @@ export const cloneArr = (arr, excludedElement, addedElement) => {
 };
 
 export const initialStateOfNames = (exhibit, contributors) => {
-  console.log("asdasdsasad", contributors);
   if (contributors.length && exhibit && exhibit.contributors.length) {
     return exhibit.contributors.map((contributor) => {
       // const { contributorName, contributorSurname } = contributors.find(

@@ -9,12 +9,7 @@ import { TableCell, TableRow } from "@material-ui/core";
 const ListUser = (props) => {
   const { user, onEditClick, onSwitchChange } = props;
   const { isActive } = user;
-  const dontShowItems = [
-    "password",
-    "isActive",
-    "lastLogin",
-    "exhibitsUpdated",
-  ];
+  const valuesToHide = ["password", "isActive", "lastLogin", "exhibitsUpdated"];
   const createdAtFullDate = new Date(user.createdAt).toDateString();
   const updatedAtFullDate = new Date(user.updatedAt).toDateString();
   const label = { inputProps: { "aria-label": "Switch demo" } };
@@ -32,7 +27,7 @@ const ListUser = (props) => {
       <TableCell align="right">{user.createdAt}</TableCell>
       <TableCell align="right">{user.updatedAt}</TableCell>
       {Object.entries(user).map((el) => {
-        if (dontShowItems.includes(el[0])) {
+        if (valuesToHide.includes(el[0])) {
           return false;
         } else if (el[0] === "exhibitsCreated") {
           return <TableCell align="right">{el[1].length}</TableCell>;
