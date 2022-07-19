@@ -103,7 +103,7 @@ const ProfileHeader = () => {
             src={Logo}
           />
 
-          {/* <Typography
+          <Typography
             variant="h5"
             noWrap
             component="a"
@@ -120,9 +120,9 @@ const ProfileHeader = () => {
             }}
           >
             HISTORY MUSEUM OF ARMENIA
-          </Typography> */}
-
-          {/* <Typography
+          </Typography>
+            {/* /////////////////////// */}
+          <Typography
             variant="h5"
             component="a"
             href=""
@@ -138,8 +138,8 @@ const ProfileHeader = () => {
             }}
           >
             HISTORY MUSEUM OF ARMENIA
-          </Typography> */}
-
+          </Typography>
+            {/* /////////////////////////// */}
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }} />
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
